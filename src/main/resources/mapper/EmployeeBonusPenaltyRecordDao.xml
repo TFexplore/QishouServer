@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.EmployeeBonusPenaltyRecordDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.EmployeeBonusPenaltyRecord" id="EmployeeBonusPenaltyRecordMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="orderCommissionNum" column="order_commission_num" jdbcType="INTEGER"/>
+        <result property="orderCommissionPrice" column="order_commission_price" jdbcType="NUMERIC"/>
+        <result property="worktimeCommissionNum" column="worktime_commission_num" jdbcType="INTEGER"/>
+        <result property="worktimeCommisionPrice" column="worktime_commision_price" jdbcType="NUMERIC"/>
+        <result property="festivalCommissionNum" column="festival_commission_num" jdbcType="INTEGER"/>
+        <result property="festivalCommissionPrice" column="festival_commission_price" jdbcType="NUMERIC"/>
+        <result property="specialWorktimeCommisionNum" column="special_worktime_commision_num" jdbcType="INTEGER"/>
+        <result property="specialWorktimeCommissionPrice" column="special_worktime_commission_price" jdbcType="NUMERIC"/>
+        <result property="inviteUserNum" column="invite_user_num" jdbcType="INTEGER"/>
+        <result property="inviteUserPrice" column="invite_user_price" jdbcType="NUMERIC"/>
+        <result property="positiveCommentBonus" column="positive_comment_bonus" jdbcType="NUMERIC"/>
+        <result property="negativeCommentForfeit" column="negative_comment_forfeit" jdbcType="NUMERIC"/>
+        <result property="overtimeNum" column="overtime_num" jdbcType="INTEGER"/>
+        <result property="overtimePrice" column="overtime_price" jdbcType="NUMERIC"/>
+        <result property="otherBonus" column="other_bonus" jdbcType="NUMERIC"/>
+        <result property="otherForfeit" column="other_forfeit" jdbcType="NUMERIC"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeBonusPenaltyRecordMap">
+        select
+          id, employee_id, start_time, end_time, order_commission_num, order_commission_price, worktime_commission_num, worktime_commision_price, festival_commission_num, festival_commission_price, special_worktime_commision_num, special_worktime_commission_price, invite_user_num, invite_user_price, positive_comment_bonus, negative_comment_forfeit, overtime_num, overtime_price, other_bonus, other_forfeit, is_delete, create_time, create_by, update_time, update_by
+        from employee_bonus_penalty_record
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="EmployeeBonusPenaltyRecordMap">
+        select
+          id, employee_id, start_time, end_time, order_commission_num, order_commission_price, worktime_commission_num, worktime_commision_price, festival_commission_num, festival_commission_price, special_worktime_commision_num, special_worktime_commission_price, invite_user_num, invite_user_price, positive_comment_bonus, negative_comment_forfeit, overtime_num, overtime_price, other_bonus, other_forfeit, is_delete, create_time, create_by, update_time, update_by
+        from employee_bonus_penalty_record
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
+            <if test="orderCommissionNum != null">
+                and order_commission_num = #{orderCommissionNum}
+            </if>
+            <if test="orderCommissionPrice != null">
+                and order_commission_price = #{orderCommissionPrice}
+            </if>
+            <if test="worktimeCommissionNum != null">
+                and worktime_commission_num = #{worktimeCommissionNum}
+            </if>
+            <if test="worktimeCommisionPrice != null">
+                and worktime_commision_price = #{worktimeCommisionPrice}
+            </if>
+            <if test="festivalCommissionNum != null">
+                and festival_commission_num = #{festivalCommissionNum}
+            </if>
+            <if test="festivalCommissionPrice != null">
+                and festival_commission_price = #{festivalCommissionPrice}
+            </if>
+            <if test="specialWorktimeCommisionNum != null">
+                and special_worktime_commision_num = #{specialWorktimeCommisionNum}
+            </if>
+            <if test="specialWorktimeCommissionPrice != null">
+                and special_worktime_commission_price = #{specialWorktimeCommissionPrice}
+            </if>
+            <if test="inviteUserNum != null">
+                and invite_user_num = #{inviteUserNum}
+            </if>
+            <if test="inviteUserPrice != null">
+                and invite_user_price = #{inviteUserPrice}
+            </if>
+            <if test="positiveCommentBonus != null">
+                and positive_comment_bonus = #{positiveCommentBonus}
+            </if>
+            <if test="negativeCommentForfeit != null">
+                and negative_comment_forfeit = #{negativeCommentForfeit}
+            </if>
+            <if test="overtimeNum != null">
+                and overtime_num = #{overtimeNum}
+            </if>
+            <if test="overtimePrice != null">
+                and overtime_price = #{overtimePrice}
+            </if>
+            <if test="otherBonus != null">
+                and other_bonus = #{otherBonus}
+            </if>
+            <if test="otherForfeit != null">
+                and other_forfeit = #{otherForfeit}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from employee_bonus_penalty_record
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
+            <if test="orderCommissionNum != null">
+                and order_commission_num = #{orderCommissionNum}
+            </if>
+            <if test="orderCommissionPrice != null">
+                and order_commission_price = #{orderCommissionPrice}
+            </if>
+            <if test="worktimeCommissionNum != null">
+                and worktime_commission_num = #{worktimeCommissionNum}
+            </if>
+            <if test="worktimeCommisionPrice != null">
+                and worktime_commision_price = #{worktimeCommisionPrice}
+            </if>
+            <if test="festivalCommissionNum != null">
+                and festival_commission_num = #{festivalCommissionNum}
+            </if>
+            <if test="festivalCommissionPrice != null">
+                and festival_commission_price = #{festivalCommissionPrice}
+            </if>
+            <if test="specialWorktimeCommisionNum != null">
+                and special_worktime_commision_num = #{specialWorktimeCommisionNum}
+            </if>
+            <if test="specialWorktimeCommissionPrice != null">
+                and special_worktime_commission_price = #{specialWorktimeCommissionPrice}
+            </if>
+            <if test="inviteUserNum != null">
+                and invite_user_num = #{inviteUserNum}
+            </if>
+            <if test="inviteUserPrice != null">
+                and invite_user_price = #{inviteUserPrice}
+            </if>
+            <if test="positiveCommentBonus != null">
+                and positive_comment_bonus = #{positiveCommentBonus}
+            </if>
+            <if test="negativeCommentForfeit != null">
+                and negative_comment_forfeit = #{negativeCommentForfeit}
+            </if>
+            <if test="overtimeNum != null">
+                and overtime_num = #{overtimeNum}
+            </if>
+            <if test="overtimePrice != null">
+                and overtime_price = #{overtimePrice}
+            </if>
+            <if test="otherBonus != null">
+                and other_bonus = #{otherBonus}
+            </if>
+            <if test="otherForfeit != null">
+                and other_forfeit = #{otherForfeit}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_bonus_penalty_record(employee_id, start_time, end_time, order_commission_num, order_commission_price, worktime_commission_num, worktime_commision_price, festival_commission_num, festival_commission_price, special_worktime_commision_num, special_worktime_commission_price, invite_user_num, invite_user_price, positive_comment_bonus, negative_comment_forfeit, overtime_num, overtime_price, other_bonus, other_forfeit, is_delete, create_time, create_by, update_time, update_by)
+        values (#{employeeId}, #{startTime}, #{endTime}, #{orderCommissionNum}, #{orderCommissionPrice}, #{worktimeCommissionNum}, #{worktimeCommisionPrice}, #{festivalCommissionNum}, #{festivalCommissionPrice}, #{specialWorktimeCommisionNum}, #{specialWorktimeCommissionPrice}, #{inviteUserNum}, #{inviteUserPrice}, #{positiveCommentBonus}, #{negativeCommentForfeit}, #{overtimeNum}, #{overtimePrice}, #{otherBonus}, #{otherForfeit}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_bonus_penalty_record(employee_id, start_time, end_time, order_commission_num, order_commission_price, worktime_commission_num, worktime_commision_price, festival_commission_num, festival_commission_price, special_worktime_commision_num, special_worktime_commission_price, invite_user_num, invite_user_price, positive_comment_bonus, negative_comment_forfeit, overtime_num, overtime_price, other_bonus, other_forfeit, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.employeeId}, #{entity.startTime}, #{entity.endTime}, #{entity.orderCommissionNum}, #{entity.orderCommissionPrice}, #{entity.worktimeCommissionNum}, #{entity.worktimeCommisionPrice}, #{entity.festivalCommissionNum}, #{entity.festivalCommissionPrice}, #{entity.specialWorktimeCommisionNum}, #{entity.specialWorktimeCommissionPrice}, #{entity.inviteUserNum}, #{entity.inviteUserPrice}, #{entity.positiveCommentBonus}, #{entity.negativeCommentForfeit}, #{entity.overtimeNum}, #{entity.overtimePrice}, #{entity.otherBonus}, #{entity.otherForfeit}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_bonus_penalty_record(employee_id, start_time, end_time, order_commission_num, order_commission_price, worktime_commission_num, worktime_commision_price, festival_commission_num, festival_commission_price, special_worktime_commision_num, special_worktime_commission_price, invite_user_num, invite_user_price, positive_comment_bonus, negative_comment_forfeit, overtime_num, overtime_price, other_bonus, other_forfeit, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.employeeId}, #{entity.startTime}, #{entity.endTime}, #{entity.orderCommissionNum}, #{entity.orderCommissionPrice}, #{entity.worktimeCommissionNum}, #{entity.worktimeCommisionPrice}, #{entity.festivalCommissionNum}, #{entity.festivalCommissionPrice}, #{entity.specialWorktimeCommisionNum}, #{entity.specialWorktimeCommissionPrice}, #{entity.inviteUserNum}, #{entity.inviteUserPrice}, #{entity.positiveCommentBonus}, #{entity.negativeCommentForfeit}, #{entity.overtimeNum}, #{entity.overtimePrice}, #{entity.otherBonus}, #{entity.otherForfeit}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+        on duplicate key update
+        employee_id = values(employee_id),
+        start_time = values(start_time),
+        end_time = values(end_time),
+        order_commission_num = values(order_commission_num),
+        order_commission_price = values(order_commission_price),
+        worktime_commission_num = values(worktime_commission_num),
+        worktime_commision_price = values(worktime_commision_price),
+        festival_commission_num = values(festival_commission_num),
+        festival_commission_price = values(festival_commission_price),
+        special_worktime_commision_num = values(special_worktime_commision_num),
+        special_worktime_commission_price = values(special_worktime_commission_price),
+        invite_user_num = values(invite_user_num),
+        invite_user_price = values(invite_user_price),
+        positive_comment_bonus = values(positive_comment_bonus),
+        negative_comment_forfeit = values(negative_comment_forfeit),
+        overtime_num = values(overtime_num),
+        overtime_price = values(overtime_price),
+        other_bonus = values(other_bonus),
+        other_forfeit = values(other_forfeit),
+        is_delete = values(is_delete),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update employee_bonus_penalty_record
+        <set>
+            <if test="employeeId != null">
+                employee_id = #{employeeId},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
+            </if>
+            <if test="orderCommissionNum != null">
+                order_commission_num = #{orderCommissionNum},
+            </if>
+            <if test="orderCommissionPrice != null">
+                order_commission_price = #{orderCommissionPrice},
+            </if>
+            <if test="worktimeCommissionNum != null">
+                worktime_commission_num = #{worktimeCommissionNum},
+            </if>
+            <if test="worktimeCommisionPrice != null">
+                worktime_commision_price = #{worktimeCommisionPrice},
+            </if>
+            <if test="festivalCommissionNum != null">
+                festival_commission_num = #{festivalCommissionNum},
+            </if>
+            <if test="festivalCommissionPrice != null">
+                festival_commission_price = #{festivalCommissionPrice},
+            </if>
+            <if test="specialWorktimeCommisionNum != null">
+                special_worktime_commision_num = #{specialWorktimeCommisionNum},
+            </if>
+            <if test="specialWorktimeCommissionPrice != null">
+                special_worktime_commission_price = #{specialWorktimeCommissionPrice},
+            </if>
+            <if test="inviteUserNum != null">
+                invite_user_num = #{inviteUserNum},
+            </if>
+            <if test="inviteUserPrice != null">
+                invite_user_price = #{inviteUserPrice},
+            </if>
+            <if test="positiveCommentBonus != null">
+                positive_comment_bonus = #{positiveCommentBonus},
+            </if>
+            <if test="negativeCommentForfeit != null">
+                negative_comment_forfeit = #{negativeCommentForfeit},
+            </if>
+            <if test="overtimeNum != null">
+                overtime_num = #{overtimeNum},
+            </if>
+            <if test="overtimePrice != null">
+                overtime_price = #{overtimePrice},
+            </if>
+            <if test="otherBonus != null">
+                other_bonus = #{otherBonus},
+            </if>
+            <if test="otherForfeit != null">
+                other_forfeit = #{otherForfeit},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from employee_bonus_penalty_record where id = #{id}
+    </delete>
+
+</mapper>
+

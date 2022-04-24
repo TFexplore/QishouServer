@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.WorkTimeDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.WorkTime" id="WorkTimeMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="worktimeId" column="worktime_id" jdbcType="INTEGER"/>
+        <result property="dateId" column="date_id" jdbcType="INTEGER"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="WorkTimeMap">
+        select
+          id, worktime_id, date_id, start_time, end_time, create_time, create_by, update_time, update_by
+        from work_time
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="WorkTimeMap">
+        select
+          id, worktime_id, date_id, start_time, end_time, create_time, create_by, update_time, update_by
+        from work_time
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="worktimeId != null">
+                and worktime_id = #{worktimeId}
+            </if>
+            <if test="dateId != null">
+                and date_id = #{dateId}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from work_time
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="worktimeId != null">
+                and worktime_id = #{worktimeId}
+            </if>
+            <if test="dateId != null">
+                and date_id = #{dateId}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into work_time(worktime_id, date_id, start_time, end_time, create_time, create_by, update_time, update_by)
+        values (#{worktimeId}, #{dateId}, #{startTime}, #{endTime}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into work_time(worktime_id, date_id, start_time, end_time, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.worktimeId}, #{entity.dateId}, #{entity.startTime}, #{entity.endTime}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into work_time(worktime_id, date_id, start_time, end_time, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.worktimeId}, #{entity.dateId}, #{entity.startTime}, #{entity.endTime}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+        on duplicate key update
+        worktime_id = values(worktime_id),
+        date_id = values(date_id),
+        start_time = values(start_time),
+        end_time = values(end_time),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update work_time
+        <set>
+            <if test="worktimeId != null">
+                worktime_id = #{worktimeId},
+            </if>
+            <if test="dateId != null">
+                date_id = #{dateId},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from work_time where id = #{id}
+    </delete>
+
+</mapper>
+

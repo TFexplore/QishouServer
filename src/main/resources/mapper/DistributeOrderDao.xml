@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.DistributeOrderDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.DistributeOrder" id="DistributeOrderMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="distributeId" column="distribute_id" jdbcType="INTEGER"/>
+        <result property="orderId" column="order_id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="commentLevel" column="comment_level" jdbcType="INTEGER"/>
+        <result property="commentContent" column="comment_content" jdbcType="VARCHAR"/>
+        <result property="getOrderTime" column="get_order_time" jdbcType="TIMESTAMP"/>
+        <result property="takeOrderTime" column="take_order_time" jdbcType="TIMESTAMP"/>
+        <result property="distributeFinishTime" column="distribute_finish_time" jdbcType="VARCHAR"/>
+        <result property="orderFinishTime" column="order_finish_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="DistributeOrderMap">
+        select
+          id, distribute_id, order_id, employee_id, comment_level, comment_content, get_order_time, take_order_time, distribute_finish_time, order_finish_time, create_time, create_by, update_time, update_by, is_delete
+        from distribute_order
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="DistributeOrderMap">
+        select
+          id, distribute_id, order_id, employee_id, comment_level, comment_content, get_order_time, take_order_time, distribute_finish_time, order_finish_time, create_time, create_by, update_time, update_by, is_delete
+        from distribute_order
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="distributeId != null">
+                and distribute_id = #{distributeId}
+            </if>
+            <if test="orderId != null">
+                and order_id = #{orderId}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="commentLevel != null">
+                and comment_level = #{commentLevel}
+            </if>
+            <if test="commentContent != null and commentContent != ''">
+                and comment_content = #{commentContent}
+            </if>
+            <if test="getOrderTime != null">
+                and get_order_time = #{getOrderTime}
+            </if>
+            <if test="takeOrderTime != null">
+                and take_order_time = #{takeOrderTime}
+            </if>
+            <if test="distributeFinishTime != null and distributeFinishTime != ''">
+                and distribute_finish_time = #{distributeFinishTime}
+            </if>
+            <if test="orderFinishTime != null">
+                and order_finish_time = #{orderFinishTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from distribute_order
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="distributeId != null">
+                and distribute_id = #{distributeId}
+            </if>
+            <if test="orderId != null">
+                and order_id = #{orderId}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="commentLevel != null">
+                and comment_level = #{commentLevel}
+            </if>
+            <if test="commentContent != null and commentContent != ''">
+                and comment_content = #{commentContent}
+            </if>
+            <if test="getOrderTime != null">
+                and get_order_time = #{getOrderTime}
+            </if>
+            <if test="takeOrderTime != null">
+                and take_order_time = #{takeOrderTime}
+            </if>
+            <if test="distributeFinishTime != null and distributeFinishTime != ''">
+                and distribute_finish_time = #{distributeFinishTime}
+            </if>
+            <if test="orderFinishTime != null">
+                and order_finish_time = #{orderFinishTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into distribute_order(distribute_id, order_id, employee_id, comment_level, comment_content, get_order_time, take_order_time, distribute_finish_time, order_finish_time, create_time, create_by, update_time, update_by, is_delete)
+        values (#{distributeId}, #{orderId}, #{employeeId}, #{commentLevel}, #{commentContent}, #{getOrderTime}, #{takeOrderTime}, #{distributeFinishTime}, #{orderFinishTime}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy}, #{isDelete})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into distribute_order(distribute_id, order_id, employee_id, comment_level, comment_content, get_order_time, take_order_time, distribute_finish_time, order_finish_time, create_time, create_by, update_time, update_by, is_delete)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.distributeId}, #{entity.orderId}, #{entity.employeeId}, #{entity.commentLevel}, #{entity.commentContent}, #{entity.getOrderTime}, #{entity.takeOrderTime}, #{entity.distributeFinishTime}, #{entity.orderFinishTime}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy}, #{entity.isDelete})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into distribute_order(distribute_id, order_id, employee_id, comment_level, comment_content, get_order_time, take_order_time, distribute_finish_time, order_finish_time, create_time, create_by, update_time, update_by, is_delete)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.distributeId}, #{entity.orderId}, #{entity.employeeId}, #{entity.commentLevel}, #{entity.commentContent}, #{entity.getOrderTime}, #{entity.takeOrderTime}, #{entity.distributeFinishTime}, #{entity.orderFinishTime}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy}, #{entity.isDelete})
+        </foreach>
+        on duplicate key update
+        distribute_id = values(distribute_id),
+        order_id = values(order_id),
+        employee_id = values(employee_id),
+        comment_level = values(comment_level),
+        comment_content = values(comment_content),
+        get_order_time = values(get_order_time),
+        take_order_time = values(take_order_time),
+        distribute_finish_time = values(distribute_finish_time),
+        order_finish_time = values(order_finish_time),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by),
+        is_delete = values(is_delete)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update distribute_order
+        <set>
+            <if test="distributeId != null">
+                distribute_id = #{distributeId},
+            </if>
+            <if test="orderId != null">
+                order_id = #{orderId},
+            </if>
+            <if test="employeeId != null">
+                employee_id = #{employeeId},
+            </if>
+            <if test="commentLevel != null">
+                comment_level = #{commentLevel},
+            </if>
+            <if test="commentContent != null and commentContent != ''">
+                comment_content = #{commentContent},
+            </if>
+            <if test="getOrderTime != null">
+                get_order_time = #{getOrderTime},
+            </if>
+            <if test="takeOrderTime != null">
+                take_order_time = #{takeOrderTime},
+            </if>
+            <if test="distributeFinishTime != null and distributeFinishTime != ''">
+                distribute_finish_time = #{distributeFinishTime},
+            </if>
+            <if test="orderFinishTime != null">
+                order_finish_time = #{orderFinishTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from distribute_order where id = #{id}
+    </delete>
+
+</mapper>
+

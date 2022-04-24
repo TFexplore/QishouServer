@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.EmployeeSalaryBillDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.EmployeeSalaryBill" id="EmployeeSalaryBillMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="salaryBillId" column="salary_bill_id" jdbcType="INTEGER"/>
+        <result property="salaryBillName" column="salary_bill_name" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="employeeSalaryId" column="employee_salary_id" jdbcType="INTEGER"/>
+        <result property="totalMoney" column="total_money" jdbcType="NUMERIC"/>
+        <result property="hrCheckState" column="hr_check_state" jdbcType="INTEGER"/>
+        <result property="financeCheckState" column="finance_check_state" jdbcType="INTEGER"/>
+        <result property="payState" column="pay_state" jdbcType="INTEGER"/>
+        <result property="payPeople" column="pay_people" jdbcType="INTEGER"/>
+        <result property="payTime" column="pay_time" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeSalaryBillMap">
+        select
+          id, salary_bill_id, salary_bill_name, employee_id, employee_salary_id, total_money, hr_check_state, finance_check_state, pay_state, pay_people, pay_time, is_delete, create_time, create_by, update_time, update_by
+        from employee_salary_bill
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="EmployeeSalaryBillMap">
+        select
+          id, salary_bill_id, salary_bill_name, employee_id, employee_salary_id, total_money, hr_check_state, finance_check_state, pay_state, pay_people, pay_time, is_delete, create_time, create_by, update_time, update_by
+        from employee_salary_bill
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="salaryBillId != null">
+                and salary_bill_id = #{salaryBillId}
+            </if>
+            <if test="salaryBillName != null and salaryBillName != ''">
+                and salary_bill_name = #{salaryBillName}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="employeeSalaryId != null">
+                and employee_salary_id = #{employeeSalaryId}
+            </if>
+            <if test="totalMoney != null">
+                and total_money = #{totalMoney}
+            </if>
+            <if test="hrCheckState != null">
+                and hr_check_state = #{hrCheckState}
+            </if>
+            <if test="financeCheckState != null">
+                and finance_check_state = #{financeCheckState}
+            </if>
+            <if test="payState != null">
+                and pay_state = #{payState}
+            </if>
+            <if test="payPeople != null">
+                and pay_people = #{payPeople}
+            </if>
+            <if test="payTime != null">
+                and pay_time = #{payTime}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from employee_salary_bill
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="salaryBillId != null">
+                and salary_bill_id = #{salaryBillId}
+            </if>
+            <if test="salaryBillName != null and salaryBillName != ''">
+                and salary_bill_name = #{salaryBillName}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="employeeSalaryId != null">
+                and employee_salary_id = #{employeeSalaryId}
+            </if>
+            <if test="totalMoney != null">
+                and total_money = #{totalMoney}
+            </if>
+            <if test="hrCheckState != null">
+                and hr_check_state = #{hrCheckState}
+            </if>
+            <if test="financeCheckState != null">
+                and finance_check_state = #{financeCheckState}
+            </if>
+            <if test="payState != null">
+                and pay_state = #{payState}
+            </if>
+            <if test="payPeople != null">
+                and pay_people = #{payPeople}
+            </if>
+            <if test="payTime != null">
+                and pay_time = #{payTime}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary_bill(salary_bill_id, salary_bill_name, employee_id, employee_salary_id, total_money, hr_check_state, finance_check_state, pay_state, pay_people, pay_time, is_delete, create_time, create_by, update_time, update_by)
+        values (#{salaryBillId}, #{salaryBillName}, #{employeeId}, #{employeeSalaryId}, #{totalMoney}, #{hrCheckState}, #{financeCheckState}, #{payState}, #{payPeople}, #{payTime}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary_bill(salary_bill_id, salary_bill_name, employee_id, employee_salary_id, total_money, hr_check_state, finance_check_state, pay_state, pay_people, pay_time, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.salaryBillId}, #{entity.salaryBillName}, #{entity.employeeId}, #{entity.employeeSalaryId}, #{entity.totalMoney}, #{entity.hrCheckState}, #{entity.financeCheckState}, #{entity.payState}, #{entity.payPeople}, #{entity.payTime}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary_bill(salary_bill_id, salary_bill_name, employee_id, employee_salary_id, total_money, hr_check_state, finance_check_state, pay_state, pay_people, pay_time, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.salaryBillId}, #{entity.salaryBillName}, #{entity.employeeId}, #{entity.employeeSalaryId}, #{entity.totalMoney}, #{entity.hrCheckState}, #{entity.financeCheckState}, #{entity.payState}, #{entity.payPeople}, #{entity.payTime}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+        on duplicate key update
+        salary_bill_id = values(salary_bill_id),
+        salary_bill_name = values(salary_bill_name),
+        employee_id = values(employee_id),
+        employee_salary_id = values(employee_salary_id),
+        total_money = values(total_money),
+        hr_check_state = values(hr_check_state),
+        finance_check_state = values(finance_check_state),
+        pay_state = values(pay_state),
+        pay_people = values(pay_people),
+        pay_time = values(pay_time),
+        is_delete = values(is_delete),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update employee_salary_bill
+        <set>
+            <if test="salaryBillId != null">
+                salary_bill_id = #{salaryBillId},
+            </if>
+            <if test="salaryBillName != null and salaryBillName != ''">
+                salary_bill_name = #{salaryBillName},
+            </if>
+            <if test="employeeId != null">
+                employee_id = #{employeeId},
+            </if>
+            <if test="employeeSalaryId != null">
+                employee_salary_id = #{employeeSalaryId},
+            </if>
+            <if test="totalMoney != null">
+                total_money = #{totalMoney},
+            </if>
+            <if test="hrCheckState != null">
+                hr_check_state = #{hrCheckState},
+            </if>
+            <if test="financeCheckState != null">
+                finance_check_state = #{financeCheckState},
+            </if>
+            <if test="payState != null">
+                pay_state = #{payState},
+            </if>
+            <if test="payPeople != null">
+                pay_people = #{payPeople},
+            </if>
+            <if test="payTime != null">
+                pay_time = #{payTime},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from employee_salary_bill where id = #{id}
+    </delete>
+
+</mapper>
+

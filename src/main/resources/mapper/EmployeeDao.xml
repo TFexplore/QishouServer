@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.EmployeeDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.Employee" id="EmployeeMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
+        <result property="phoneNum" column="phone_num" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="frontIdCard" column="front_id_card" jdbcType="VARCHAR"/>
+        <result property="behindIdCard" column="behind_id_card" jdbcType="VARCHAR"/>
+        <result property="holdingIdCard" column="holding_id_card" jdbcType="VARCHAR"/>
+        <result property="employeeType" column="employee_type" jdbcType="INTEGER"/>
+        <result property="sarlaryLevel" column="sarlary_level" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="getNextEmployeeId"  resultType="Integer">
+        SELECT max(employee_id) FROM employee
+    </select>
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeMap">
+        select
+          id, employee_id, name, id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by
+        from employee
+        where id = #{id}
+    </select>
+    <!--查询单个 tel-->
+    <select id="queryByTel" resultMap="EmployeeMap">
+        select
+        id, employee_id, name, id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by
+        from employee
+        where phone_num = #{tel}
+    </select>
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="EmployeeMap">
+        select
+          id, employee_id, name, id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by
+        from employee
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and id_card = #{idCard}
+            </if>
+            <if test="phoneNum != null and phoneNum != ''">
+                and phone_num = #{phoneNum}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="avatar != null and avatar != ''">
+                and avatar = #{avatar}
+            </if>
+            <if test="frontIdCard != null and frontIdCard != ''">
+                and front_id_card = #{frontIdCard}
+            </if>
+            <if test="behindIdCard != null and behindIdCard != ''">
+                and behind_id_card = #{behindIdCard}
+            </if>
+            <if test="holdingIdCard != null and holdingIdCard != ''">
+                and holding_id_card = #{holdingIdCard}
+            </if>
+            <if test="employeeType != null">
+                and employee_type = #{employeeType}
+            </if>
+            <if test="sarlaryLevel != null">
+                and sarlary_level = #{sarlaryLevel}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="int">
+        select count(1)
+        from employee
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into employee(employee_id,name, id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by)
+        values (#{employeeId},#{name}, #{idCard}, #{phoneNum}, #{password}, #{sex}, #{avatar}, #{frontIdCard}, #{behindIdCard}, #{holdingIdCard}, #{employeeType}, #{sarlaryLevel}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee(employee_id, name, id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.employeeId}, #{entity.name}, #{entity.idCard}, #{entity.phoneNum}, #{entity.password}, #{entity.sex}, #{entity.avatar}, #{entity.frontIdCard}, #{entity.behindIdCard}, #{entity.holdingIdCard}, #{entity.employeeType}, #{entity.sarlaryLevel}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee(employee_id, name, id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.employeeId}, #{entity.name}, #{entity.idCard}, #{entity.phoneNum}, #{entity.password}, #{entity.sex}, #{entity.avatar}, #{entity.frontIdCard}, #{entity.behindIdCard}, #{entity.holdingIdCard}, #{entity.employeeType}, #{entity.sarlaryLevel}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+        on duplicate key update
+        employee_id = values(employee_id),
+        name = values(name),
+        id_card = values(id_card),
+        phone_num = values(phone_num),
+        password = values(password),
+        sex = values(sex),
+        avatar = values(avatar),
+        front_id_card = values(front_id_card),
+        behind_id_card = values(behind_id_card),
+        holding_id_card = values(holding_id_card),
+        employee_type = values(employee_type),
+        sarlary_level = values(sarlary_level),
+        is_delete = values(is_delete),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update employee
+        <set>
+            <if test="employeeId != null">
+                employee_id = #{employeeId},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="idCard != null and idCard != ''">
+                id_card = #{idCard},
+            </if>
+            <if test="phoneNum != null and phoneNum != ''">
+                phone_num = #{phoneNum},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="avatar != null and avatar != ''">
+                avatar = #{avatar},
+            </if>
+            <if test="frontIdCard != null and frontIdCard != ''">
+                front_id_card = #{frontIdCard},
+            </if>
+            <if test="behindIdCard != null and behindIdCard != ''">
+                behind_id_card = #{behindIdCard},
+            </if>
+            <if test="holdingIdCard != null and holdingIdCard != ''">
+                holding_id_card = #{holdingIdCard},
+            </if>
+            <if test="employeeType != null">
+                employee_type = #{employeeType},
+            </if>
+            <if test="sarlaryLevel != null">
+                sarlary_level = #{sarlaryLevel},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateTypeByTel">
+        update employee set employee_type = #{type} where  phone_num = #{tel}
+
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from employee where id = #{id}
+    </delete>
+
+</mapper>
+

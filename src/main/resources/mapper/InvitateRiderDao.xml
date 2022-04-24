@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.InvitateRiderDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.InvitateRider" id="InvitateRiderMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="invitateId" column="invitate_id" jdbcType="INTEGER"/>
+        <result property="invitatedId" column="invitated_id" jdbcType="INTEGER"/>
+        <result property="isSuccess" column="is_success" jdbcType="INTEGER"/>
+        <result property="invitateTime" column="invitate_time" jdbcType="TIMESTAMP"/>
+        <result property="invitateSuccessTime" column="invitate_success_time" jdbcType="TIMESTAMP"/>
+        <result property="checkState" column="check_state" jdbcType="INTEGER"/>
+        <result property="checkPeople" column="check_people" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="InvitateRiderMap">
+        select
+          id, invitate_id, invitated_id, is_success, invitate_time, invitate_success_time, check_state, check_people, is_delete, create_time, create_by, update_time, update_by
+        from invitate_rider
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="InvitateRiderMap">
+        select
+          id, invitate_id, invitated_id, is_success, invitate_time, invitate_success_time, check_state, check_people, is_delete, create_time, create_by, update_time, update_by
+        from invitate_rider
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="invitateId != null">
+                and invitate_id = #{invitateId}
+            </if>
+            <if test="invitatedId != null">
+                and invitated_id = #{invitatedId}
+            </if>
+            <if test="isSuccess != null">
+                and is_success = #{isSuccess}
+            </if>
+            <if test="invitateTime != null">
+                and invitate_time = #{invitateTime}
+            </if>
+            <if test="invitateSuccessTime != null">
+                and invitate_success_time = #{invitateSuccessTime}
+            </if>
+            <if test="checkState != null">
+                and check_state = #{checkState}
+            </if>
+            <if test="checkPeople != null">
+                and check_people = #{checkPeople}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from invitate_rider
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="invitateId != null">
+                and invitate_id = #{invitateId}
+            </if>
+            <if test="invitatedId != null">
+                and invitated_id = #{invitatedId}
+            </if>
+            <if test="isSuccess != null">
+                and is_success = #{isSuccess}
+            </if>
+            <if test="invitateTime != null">
+                and invitate_time = #{invitateTime}
+            </if>
+            <if test="invitateSuccessTime != null">
+                and invitate_success_time = #{invitateSuccessTime}
+            </if>
+            <if test="checkState != null">
+                and check_state = #{checkState}
+            </if>
+            <if test="checkPeople != null">
+                and check_people = #{checkPeople}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into invitate_rider(invitate_id, invitated_id, is_success, invitate_time, invitate_success_time, check_state, check_people, is_delete, create_time, create_by, update_time, update_by)
+        values (#{invitateId}, #{invitatedId}, #{isSuccess}, #{invitateTime}, #{invitateSuccessTime}, #{checkState}, #{checkPeople}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into invitate_rider(invitate_id, invitated_id, is_success, invitate_time, invitate_success_time, check_state, check_people, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.invitateId}, #{entity.invitatedId}, #{entity.isSuccess}, #{entity.invitateTime}, #{entity.invitateSuccessTime}, #{entity.checkState}, #{entity.checkPeople}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into invitate_rider(invitate_id, invitated_id, is_success, invitate_time, invitate_success_time, check_state, check_people, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.invitateId}, #{entity.invitatedId}, #{entity.isSuccess}, #{entity.invitateTime}, #{entity.invitateSuccessTime}, #{entity.checkState}, #{entity.checkPeople}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+        on duplicate key update
+        invitate_id = values(invitate_id),
+        invitated_id = values(invitated_id),
+        is_success = values(is_success),
+        invitate_time = values(invitate_time),
+        invitate_success_time = values(invitate_success_time),
+        check_state = values(check_state),
+        check_people = values(check_people),
+        is_delete = values(is_delete),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update invitate_rider
+        <set>
+            <if test="invitateId != null">
+                invitate_id = #{invitateId},
+            </if>
+            <if test="invitatedId != null">
+                invitated_id = #{invitatedId},
+            </if>
+            <if test="isSuccess != null">
+                is_success = #{isSuccess},
+            </if>
+            <if test="invitateTime != null">
+                invitate_time = #{invitateTime},
+            </if>
+            <if test="invitateSuccessTime != null">
+                invitate_success_time = #{invitateSuccessTime},
+            </if>
+            <if test="checkState != null">
+                check_state = #{checkState},
+            </if>
+            <if test="checkPeople != null">
+                check_people = #{checkPeople},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from invitate_rider where id = #{id}
+    </delete>
+
+</mapper>
+
