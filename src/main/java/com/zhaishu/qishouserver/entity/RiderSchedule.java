@@ -28,11 +28,11 @@ public class RiderSchedule implements Serializable {
     /**
      * 骑手实际上班开始时间
      */
-    private Date workStartTime;
+    private long workStartTime;
     /**
      * 骑手实际上班结束时间
      */
-    private Date workEndTime;
+    private long workEndTime;
     
     private Date createTime;
     
@@ -75,19 +75,19 @@ public class RiderSchedule implements Serializable {
         this.employeeId = employeeId;
     }
 
-    public Date getWorkStartTime() {
+    public long getWorkStartTime() {
         return workStartTime;
     }
 
-    public void setWorkStartTime(Date workStartTime) {
+    public void setWorkStartTime(long workStartTime) {
         this.workStartTime = workStartTime;
     }
 
-    public Date getWorkEndTime() {
+    public long getWorkEndTime() {
         return workEndTime;
     }
 
-    public void setWorkEndTime(Date workEndTime) {
+    public void setWorkEndTime(long workEndTime) {
         this.workEndTime = workEndTime;
     }
 

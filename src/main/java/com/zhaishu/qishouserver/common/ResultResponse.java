@@ -1,9 +1,13 @@
 package com.zhaishu.qishouserver.common;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public class ResultResponse {
     private String code;
     private String msg;
     private Object data;
+
 
     public ResultResponse() {
 
@@ -15,6 +19,13 @@ public class ResultResponse {
         this.data = data;
     }
     public static ResultResponse resultSuccess(Object data) {
+        //判断data是否为字符串类型
+        if(!(data instanceof String)){
+            Gson gson=new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+          data = gson.toJson(data);
+        }
+
+
         return new ResultResponse("200", "success", data);
     }
 

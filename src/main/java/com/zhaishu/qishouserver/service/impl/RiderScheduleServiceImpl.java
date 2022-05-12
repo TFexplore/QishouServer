@@ -1,14 +1,18 @@
 package com.zhaishu.qishouserver.service.impl;
 
+import com.zhaishu.qishouserver.Vo.RiderVo;
+import com.zhaishu.qishouserver.Vo.ScheduleVo;
 import com.zhaishu.qishouserver.entity.RiderSchedule;
 import com.zhaishu.qishouserver.dao.RiderScheduleDao;
 import com.zhaishu.qishouserver.service.RiderScheduleService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 骑手排班表(RiderSchedule)表服务实现类
@@ -21,6 +25,15 @@ public class RiderScheduleServiceImpl implements RiderScheduleService {
     @Resource
     private RiderScheduleDao riderScheduleDao;
 
+    @Override
+    public List<RiderVo> getRiders(@Param("rider") RiderVo rider, Integer limit, Integer offset){
+        return this.riderScheduleDao.getRiders(rider,limit,offset);
+    }
+
+    @Override
+    public List<ScheduleVo> getSchedules(Integer id){
+        return this.riderScheduleDao.getSchedules(id);
+    }
     /**
      * 通过ID查询单条数据
      *
@@ -52,9 +65,13 @@ public class RiderScheduleServiceImpl implements RiderScheduleService {
      * @return 实例对象
      */
     @Override
-    public RiderSchedule insert(RiderSchedule riderSchedule) {
-        this.riderScheduleDao.insert(riderSchedule);
-        return riderSchedule;
+    public int insert(RiderSchedule riderSchedule) {
+        Integer id=this.riderScheduleDao.getNextId(riderSchedule.getWorktimeId());
+        if (id==null){
+            id=riderSchedule.getWorktimeId()*100;
+        }
+        riderSchedule.setScheduleId(id+1);
+        return  this.riderScheduleDao.insert(riderSchedule);
     }
 
     /**
@@ -66,7 +83,7 @@ public class RiderScheduleServiceImpl implements RiderScheduleService {
     @Override
     public RiderSchedule update(RiderSchedule riderSchedule) {
         this.riderScheduleDao.update(riderSchedule);
-        return this.queryById(riderSchedule.getId());
+        return this.queryById(riderSchedule.getScheduleId());
     }
 
     /**

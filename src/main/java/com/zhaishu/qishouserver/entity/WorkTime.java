@@ -24,11 +24,11 @@ public class WorkTime implements Serializable {
     /**
      * 时段开始时间
      */
-    private Date startTime;
+    private long startTime;
     /**
      * 时段结束时间
      */
-    private Date endTime;
+    private long endTime;
     
     private Date createTime;
     
@@ -63,19 +63,19 @@ public class WorkTime implements Serializable {
         this.dateId = dateId;
     }
 
-    public Date getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 

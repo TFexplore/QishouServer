@@ -1,8 +1,12 @@
 package com.zhaishu.qishouserver.service;
 
+import com.zhaishu.qishouserver.Vo.DateVo;
 import com.zhaishu.qishouserver.entity.RiderCalendar;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
 
 /**
  * 骑手日历表(RiderCalendar)表服务接口
@@ -12,22 +16,13 @@ import org.springframework.data.domain.PageRequest;
  */
 public interface RiderCalendarService {
 
-    /**
-     * 通过ID查询单条数据
-     *
-     * @param id 主键
-     * @return 实例对象
-     */
+
+    List<DateVo> getCalendars(RiderCalendar riderCalendar, Integer limit, Integer offset);
+
     RiderCalendar queryById(Integer id);
 
-    /**
-     * 分页查询
-     *
-     * @param riderCalendar 筛选条件
-     * @param pageRequest      分页对象
-     * @return 查询结果
-     */
-    Page<RiderCalendar> queryByPage(RiderCalendar riderCalendar, PageRequest pageRequest);
+
+    List<RiderCalendar> queryByPage(@Param("c") RiderCalendar riderCalendar, Integer limit, Integer offset);
 
     /**
      * 新增数据

@@ -2,6 +2,7 @@ package com.zhaishu.qishouserver.controller;
 
 import com.zhaishu.qishouserver.entity.RejectRecord;
 import com.zhaishu.qishouserver.service.RejectRecordService;
+import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("rejectRecord")
+@Api(tags = "拒接与超时记录表", description = "")
 public class RejectRecordController {
     /**
      * 服务对象

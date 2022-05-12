@@ -3,14 +3,12 @@ package com.zhaishu.qishouserver.service.impl;
 import com.zhaishu.qishouserver.entity.Employee;
 import com.zhaishu.qishouserver.dao.EmployeeDao;
 import com.zhaishu.qishouserver.service.EmployeeService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 import javax.annotation.Resource;
-import java.util.zip.DataFormatException;
+import java.util.List;
 
 /**
  * 员工信息表(Employee)表服务实现类
@@ -27,6 +25,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         return this.employeeDao.updateTypeByTel(type,tel);
     }
 
+
+    @Override
+    public int countAdmin(){
+
+        return this.employeeDao.countAdmin();
+    }
+    @Override
+    public int countAdminByStatus(Integer status){
+        return employeeDao.countAdminByStatus(status);
+    }
+    @Override
+    public int countAdminbyType(Integer type){
+        return employeeDao.countAdminbyType(type);
+    }
     /**
      * 新增数据
      *
@@ -53,33 +65,50 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return this.employeeDao.queryByTel(tel);
     }
-
-    /**
-     * 通过ID查询单条数据
-     *
-     * @param id 主键
-     * @return 实例对象
-     */
-
     @Override
     public Employee queryById(Integer id) {
         return this.employeeDao.queryById(id);
     }
 
+    @Override
+    public Employee queryByType(int type){
+        return this.employeeDao.queryByType(type);
+    }
+    @Override
+    public Employee queryByName(String name){
+        return this.employeeDao.queryByName(name);
+    }
+
     /**
      * 分页查询
      *
-     * @param employee 筛选条件
-     * @param pageRequest      分页对象
+     * @param
+     * @param
      * @return 查询结果
      */
     @Override
-    public Page<Employee> queryByPage(Employee employee, PageRequest pageRequest) {
-        long total = this.employeeDao.count();
-        return new PageImpl<>(this.employeeDao.queryAllByLimit(employee, pageRequest), pageRequest, total);
+    public List<Employee> queryAdminByPage(int offset, int limit) {
+        return employeeDao.queryAdminByLimit(offset,limit);
     }
+    @Override
+   public List<Employee> queryAdminByStatus(int status,int offset, int limit){
 
+        return employeeDao.queryAdminByStatus(status,offset,limit);
+   }
+   @Override
+   public List<Employee> queryAdminByType(int type, int offset, int limit){
 
+        return employeeDao.queryAdminByType(type,offset,limit);
+    }
+   @Override
+   public List<Employee> queryByMap(Employee employee, int offset, int limit){
+
+        return this.employeeDao.queryByMap(offset,limit,employee);
+    }
+    @Override
+    public int countMap(@Param("employee") Employee employee){
+        return this.employeeDao.countMap(employee);
+    }
 
     /**
      * 修改数据

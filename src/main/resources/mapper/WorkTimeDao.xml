@@ -19,7 +19,17 @@
         select
           id, worktime_id, date_id, start_time, end_time, create_time, create_by, update_time, update_by
         from work_time
-        where id = #{id}
+        where worktime_id = #{id}
+    </select>
+    <select id="queryByMap" resultMap="WorkTimeMap">
+        select
+            id, worktime_id, date_id, start_time, end_time, create_time, create_by, update_time, update_by
+        from work_time
+        where  (start_time <![CDATA[<= ]]> #{endTime} and end_time >= #{endTime}) or (start_time <![CDATA[<= ]]> #{startTime} and end_time >= #{startTime}) or (start_time >= #{startTime} and end_time <![CDATA[<= ]]> #{endTime})
+
+    </select>
+    <select id="getNextId" resultType="java.lang.Integer">
+        select max(worktime_id) from work_time where  date_id = #{dateId}
     </select>
 
     <!--查询指定行数据-->
@@ -154,12 +164,12 @@
                 update_by = #{updateBy},
             </if>
         </set>
-        where id = #{id}
+        where worktime_id = #{worktimeId}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from work_time where id = #{id}
+        delete from work_time where worktime_id = #{worktimeId}
     </delete>
 
 </mapper>

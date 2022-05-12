@@ -1,14 +1,13 @@
 package com.zhaishu.qishouserver.service.impl;
 
+import com.zhaishu.qishouserver.Vo.DateVo;
 import com.zhaishu.qishouserver.entity.RiderCalendar;
 import com.zhaishu.qishouserver.dao.RiderCalendarDao;
 import com.zhaishu.qishouserver.service.RiderCalendarService;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 骑手日历表(RiderCalendar)表服务实现类
@@ -21,12 +20,13 @@ public class RiderCalendarServiceImpl implements RiderCalendarService {
     @Resource
     private RiderCalendarDao riderCalendarDao;
 
-    /**
-     * 通过ID查询单条数据
-     *
-     * @param id 主键
-     * @return 实例对象
-     */
+    @Override
+    public List<DateVo> getCalendars(RiderCalendar riderCalendar, Integer limit, Integer offset){
+
+        return riderCalendarDao.getCalendars(riderCalendar,limit,offset);
+    }
+
+
     @Override
     public RiderCalendar queryById(Integer id) {
         return this.riderCalendarDao.queryById(id);
@@ -36,13 +36,12 @@ public class RiderCalendarServiceImpl implements RiderCalendarService {
      * 分页查询
      *
      * @param riderCalendar 筛选条件
-     * @param pageRequest      分页对象
      * @return 查询结果
      */
     @Override
-    public Page<RiderCalendar> queryByPage(RiderCalendar riderCalendar, PageRequest pageRequest) {
-        long total = this.riderCalendarDao.count(riderCalendar);
-        return new PageImpl<>(this.riderCalendarDao.queryAllByLimit(riderCalendar, pageRequest), pageRequest, total);
+    public List<RiderCalendar> queryByPage(RiderCalendar riderCalendar,  Integer limit,Integer offset) {
+
+        return this.riderCalendarDao.queryAllByLimit(riderCalendar,limit,offset);
     }
 
     /**

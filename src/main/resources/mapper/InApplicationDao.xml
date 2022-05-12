@@ -15,13 +15,19 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
     </resultMap>
-
+    <!--查询单个-->
+    <select id="queryByEmployeeId" resultMap="InApplicationMap">
+        select
+            id, employee_id, apply_rider_type, apply_time, check_content, check_state, is_delete, create_time, create_by, update_time, update_by
+        from in_application
+        where employee_id = #{id}
+    </select>
     <!--查询单个-->
     <select id="queryById" resultMap="InApplicationMap">
         select
           id, employee_id, apply_rider_type, apply_time, check_content, check_state, is_delete, create_time, create_by, update_time, update_by
         from in_application
-        where id = #{id}
+        where employee_id = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -176,7 +182,7 @@
                 update_by = #{updateBy},
             </if>
         </set>
-        where id = #{id}
+        where employee_id = #{employeeId}
     </update>
 
     <!--通过主键删除-->

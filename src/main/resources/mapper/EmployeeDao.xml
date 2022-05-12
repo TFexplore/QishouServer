@@ -29,87 +29,123 @@
     <!--查询单个-->
     <select id="queryById" resultMap="EmployeeMap">
         select
-          id, employee_id, name, id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by
+          id, employee_id, name, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
         from employee
-        where id = #{id}
+        where employee_id = #{id}
     </select>
-    <!--查询单个 tel-->
+    <select id="queryByMap"  resultMap="EmployeeMap">
+    select  id, employee_id, name, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
+    from employee
+    <where>
+        <if test="employee.employeeId != null">
+            and employee_id = #{employee.employeeId}
+        </if>
+        <if test="employee.name != null and employee.name != ''">
+            and name = #{employee.name}
+        </if>
+        <if test="employee.idCard != null and employee.idCard != ''">
+            and id_card = #{employee.idCard}
+        </if>
+        <if test="employee.phoneNum != null and employee.phoneNum != ''">
+            and phone_num = #{employee.phoneNum}
+        </if>
+        <if test="employee.sex != null">
+            and sex = #{employee.sex}
+        </if>
+        <if test="employee.employeeType != null">
+            and employee_type = #{employee.employeeType}
+        </if>
+
+        <if test="employee.isDelete != null">
+            and is_delete = #{employee.isDelete}
+        </if>
+    </where>
+    limit #{offset},#{limit}
+    </select>
+    <select id="countMap"  resultType="int">
+        select count(*)
+        from employee
+        <where>
+            <if test="employee.employeeId != null">
+                and employee_id = #{employee.employeeId}
+            </if>
+            <if test="employee.name != null and employee.name != ''">
+                and name = #{employee.name}
+            </if>
+            <if test="employee.idCard != null and employee.idCard != ''">
+                and id_card = #{employee.idCard}
+            </if>
+            <if test="employee.phoneNum != null and employee.phoneNum != ''">
+                and phone_num = #{employee.phoneNum}
+            </if>
+            <if test="employee.sex != null">
+                and sex = #{employee.sex}
+            </if>
+            <if test="employee.employeeType != null">
+                and employee_type = #{employee.employeeType}
+            </if>
+
+            <if test="employee.isDelete != null">
+                and is_delete = #{employee.isDelete}
+            </if>
+        </where>
+    </select>
+    <select id="queryByType" resultMap="EmployeeMap">
+        select
+            id, employee_id, name, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by
+        from employee
+        where employee_type = #{type}
+    </select>
     <select id="queryByTel" resultMap="EmployeeMap">
         select
-        id, employee_id, name, id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by
+        id, employee_id, name,password, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
         from employee
         where phone_num = #{tel}
     </select>
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="EmployeeMap">
+    <select id="queryByName" resultMap="EmployeeMap">
         select
-          id, employee_id, name, id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by
+            id, employee_id, name, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
         from employee
-        <where>
-            <if test="id != null">
-                and id = #{id}
-            </if>
-            <if test="employeeId != null">
-                and employee_id = #{employeeId}
-            </if>
-            <if test="name != null and name != ''">
-                and name = #{name}
-            </if>
-            <if test="idCard != null and idCard != ''">
-                and id_card = #{idCard}
-            </if>
-            <if test="phoneNum != null and phoneNum != ''">
-                and phone_num = #{phoneNum}
-            </if>
-            <if test="password != null and password != ''">
-                and password = #{password}
-            </if>
-            <if test="sex != null">
-                and sex = #{sex}
-            </if>
-            <if test="avatar != null and avatar != ''">
-                and avatar = #{avatar}
-            </if>
-            <if test="frontIdCard != null and frontIdCard != ''">
-                and front_id_card = #{frontIdCard}
-            </if>
-            <if test="behindIdCard != null and behindIdCard != ''">
-                and behind_id_card = #{behindIdCard}
-            </if>
-            <if test="holdingIdCard != null and holdingIdCard != ''">
-                and holding_id_card = #{holdingIdCard}
-            </if>
-            <if test="employeeType != null">
-                and employee_type = #{employeeType}
-            </if>
-            <if test="sarlaryLevel != null">
-                and sarlary_level = #{sarlaryLevel}
-            </if>
-            <if test="isDelete != null">
-                and is_delete = #{isDelete}
-            </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
-            </if>
-            <if test="createBy != null">
-                and create_by = #{createBy}
-            </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
-            </if>
-            <if test="updateBy != null">
-                and update_by = #{updateBy}
-            </if>
-        </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
+        where name = #{name}
+    </select>
+    <!--查询指定行数据-->
+    <select id="queryAdminByLimit" resultMap="EmployeeMap">
+        select
+          id, employee_id, name, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
+        from employee where employee_type  between 1 and  5
+        limit #{offset},#{limit}
+    </select>
+    <select id="queryAdminByStatus" resultMap="EmployeeMap">
+        select
+            id, employee_id, name, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
+        from employee where (employee_type  between 1 and  5) and (is_delete = #{status})
+            limit #{offset},#{limit}
     </select>
 
+    <select id="queryAdminByType" resultMap="EmployeeMap">
+        select
+            id, employee_id, name, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by
+        from employee where employee_type = #{type}
+            limit #{offset},#{limit}
+    </select>
     <!--统计总行数-->
     <select id="count" resultType="int">
         select count(1)
         from employee
     </select>
-
+    <!--统计总行数-->
+    <select id="countAdmin" resultType="int">
+        select count(*)
+        from employee where employee_type  between 1 and  5
+    </select>
+    <select id="countAdminByStatus" resultType="int">
+        select count(*)
+        from employee where (employee_type  between 1 and  5) and is_delete = #{status}
+    </select>
+    <select id="countAdminbyType" resultType="int">
+        select count(*)
+        from employee where employee_type  = #{type}
+    </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into employee(employee_id,name, id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by)
@@ -150,13 +186,10 @@
         update_by = values(update_by)
     </insert>
 
-    <!--通过主键修改数据-->
+    <!--通过tel修改数据-->
     <update id="update">
         update employee
         <set>
-            <if test="employeeId != null">
-                employee_id = #{employeeId},
-            </if>
             <if test="name != null and name != ''">
                 name = #{name},
             </if>
@@ -206,16 +239,15 @@
                 update_by = #{updateBy},
             </if>
         </set>
-        where id = #{id}
+        where employee_id = #{employeeId}
     </update>
     <update id="updateTypeByTel">
         update employee set employee_type = #{type} where  phone_num = #{tel}
-
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from employee where id = #{id}
+        delete from employee where employee_id = #{id}
     </delete>
 
 </mapper>

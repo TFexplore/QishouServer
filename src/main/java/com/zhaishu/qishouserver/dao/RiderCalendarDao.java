@@ -1,5 +1,6 @@
 package com.zhaishu.qishouserver.dao;
 
+import com.zhaishu.qishouserver.Vo.DateVo;
 import com.zhaishu.qishouserver.entity.RiderCalendar;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -13,22 +14,12 @@ import java.util.List;
  */
 public interface RiderCalendarDao {
 
-    /**
-     * 通过ID查询单条数据
-     *
-     * @param id 主键
-     * @return 实例对象
-     */
+    List<DateVo> getCalendars(@Param("c") RiderCalendar riderCalendar, Integer limit,Integer offset);
+
     RiderCalendar queryById(Integer id);
 
-    /**
-     * 查询指定行数据
-     *
-     * @param riderCalendar 查询条件
-     * @param pageable         分页对象
-     * @return 对象列表
-     */
-    List<RiderCalendar> queryAllByLimit(RiderCalendar riderCalendar, @Param("pageable") Pageable pageable);
+
+    List<RiderCalendar> queryAllByLimit(@Param("c") RiderCalendar riderCalendar, Integer limit,Integer offset);
 
     /**
      * 统计总行数

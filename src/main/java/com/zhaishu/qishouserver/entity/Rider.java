@@ -1,5 +1,9 @@
 package com.zhaishu.qishouserver.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.NonNull;
+
 import java.util.Date;
 import java.io.Serializable;
 
@@ -9,6 +13,7 @@ import java.io.Serializable;
  * @author makejava
  * @since 2022-04-18 19:22:41
  */
+@Data
 public class Rider{
 
     /**
@@ -18,32 +23,43 @@ public class Rider{
     /**
      * 骑手继承员工，使用员工ID
      */
+    @NonNull
+    @ApiModelProperty(value = "骑手继承员工，使用员工ID")
     private Integer employeeId;
     /**
      * 骑手类型，未审核成功为0
      */
+    @NonNull
+    @ApiModelProperty(value = "骑手类型，未审核成功为0,")
     private Integer riderType;
     /**
      * 学校位置编号
      */
+    @NonNull
+    @ApiModelProperty(value = "学校位置编号")
     private Integer locationId;
     /**
      * 申请注册时间
      */
+    @ApiModelProperty(value = "申请注册时间")
     private Date registTime;
     /**
      * 审核注册时间
      */
+    @ApiModelProperty(value = "审核注册时间")
     private Date checkTime;
     /**
      * 审核人ID
      */
+    @ApiModelProperty(value = "审核人ID")
     private String hr;
     /**
      * 骑手邀请码
      */
+    @ApiModelProperty(value = "骑手邀请码")
     private Integer invitationCode;
-    
+
+    @ApiModelProperty(value = "骑手状态")
     private Integer isDelete;
     
     private Date createTime;
@@ -54,6 +70,15 @@ public class Rider{
     
     private Integer updateBy;
 
+    public Rider() {
+
+    }
+
+    public Rider(@NonNull Integer employeeId, @NonNull Integer riderType, @NonNull Integer locationId) {
+        this.employeeId = employeeId;
+        this.riderType = riderType;
+        this.locationId = locationId;
+    }
 
     public Integer getId() {
         return id;

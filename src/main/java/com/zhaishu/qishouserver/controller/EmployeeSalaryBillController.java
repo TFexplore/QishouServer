@@ -2,6 +2,7 @@ package com.zhaishu.qishouserver.controller;
 
 import com.zhaishu.qishouserver.entity.EmployeeSalaryBill;
 import com.zhaishu.qishouserver.service.EmployeeSalaryBillService;
+import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("employeeSalaryBill")
+@Api(tags = "员工薪资表", description = "")
 public class EmployeeSalaryBillController {
     /**
      * 服务对象

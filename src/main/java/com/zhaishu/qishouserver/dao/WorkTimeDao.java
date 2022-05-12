@@ -13,6 +13,9 @@ import java.util.List;
  */
 public interface WorkTimeDao {
 
+    WorkTime queryByMap(WorkTime workTime);
+    Integer getNextId(Integer dateId);
+
     /**
      * 通过ID查询单条数据
      *

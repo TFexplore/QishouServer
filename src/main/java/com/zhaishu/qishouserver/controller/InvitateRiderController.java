@@ -2,6 +2,7 @@ package com.zhaishu.qishouserver.controller;
 
 import com.zhaishu.qishouserver.entity.InvitateRider;
 import com.zhaishu.qishouserver.service.InvitateRiderService;
+import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("invitateRider")
+@Api(tags = "邀请表", description = "")
 public class InvitateRiderController {
     /**
      * 服务对象

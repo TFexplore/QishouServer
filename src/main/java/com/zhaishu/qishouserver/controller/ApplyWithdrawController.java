@@ -2,6 +2,7 @@ package com.zhaishu.qishouserver.controller;
 
 import com.zhaishu.qishouserver.entity.ApplyWithdraw;
 import com.zhaishu.qishouserver.service.ApplyWithdrawService;
+import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("applyWithdraw")
+@Api(tags = "提现申请表", description = "提现申请表")
 public class ApplyWithdrawController {
     /**
      * 服务对象

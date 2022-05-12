@@ -2,6 +2,7 @@ package com.zhaishu.qishouserver.controller;
 
 import com.zhaishu.qishouserver.entity.WorkTime;
 import com.zhaishu.qishouserver.service.WorkTimeService;
+import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("workTime")
+@Api(tags = "工作时段表", description = "")
 public class WorkTimeController {
     /**
      * 服务对象
@@ -47,16 +49,6 @@ public class WorkTimeController {
         return ResponseEntity.ok(this.workTimeService.queryById(id));
     }
 
-    /**
-     * 新增数据
-     *
-     * @param workTime 实体
-     * @return 新增结果
-     */
-    @PostMapping
-    public ResponseEntity<WorkTime> add(WorkTime workTime) {
-        return ResponseEntity.ok(this.workTimeService.insert(workTime));
-    }
 
     /**
      * 编辑数据

@@ -73,6 +73,34 @@ create unique index employee_id on rider
     (
      employee_id
         );
+/*==============================================================*/
+/* Table: in_application                                        */
+/*==============================================================*/
+create table in_application
+(
+    id                   int(10) not null comment '递增ID',
+    employee_id          int(6) comment '工号',
+    apply_rider_type     tinyint(1) comment '申请骑手类型',
+    apply_time           datetime comment '申请时间',
+    check_content        varchar(500) comment '审核不通过原因',
+    check_state          tinyint(1) comment '审核状态',
+    is_delete            tinyint(1),
+    create_time          datetime,
+    create_by            int(6),
+    update_time          datetime,
+    update_by            int(6),
+    primary key (id)
+);
+
+alter table in_application comment '入职申请表';
+
+/*==============================================================*/
+/* Index: employee_id                                           */
+/*==============================================================*/
+create unique index employee_id on in_application
+    (
+     employee_id
+        );
 
 create table reject_record
 (
@@ -376,34 +404,6 @@ create unique index employee_id on employee_wallet
    employee_id
 );
 
-/*==============================================================*/
-/* Table: in_application                                        */
-/*==============================================================*/
-create table in_application
-(
-   id                   int(10) not null comment '递增ID',
-   employee_id          int(6) comment '工号',
-   apply_rider_type     tinyint(1) comment '申请骑手类型',
-   apply_time           datetime comment '申请时间',
-   check_content        varchar(500) comment '审核不通过原因',
-   check_state          tinyint(1) comment '审核状态',
-   is_delete            tinyint(1),
-   create_time          datetime,
-   create_by            int(6),
-   update_time          datetime,
-   update_by            int(6),
-   primary key (id)
-);
-
-alter table in_application comment '入职申请表';
-
-/*==============================================================*/
-/* Index: employee_id                                           */
-/*==============================================================*/
-create unique index employee_id on in_application
-(
-   employee_id
-);
 
 /*==============================================================*/
 /* Table: inform                                                */
@@ -489,75 +489,7 @@ create table receipt_of_transfer
 alter table receipt_of_transfer comment '转账回执单';
 
 
-/*==============================================================*/
-/* Table: rider_calendar                                        */
-/*==============================================================*/
-create table rider_calendar
-(
-   id                   int(10) not null comment '自增id',
-   date_id              int(8) comment '日期编号',
-   date_type            tinyint(1) comment '日期类型',
-   is_delete            tinyint(1),
-   create_time          datetime,
-   create_by            int(6),
-   update_time          datetime,
-   update_by            int(6),
-   primary key (id)
-);
 
-alter table rider_calendar comment '骑手日历表';
-
-/*==============================================================*/
-/* Index: date_id                                               */
-/*==============================================================*/
-create index date_id on rider_calendar
-(
-   date_id
-);
-
-/*==============================================================*/
-/* Table: rider_schedule                                        */
-/*==============================================================*/
-create table rider_schedule
-(
-   id                   int(10) not null comment '自增id',
-   schedule_id          int(19) comment '排班编号',
-   worktime_id          int(19) comment '工作时段编号',
-   employee_id          int(6),
-   work_start_time      datetime comment '骑手实际上班开始时间',
-   work_end_time        datetime comment '骑手实际上班结束时间',
-   create_time          datetime,
-   create_by            int(6),
-   update_time          datetime,
-   update_by            int(6),
-   primary key (id)
-);
-
-alter table rider_schedule comment '骑手排班表';
-
-/*==============================================================*/
-/* Index: employee_id                                           */
-/*==============================================================*/
-create index employee_id on rider_schedule
-(
-   employee_id
-);
-
-/*==============================================================*/
-/* Index: worktime_id                                           */
-/*==============================================================*/
-create index worktime_id on rider_schedule
-(
-   worktime_id
-);
-
-/*==============================================================*/
-/* Index: schedule_id                                           */
-/*==============================================================*/
-create index schedule_id on rider_schedule
-(
-   schedule_id
-);
 
 /*==============================================================*/
 /* Table: salary_level                                          */
@@ -640,3 +572,72 @@ create unique index worktime_id on work_time
    worktime_id
 );
 
+/*==============================================================*/
+/* Table: rider_calendar                                        */
+/*==============================================================*/
+create table rider_calendar
+(
+    id                   int(10) not null comment '自增id',
+    date_id              int(8) comment '日期编号',
+    date_type            tinyint(1) comment '日期类型',
+    is_delete            tinyint(1),
+    create_time          datetime,
+    create_by            int(6),
+    update_time          datetime,
+    update_by            int(6),
+    primary key (id)
+);
+
+alter table rider_calendar comment '骑手日历表';
+
+/*==============================================================*/
+/* Index: date_id                                               */
+/*==============================================================*/
+create index date_id on rider_calendar
+    (
+     date_id
+        );
+
+/*==============================================================*/
+/* Table: rider_schedule                                        */
+/*==============================================================*/
+create table rider_schedule
+(
+    id                   int(10) not null comment '自增id',
+    schedule_id          int(19) comment '排班编号',
+    worktime_id          int(19) comment '工作时段编号',
+    employee_id          int(6),
+    work_start_time      datetime comment '骑手实际上班开始时间',
+    work_end_time        datetime comment '骑手实际上班结束时间',
+    create_time          datetime,
+    create_by            int(6),
+    update_time          datetime,
+    update_by            int(6),
+    primary key (id)
+);
+
+alter table rider_schedule comment '骑手排班表';
+
+/*==============================================================*/
+/* Index: employee_id                                           */
+/*==============================================================*/
+create index employee_id on rider_schedule
+    (
+     employee_id
+        );
+
+/*==============================================================*/
+/* Index: worktime_id                                           */
+/*==============================================================*/
+create index worktime_id on rider_schedule
+    (
+     worktime_id
+        );
+
+/*==============================================================*/
+/* Index: schedule_id                                           */
+/*==============================================================*/
+create index schedule_id on rider_schedule
+    (
+     schedule_id
+        );

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.TApartmentDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.TApartment" id="TApartmentMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="storageId" column="storage_id" jdbcType="INTEGER"/>
+        <result property="tname" column="tname" jdbcType="VARCHAR"/>
+        <result property="info" column="info" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="toDownstairs" column="to_downstairs" jdbcType="INTEGER"/>
+        <result property="apartType" column="apart_type" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TApartmentMap">
+        select
+          id, storage_id, tname, info, status, to_downstairs, apart_type
+        from t_apartment
+        where id = #{id}
+    </select>
+    <select id="getAll" resultMap="TApartmentMap">
+        select
+            id,tname, info, status, to_downstairs, apart_type
+        from t_apartment
+    </select>
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TApartmentMap">
+        select
+          id, storage_id, tname, info, status, to_downstairs, apart_type
+        from t_apartment
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="storageId != null">
+                and storage_id = #{storageId}
+            </if>
+            <if test="tname != null and tname != ''">
+                and tname = #{tname}
+            </if>
+            <if test="info != null and info != ''">
+                and info = #{info}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="toDownstairs != null">
+                and to_downstairs = #{toDownstairs}
+            </if>
+            <if test="apartType != null">
+                and apart_type = #{apartType}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from t_apartment
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="storageId != null">
+                and storage_id = #{storageId}
+            </if>
+            <if test="tname != null and tname != ''">
+                and tname = #{tname}
+            </if>
+            <if test="info != null and info != ''">
+                and info = #{info}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="toDownstairs != null">
+                and to_downstairs = #{toDownstairs}
+            </if>
+            <if test="apartType != null">
+                and apart_type = #{apartType}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into t_apartment(storage_id, tname, info, status, to_downstairs, apart_type)
+        values (#{storageId}, #{tname}, #{info}, #{status}, #{toDownstairs}, #{apartType})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into t_apartment(storage_id, tname, info, status, to_downstairs, apart_type)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.storageId}, #{entity.tname}, #{entity.info}, #{entity.status}, #{entity.toDownstairs}, #{entity.apartType})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into t_apartment(storage_id, tname, info, status, to_downstairs, apart_type)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.storageId}, #{entity.tname}, #{entity.info}, #{entity.status}, #{entity.toDownstairs}, #{entity.apartType})
+        </foreach>
+        on duplicate key update
+        storage_id = values(storage_id),
+        tname = values(tname),
+        info = values(info),
+        status = values(status),
+        to_downstairs = values(to_downstairs),
+        apart_type = values(apart_type)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_apartment
+        <set>
+            <if test="storageId != null">
+                storage_id = #{storageId},
+            </if>
+            <if test="tname != null and tname != ''">
+                tname = #{tname},
+            </if>
+            <if test="info != null and info != ''">
+                info = #{info},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="toDownstairs != null">
+                to_downstairs = #{toDownstairs},
+            </if>
+            <if test="apartType != null">
+                apart_type = #{apartType},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from t_apartment where id = #{id}
+    </delete>
+
+</mapper>
+

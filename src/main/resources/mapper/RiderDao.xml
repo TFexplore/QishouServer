@@ -18,18 +18,339 @@
         <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
     </resultMap>
 
-    <!--查询单个-->
-    <select id="queryById" resultMap="RiderMap">
-        select
-          id, employee_id, rider_type, location_id, regist_time, check_time, hr, invitation_code, is_delete, create_time, create_by, update_time, update_by
-        from rider
-        where id = #{id}
+    <resultMap type="com.zhaishu.qishouserver.Vo.RiderVo" id="RiderVoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="riderType" column="employee_type" jdbcType="INTEGER"/>
+        <result property="locationId" column="location_id" jdbcType="INTEGER"/>
+        <result property="registTime" column="regist_time" jdbcType="TIMESTAMP"/>
+        <result property="checkTime" column="check_time" jdbcType="TIMESTAMP"/>
+        <result property="hr" column="hr" jdbcType="VARCHAR"/>
+        <result property="invitationCode" column="invitation_code" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="location_note" column="tname" jdbcType="VARCHAR"/>
+        <result property="phoneNum" column="phone_num" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="frontIdCard" column="front_id_card" jdbcType="VARCHAR"/>
+        <result property="behindIdCard" column="behind_id_card" jdbcType="VARCHAR"/>
+        <result property="holdingIdCard" column="holding_id_card" jdbcType="VARCHAR"/>
+        <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap type="com.zhaishu.qishouserver.Vo.RiderVo" id="RiderISVoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="locationId" column="location_id" jdbcType="INTEGER"/>
+
+        <result property="hr" column="hr" jdbcType="VARCHAR"/>
+        <result property="invitationCode" column="invitation_code" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+
+        <result property="checkTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="riderType" column="employee_type" jdbcType="INTEGER"/>
+        <result property="registTime" column="apply_time" jdbcType="TIMESTAMP"/>
+        <result property="checkState" column="check_state" jdbcType="INTEGER"/>
+        <result property="location_note" column="tname" jdbcType="VARCHAR"/>
+        <result property="checkContent" column="check_content" jdbcType="VARCHAR"/>
+
+        <result property="phoneNum" column="phone_num" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="frontIdCard" column="front_id_card" jdbcType="VARCHAR"/>
+        <result property="behindIdCard" column="behind_id_card" jdbcType="VARCHAR"/>
+        <result property="holdingIdCard" column="holding_id_card" jdbcType="VARCHAR"/>
+        <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="getRiderById" resultMap="RiderVoMap">
+        select r.employee_id, r.location_id,r.regist_time, r.check_time, r.hr, r.invitation_code,
+        e.name,e.phone_num,e.sex,e.avatar,e.front_id_card,e.behind_id_card,e.holding_id_card,e.id_card,e.employee_type,e.is_delete,
+        t.tname
+        from rider r ,employee e ,t_apartment t
+        where r.employee_id=#{id} and r.employee_id = e.employee_id and r.location_id=t.id
     </select>
 
     <!--查询指定行数据-->
+    <select id="getAllRiders" resultMap="RiderVoMap">
+        select r.employee_id, r.location_id,r.regist_time, r.check_time, r.hr, r.invitation_code,
+               e.name,e.phone_num,e.sex,e.employee_type,e.is_delete, e.front_id_card, e.behind_id_card, e.holding_id_card, e.id_card,e.avatar,
+               s.check_content,
+               t.tname
+        from (rider r,employee e,t_apartment t) left join separation_application s on r.employee_id = s.employee_id
+        <where>
+            r.employee_id = e.employee_id and t.id = r.location_id and r.rider_type != 0
+            <if test="rider.employeeId != null">
+                and r.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.riderType != null">
+                and r.rider_type = #{rider.riderType}
+            </if>
+            <if test="rider.locationId != null">
+                and r.location_id = #{rider.locationId}
+            </if>
+            <if test="rider.registTime != null or rider.checkTime != null">
+                and r.regist_time >= #{rider.registTime}
+            </if>
+            <if test="rider.checkTime != null">
+                and r.regist_time <![CDATA[<= ]]> #{rider.checkTime}
+            </if>
+            <if test="rider.hr != null and rider.hr != ''">
+                and r.hr = #{rider.hr}
+            </if>
+            <if test="rider.invitationCode != null">
+                and r.invitation_code = #{rider.invitationCode}
+            </if>
+            <if test="rider.isDelete != null and rider.isDelete == 0">
+
+                and e.is_delete = #{rider.isDelete}
+            </if>
+             <if test="rider.isDelete != null and rider.isDelete == 1">
+                 and e.is_delete = 1 or e.is_delete = 2
+             </if>
+            <if test="rider.name != null and rider.name != ''">
+                and e.name = #{rider.name}
+            </if>
+            <if test="rider.phoneNum != null and rider.phoneNum != ''">
+                and e.phone_num = #{rider.phoneNum}
+            </if>
+            <if test="rider.sex != null">
+                and e.sex = #{rider.sex}
+            </if>
+        </where>
+            limit #{offset},#{limit}
+    </select>
+    <select id="countAllRiders" resultType="int">
+        select count(1)
+        from rider r ,employee e
+        <where>
+            r.employee_id = e.employee_id and r.rider_type != 0
+            <if test="rider.employeeId != null">
+                and r.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.riderType != null">
+                and r.rider_type = #{rider.riderType}
+            </if>
+            <if test="rider.locationId != null">
+                and r.location_id = #{rider.locationId}
+            </if>
+            <if test="rider.registTime != null or rider.checkTime != null">
+                and r.regist_time >= #{rider.registTime}
+            </if>
+            <if test="rider.checkTime != null">
+                and r.regist_time <![CDATA[<= ]]> #{rider.checkTime}
+            </if>
+            <if test="rider.hr != null and rider.hr != ''">
+                and r.hr = #{rider.hr}
+            </if>
+            <if test="rider.invitationCode != null">
+                and r.invitation_code = #{rider.invitationCode}
+            </if>
+            <if test="rider.isDelete != null and rider.isDelete == 0">
+
+                and e.is_delete = #{rider.isDelete}
+            </if>
+            <if test="rider.isDelete != null and rider.isDelete == 1">
+                and e.is_delete = 1 or e.is_delete = 2
+            </if>
+            <if test="rider.name != null and rider.name != ''">
+                and e.name = #{rider.name}
+            </if>
+            <if test="rider.phoneNum != null and rider.phoneNum != ''">
+                and e.phone_num = #{rider.phoneNum}
+            </if>
+            <if test="rider.sex != null">
+                and e.sex = #{rider.sex}
+            </if>
+        </where>
+    </select>
+    <select id="getAllRidersIn" resultMap="RiderISVoMap">
+        select r.employee_id, r.location_id, r.hr, r.invitation_code,
+               e.name,e.phone_num,e.sex,e.employee_type,e.is_delete, e.front_id_card, e.behind_id_card, e.holding_id_card, e.id_card,e.avatar,
+               i.apply_time,i.check_state,i.update_time,i.check_content,
+               t.tname
+        from rider r ,employee e ,in_application i,t_apartment t
+        <where>
+            r.employee_id = e.employee_id and r.employee_id=i.employee_id and t.id = r.location_id
+            <if test="rider.employeeId != null">
+                and r.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.riderType != null">
+                and r.rider_type = #{rider.riderType}
+            </if>
+            <if test="rider.locationId != null">
+                and r.location_id = #{rider.locationId}
+            </if>
+            <if test="rider.registTime != null">
+                and i.apply_time >= #{rider.registTime}
+            </if>
+            <if test="rider.checkTime != null">
+                and i.apply_time <![CDATA[<= ]]> #{rider.checkTime}
+            </if>
+            <if test="rider.hr != null and rider.hr != ''">
+                and r.hr = #{rider.hr}
+            </if>
+            <if test="rider.invitationCode != null">
+                and r.invitation_code = #{rider.invitationCode}
+            </if>
+            <if test="rider.isDelete != null">
+                and e.is_delete = #{rider.isDelete}
+            </if>
+            <if test="rider.name != null and rider.name != ''">
+                and e.name = #{rider.name}
+            </if>
+            <if test="rider.phoneNum != null and rider.phoneNum != ''">
+                and e.phone_num = #{rider.phoneNum}
+            </if>
+            <if test="rider.sex != null">
+                and e.sex = #{rider.sex}
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+    <select id="countAllRidersIn" resultType="int">
+        select count(1)
+        from rider r ,employee e ,in_application i
+        <where>
+            r.employee_id = e.employee_id and r.employee_id=i.employee_id
+            <if test="rider.employeeId != null">
+                and r.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.riderType != null">
+                and r.rider_type = #{rider.riderType}
+            </if>
+            <if test="rider.locationId != null">
+                and r.location_id = #{rider.locationId}
+            </if>
+            <if test="rider.registTime != null">
+                and i.apply_time >= #{rider.registTime}
+            </if>
+            <if test="rider.checkTime != null">
+                and i.apply_time <![CDATA[<= ]]> #{rider.checkTime}
+            </if>
+            <if test="rider.hr != null and rider.hr != ''">
+                and r.hr = #{rider.hr}
+            </if>
+            <if test="rider.invitationCode != null">
+                and r.invitation_code = #{rider.invitationCode}
+            </if>
+            <if test="rider.isDelete != null">
+                and e.is_delete = #{rider.isDelete}
+            </if>
+            <if test="rider.name != null and rider.name != ''">
+                and e.name = #{rider.name}
+            </if>
+            <if test="rider.phoneNum != null and rider.phoneNum != ''">
+                and e.phone_num = #{rider.phoneNum}
+            </if>
+            <if test="rider.sex != null">
+                and e.sex = #{rider.sex}
+            </if>
+        </where>
+    </select>
+    <select id="getAllRidersSe" resultMap="RiderISVoMap">
+        select r.employee_id, r.location_id,r.hr, r.invitation_code,
+               e.name,e.phone_num,e.sex,e.employee_type,e.is_delete, e.front_id_card, e.behind_id_card, e.holding_id_card, e.id_card,e.avatar,
+               s.apply_time ,s.check_state,s.update_time,s.check_content,
+               t.tname
+        from rider r ,employee e ,separation_application s,t_apartment t
+        <where>
+            r.employee_id = e.employee_id and r.employee_id=s.employee_id and t.id = r.location_id
+            <if test="rider.employeeId != null">
+                and r.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.riderType != null">
+                and r.rider_type = #{rider.riderType}
+            </if>
+            <if test="rider.locationId != null">
+                and r.location_id = #{rider.locationId}
+            </if>
+            <if test="rider.registTime != null">
+                and s.apply_time >= #{rider.registTime}
+            </if>
+            <if test="rider.checkTime != null">
+                and s.apply_time <![CDATA[<= ]]> #{rider.checkTime}
+            </if>
+            <if test="rider.hr != null and rider.hr != ''">
+                and r.hr = #{rider.hr}
+            </if>
+            <if test="rider.invitationCode != null">
+                and r.invitation_code = #{rider.invitationCode}
+            </if>
+            <if test="rider.isDelete != null">
+                and e.is_delete = #{rider.isDelete}
+            </if>
+            <if test="rider.name != null and rider.name != ''">
+                and e.name = #{rider.name}
+            </if>
+            <if test="rider.phoneNum != null and rider.phoneNum != ''">
+                and e.phone_num = #{rider.phoneNum}
+            </if>
+            <if test="rider.sex != null">
+                and e.sex = #{rider.sex}
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+    <select id="countAllRidersSe" resultType="int">
+        select count(1)
+        from rider r ,employee e ,separation_application s
+        <where>
+            r.employee_id = e.employee_id and r.employee_id=s.employee_id
+            <if test="rider.employeeId != null">
+                and r.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.riderType != null">
+                and r.rider_type = #{rider.riderType}
+            </if>
+            <if test="rider.locationId != null">
+                and r.location_id = #{rider.locationId}
+            </if>
+            <if test="rider.registTime != null">
+                and s.apply_time >= #{rider.registTime}
+            </if>
+            <if test="rider.checkTime != null">
+                and s.apply_time <![CDATA[<= ]]> #{rider.checkTime}
+            </if>
+            <if test="rider.hr != null and rider.hr != ''">
+                and r.hr = #{rider.hr}
+            </if>
+            <if test="rider.invitationCode != null">
+                and r.invitation_code = #{rider.invitationCode}
+            </if>
+            <if test="rider.isDelete != null">
+                and e.is_delete = #{rider.isDelete}
+            </if>
+            <if test="rider.name != null and rider.name != ''">
+                and e.name = #{rider.name}
+            </if>
+            <if test="rider.phoneNum != null and rider.phoneNum != ''">
+                and e.phone_num = #{rider.phoneNum}
+            </if>
+            <if test="rider.sex != null">
+                and e.sex = #{rider.sex}
+            </if>
+        </where>
+    </select>
+    <!--查询单个-->
+    <select id="queryById" resultMap="RiderMap">
+        select
+          employee_id, rider_type, location_id, regist_time, check_time, hr, invitation_code, is_delete
+        from rider
+        where employee_id = #{id}
+    </select>
+
     <select id="queryAllByLimit" resultMap="RiderMap">
         select
-          id, employee_id, rider_type, location_id, regist_time, check_time, hr, invitation_code, is_delete, create_time, create_by, update_time, update_by
+          employee_id, rider_type, location_id, regist_time, check_time, hr, invitation_code, is_delete
         from rider
         <where>
             <if test="id != null">
@@ -159,51 +480,63 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update rider
+        update rider r left join employee e
+            on r.employee_id = e.employee_id
         <set>
-            <if test="employeeId != null">
-                employee_id = #{employeeId},
-            </if>
             <if test="riderType != null">
-                rider_type = #{riderType},
+                r.rider_type = #{riderType},
+                e.employee_type=#{riderType},
             </if>
             <if test="locationId != null">
-                location_id = #{locationId},
-            </if>
-            <if test="registTime != null">
-                regist_time = #{registTime},
-            </if>
-            <if test="checkTime != null">
-                check_time = #{checkTime},
-            </if>
-            <if test="hr != null and hr != ''">
-                hr = #{hr},
-            </if>
-            <if test="invitationCode != null">
-                invitation_code = #{invitationCode},
+                r.location_id = #{locationId},
             </if>
             <if test="isDelete != null">
-                is_delete = #{isDelete},
+                r.is_delete = #{isDelete},
+                r.is_delete = #{isDelete},
             </if>
-            <if test="createTime != null">
-                create_time = #{createTime},
+            <if test="hr != null and hr != ''">
+                r.hr = #{hr},
             </if>
-            <if test="createBy != null">
-                create_by = #{createBy},
+            <if test="checkTime != null">
+                r.check_time = #{checkTime},
             </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime},
+            <if test="name != null and name != ''">
+                e.name = #{name},
             </if>
-            <if test="updateBy != null">
-                update_by = #{updateBy},
+            <if test="idCard != null and idCard != ''">
+                e.id_card = #{idCard},
+            </if>
+            <if test="phoneNum != null and phoneNum != ''">
+                e.phone_num = #{phoneNum},
+            </if>
+            <if test="password != null and password != ''">
+                e.password = #{password},
+            </if>
+            <if test="sex != null">
+                e.sex = #{sex},
+            </if>
+            <if test="sarlaryLevel != null">
+                e.sarlary_level = #{sarlaryLevel},
+            </if>
+            <if test="avatar != null and avatar != ''">
+                e.avatar = #{avatar},
+            </if>
+            <if test="frontIdCard != null and frontIdCard != ''">
+                e.front_id_card = #{frontIdCard},
+            </if>
+            <if test="behindIdCard != null and behindIdCard != ''">
+                e.behind_id_card = #{behindIdCard},
+            </if>
+            <if test="holdingIdCard != null and holdingIdCard != ''">
+                e.holding_id_card = #{holdingIdCard},
             </if>
         </set>
-        where id = #{id}
+        where   r.employee_id = #{employeeId}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from rider where id = #{id}
+        delete from rider where employee_id = #{id}
     </delete>
 
 </mapper>

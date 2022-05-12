@@ -20,7 +20,7 @@
         select
           id, employee_id, apply_time, check_content, check_state, is_delete, create_time, create_by, update_time, update_by
         from separation_application
-        where id = #{id}
+        where employee_id = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -165,7 +165,7 @@
                 update_by = #{updateBy},
             </if>
         </set>
-        where id = #{id}
+        where employee_id = #{employeeId}
     </update>
 
     <!--通过主键删除-->

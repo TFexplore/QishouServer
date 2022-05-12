@@ -1,8 +1,11 @@
 package com.zhaishu.qishouserver.service;
 
 import com.zhaishu.qishouserver.entity.Employee;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
 
 /**
  * 员工信息表(Employee)表服务接口
@@ -26,14 +29,25 @@ public interface EmployeeService {
 
     Employee queryByTel(String tel);
 
+    Employee queryByType(int type);
+
+    Employee queryByName(String name);
+
     /**
      * 分页查询
      *
-     * @param employee 筛选条件
-     * @param pageRequest      分页对象
+     * @param
+     * @param
      * @return 查询结果
      */
-    Page<Employee> queryByPage(Employee employee, PageRequest pageRequest);
+    List<Employee> queryAdminByPage(int offset, int limit);
+    List<Employee> queryAdminByStatus(int status,int offset, int limit);
+
+    int countAdmin();
+
+    int countAdminByStatus(Integer status);
+
+    int countAdminbyType(Integer type);
 
     /**
      * 新增数据
@@ -42,6 +56,12 @@ public interface EmployeeService {
      * @return 实例对象
      */
     Employee insert(Employee employee);
+
+    List<Employee> queryAdminByType(int type, int offset, int limit);
+
+    List<Employee> queryByMap(Employee employee, int offset, int limit);
+
+    int countMap(@Param("employee") Employee employee);
 
     /**
      * 修改数据

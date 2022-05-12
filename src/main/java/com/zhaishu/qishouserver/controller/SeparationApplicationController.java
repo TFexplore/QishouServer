@@ -1,7 +1,12 @@
 package com.zhaishu.qishouserver.controller;
 
+import com.zhaishu.qishouserver.common.ResultResponse;
 import com.zhaishu.qishouserver.entity.SeparationApplication;
 import com.zhaishu.qishouserver.service.SeparationApplicationService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +22,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("separationApplication")
+@Api(tags = "离职申请表", description = "离职申请表")
 public class SeparationApplicationController {
     /**
      * 服务对象
@@ -24,6 +30,32 @@ public class SeparationApplicationController {
     @Resource
     private SeparationApplicationService separationApplicationService;
 
+
+    @GetMapping("{id}")
+    @ApiOperation(value = "获取", notes = "获取")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
+    })
+    public ResultResponse queryById(@PathVariable("id") Integer id) {
+        SeparationApplication separationApplication=this.separationApplicationService.queryById(id);
+        if (separationApplication==null){
+            return ResultResponse.error("404","not found");
+        }
+
+        return ResultResponse.resultSuccess(separationApplication);
+    }
+    @PutMapping
+    @ApiOperation(value = "编辑", notes = "编辑 传入id和需要的字段")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
+    })
+    public ResultResponse edit(@RequestBody SeparationApplication separationApplication) {
+        if (separationApplication.getEmployeeId()==null){
+            return ResultResponse.error("400","miss id");
+        }
+        this.separationApplicationService.update(separationApplication);
+        return ResultResponse.resultSuccess("success");
+    }
     /**
      * 分页查询
      *
@@ -36,16 +68,7 @@ public class SeparationApplicationController {
         return ResponseEntity.ok(this.separationApplicationService.queryByPage(separationApplication, pageRequest));
     }
 
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public ResponseEntity<SeparationApplication> queryById(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(this.separationApplicationService.queryById(id));
-    }
+
 
     /**
      * 新增数据
@@ -56,17 +79,6 @@ public class SeparationApplicationController {
     @PostMapping
     public ResponseEntity<SeparationApplication> add(SeparationApplication separationApplication) {
         return ResponseEntity.ok(this.separationApplicationService.insert(separationApplication));
-    }
-
-    /**
-     * 编辑数据
-     *
-     * @param separationApplication 实体
-     * @return 编辑结果
-     */
-    @PutMapping
-    public ResponseEntity<SeparationApplication> edit(SeparationApplication separationApplication) {
-        return ResponseEntity.ok(this.separationApplicationService.update(separationApplication));
     }
 
     /**

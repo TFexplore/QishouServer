@@ -1,5 +1,7 @@
 package com.zhaishu.qishouserver.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 import java.io.Serializable;
 
@@ -15,23 +17,28 @@ public class EmployeeWallet implements Serializable {
      * 自增id
      */
     private Integer id;
-    
+
+    @ApiModelProperty(value = "工号")
     private Integer employeeId;
     /**
      * 余额
      */
+    @ApiModelProperty(value = "余额")
     private Double balance;
     /**
      * 单独的6位支付密码
      */
+    @ApiModelProperty(value = "单独的6位支付密码")
     private String password;
     /**
      * 微信ID
      */
+    @ApiModelProperty(value = "微信ID")
     private String weixinId;
     /**
      * 支付宝ID
      */
+    @ApiModelProperty(value = "支付宝ID")
     private String alipay;
     
     private Integer isDelete;

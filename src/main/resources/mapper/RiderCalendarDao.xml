@@ -13,46 +13,84 @@
         <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="CalendarVoMap" type="com.zhaishu.qishouserver.Vo.DateVo">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="dateId" column="date_id" jdbcType="INTEGER"/>
+        <result property="dateType" column="date_type" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <collection property="workTimes" javaType="java.util.ArrayList"
+                    column="{dateId=date_id}"
+                    ofType="wrokTime" select="getWorkTimes"/>
+
+
+    </resultMap>
+
+    <resultMap id="workTime" type="com.zhaishu.qishouserver.entity.WorkTime">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="worktimeId" column="worktime_id" jdbcType="INTEGER"/>
+        <result property="dateId" column="date_id" jdbcType="INTEGER"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+    <select id="getWorkTimes" resultMap="workTime">
+        select *
+        from work_time
+        where date_id=#{dateId}
+    </select>
+    <select id="getCalendars" resultMap="CalendarVoMap">
+        select id, date_id, date_type, is_delete
+        from rider_calendar
+        <where>
+            <if test="c.dateId != null">
+                and date_id >= #{c.dateId}
+            </if>
+            <if test="c.dateType != null">
+                and date_type = #{c.dateType}
+            </if>
+            <if test="c.isDelete != null">
+                and is_delete = #{c.isDelete}
+            </if>
+        </where>
+        limit #{offset}, #{limit}
+    </select>
+
+
     <!--查询单个-->
     <select id="queryById" resultMap="RiderCalendarMap">
         select
-          id, date_id, date_type, is_delete, create_time, create_by, update_time, update_by
+          id, date_id, date_type, is_delete
         from rider_calendar
-        where id = #{id}
+        where date_id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="RiderCalendarMap">
         select
-          id, date_id, date_type, is_delete, create_time, create_by, update_time, update_by
+          id, date_id, date_type, is_delete
         from rider_calendar
         <where>
-            <if test="id != null">
-                and id = #{id}
+            <if test="c.id != null">
+                and id = #{c.id}
             </if>
-            <if test="dateId != null">
-                and date_id = #{dateId}
+            <if test="c.dateId != null">
+                and date_id >= #{dateId}
             </if>
-            <if test="dateType != null">
-                and date_type = #{dateType}
+            <if test="c.dateType != null">
+                and date_type = #{c.dateType}
             </if>
-            <if test="isDelete != null">
-                and is_delete = #{isDelete}
-            </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
-            </if>
-            <if test="createBy != null">
-                and create_by = #{createBy}
-            </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
-            </if>
-            <if test="updateBy != null">
-                and update_by = #{updateBy}
+            <if test="c.isDelete != null">
+                and is_delete = #{c.isDelete}
             </if>
         </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
+        limit #{offset}, #{limit}
     </select>
 
     <!--统计总行数-->
@@ -121,29 +159,11 @@
     <update id="update">
         update rider_calendar
         <set>
-            <if test="dateId != null">
-                date_id = #{dateId},
-            </if>
             <if test="dateType != null">
                 date_type = #{dateType},
             </if>
-            <if test="isDelete != null">
-                is_delete = #{isDelete},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime},
-            </if>
-            <if test="createBy != null">
-                create_by = #{createBy},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime},
-            </if>
-            <if test="updateBy != null">
-                update_by = #{updateBy},
-            </if>
         </set>
-        where id = #{id}
+        where date_id = #{dateId}
     </update>
 
     <!--通过主键删除-->

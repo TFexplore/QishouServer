@@ -19,4 +19,15 @@ public class UserToken {
     public @interface UserLoginToken {
         boolean required() default true;
     }
+    //    需要验证
+    @Target({ElementType.METHOD, ElementType.TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Admin {
+        boolean required() default true;
+    }
+    @Target({ElementType.METHOD, ElementType.TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface SuperAdmin {
+        boolean required() default true;
+    }
 }

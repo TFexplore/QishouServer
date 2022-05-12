@@ -1,8 +1,13 @@
 package com.zhaishu.qishouserver.service;
 
+import com.zhaishu.qishouserver.Vo.RiderVo;
+import com.zhaishu.qishouserver.Vo.ScheduleVo;
 import com.zhaishu.qishouserver.entity.RiderSchedule;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
 
 /**
  * 骑手排班表(RiderSchedule)表服务接口
@@ -11,6 +16,10 @@ import org.springframework.data.domain.PageRequest;
  * @since 2022-04-18 19:22:41
  */
 public interface RiderScheduleService {
+
+    List<RiderVo> getRiders(@Param("rider") RiderVo rider, Integer limit, Integer offset);
+
+    List<ScheduleVo> getSchedules(Integer id);
 
     /**
      * 通过ID查询单条数据
@@ -35,7 +44,7 @@ public interface RiderScheduleService {
      * @param riderSchedule 实例对象
      * @return 实例对象
      */
-    RiderSchedule insert(RiderSchedule riderSchedule);
+    int insert(RiderSchedule riderSchedule);
 
     /**
      * 修改数据

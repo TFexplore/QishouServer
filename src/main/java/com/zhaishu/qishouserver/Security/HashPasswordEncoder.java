@@ -1,17 +1,17 @@
 package com.zhaishu.qishouserver.Security;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Component;
 
 @Component
-public class HashPasswordEncoder implements PasswordEncoder {
+public class HashPasswordEncoder  {
 
-    @Override
+
     public String encode(CharSequence charSequence) {
         return Md5Utils.code( charSequence.toString());
     }
 
-    @Override
+
     public boolean matches(CharSequence charSequence, String s) {
         return s.equals(Md5Utils.code(charSequence .toString()));
     }

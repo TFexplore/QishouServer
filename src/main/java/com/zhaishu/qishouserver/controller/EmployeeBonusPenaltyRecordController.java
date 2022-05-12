@@ -2,6 +2,7 @@ package com.zhaishu.qishouserver.controller;
 
 import com.zhaishu.qishouserver.entity.EmployeeBonusPenaltyRecord;
 import com.zhaishu.qishouserver.service.EmployeeBonusPenaltyRecordService;
+import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("employeeBonusPenaltyRecord")
+@Api(tags = "骑手记录赏罚表", description = "")
 public class EmployeeBonusPenaltyRecordController {
     /**
      * 服务对象

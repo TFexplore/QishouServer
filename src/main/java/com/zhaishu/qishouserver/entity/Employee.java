@@ -1,8 +1,8 @@
 package com.zhaishu.qishouserver.entity;
 
-import com.sun.istack.internal.NotNull;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NonNull;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -21,55 +21,71 @@ public class Employee implements Serializable {
     /**
      * 自增id
      */
+    @ApiModelProperty(value = "自增id")
     private Integer id;
     /**
      * 员工ID，6位数？
      */
+    @ApiModelProperty(value = "员工ID，6位数？")
     private Integer employeeId;
     /**
      * 员工姓名
      */
-    @Size(min = 1, max = 5, message = "员工姓名长度在1-20之间")
+    @ApiModelProperty(value = "员工姓名")
+    @Size(min = 1, max = 5, message = "员工姓名长度在1-5之间")
     private String name;
     /**
      * 身份证号码
      */
+    @Size( max = 18, message = "长度在1-18之间")
+    @ApiModelProperty(value = "身份证号码")
     private String idCard;
 
-    @NotBlank(message = "手机号不能为空")
+    @Size( max = 11, message = "长度在1-11之间")
+    @ApiModelProperty(value = "手机号")
     private String phoneNum;
 
-    @NotBlank(message = "密码不能为空")
+    @Size( max = 11, message = "长度在1-20之间")
+    @ApiModelProperty(value = "密码")
     private String password;
-    
+
+    @ApiModelProperty(value = "性别")
     private Integer sex;
     /**
      * 头像照片
      */
+    @ApiModelProperty("头像")
     private String avatar;
     /**
      * 身份证头像照
      */
+    @ApiModelProperty("身份证头像照")
     private String frontIdCard;
     /**
      * 身份证国徽照
      */
+    @ApiModelProperty("身份证国徽照")
     private String behindIdCard;
     /**
      * 手持身份证照
      */
+    @ApiModelProperty("手持身份证照")
     private String holdingIdCard;
     /**
      * 员工类型
      */
+    @ApiModelProperty("员工类型")
     private Integer employeeType;
     /**
      * 员工薪酬等级
      */
+    @ApiModelProperty("员工薪酬等级")
     private Integer sarlaryLevel;
-    
+
+    @ApiModelProperty("员工状态 0:正常 1:离职")
     private Integer isDelete;
-    
+
+
     private Date createTime;
     
     private Integer createBy;

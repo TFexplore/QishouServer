@@ -21,6 +21,11 @@ public class WorkTimeServiceImpl implements WorkTimeService {
     @Resource
     private WorkTimeDao workTimeDao;
 
+    @Override
+    public WorkTime queryByMap(WorkTime workTime){
+        return this.workTimeDao.queryByMap(workTime);
+    }
+
     /**
      * 通过ID查询单条数据
      *
@@ -52,9 +57,13 @@ public class WorkTimeServiceImpl implements WorkTimeService {
      * @return 实例对象
      */
     @Override
-    public WorkTime insert(WorkTime workTime) {
-        this.workTimeDao.insert(workTime);
-        return workTime;
+    public int insert(WorkTime workTime) {
+        Integer id = this.workTimeDao.getNextId(workTime.getDateId());
+        if (id==null){
+            id=workTime.getDateId()*100;
+        }
+        workTime.setWorktimeId(id+1);
+        return this.workTimeDao.insert(workTime);
     }
 
     /**

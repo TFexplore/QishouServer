@@ -2,6 +2,7 @@ package com.zhaishu.qishouserver.controller;
 
 import com.zhaishu.qishouserver.entity.SalaryLevel;
 import com.zhaishu.qishouserver.service.SalaryLevelService;
+import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("salaryLevel")
+@Api(tags = "员工薪酬等级表", description = "")
 public class SalaryLevelController {
     /**
      * 服务对象

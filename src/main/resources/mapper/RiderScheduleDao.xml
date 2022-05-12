@@ -14,6 +14,75 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
     </resultMap>
+    <resultMap type="com.zhaishu.qishouserver.Vo.ScheduleVo" id="schedulesMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="scheduleId" column="schedule_id" jdbcType="INTEGER"/>
+        <result property="worktimeId" column="worktime_id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="workStartTime" column="work_start_time" jdbcType="TIMESTAMP"/>
+        <result property="workEndTime" column="work_end_time" jdbcType="TIMESTAMP"/>
+
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="location_note" column="tname" jdbcType="VARCHAR"/>
+
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap type="com.zhaishu.qishouserver.Vo.RiderVo" id="RiderVoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="riderType" column="employee_type" jdbcType="INTEGER"/>
+        <result property="locationId" column="location_id" jdbcType="INTEGER"/>
+        <result property="registTime" column="regist_time" jdbcType="TIMESTAMP"/>
+        <result property="checkTime" column="check_time" jdbcType="TIMESTAMP"/>
+        <result property="hr" column="hr" jdbcType="VARCHAR"/>
+        <result property="invitationCode" column="invitation_code" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="location_note" column="tname" jdbcType="VARCHAR"/>
+        <result property="phoneNum" column="phone_num" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="frontIdCard" column="front_id_card" jdbcType="VARCHAR"/>
+        <result property="behindIdCard" column="behind_id_card" jdbcType="VARCHAR"/>
+        <result property="holdingIdCard" column="holding_id_card" jdbcType="VARCHAR"/>
+        <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getRiders" resultMap="RiderVoMap">
+        select
+            e.name,e.employee_id,t.tname
+        from employee e,rider r,t_apartment t
+        <where>
+            e.is_delete=0 and r.rider_type!=0 and e.employee_id=r.employee_id and r.location_id=t.id
+            <if test="rider.name != null and rider.name != ''">
+                and e.name = #{rider.name}
+            </if>
+            <if test="rider.employeeId != null">
+                and r.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.phoneNum != null and rider.phoneNum != ''">
+                and e.phone_num = #{rider.phoneNum}
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+    <select id="getSchedules" resultMap="schedulesMap">
+        select
+           s.schedule_id, s.worktime_id, s.employee_id, s.work_start_time, s.work_end_time,
+            e.name,t.tname
+        from rider_schedule s,employee e,rider r,t_apartment t
+        where s.worktime_id = #{id} and s.employee_id =e.employee_id and s.employee_id=r.employee_id and r.location_id=t.id
+    </select>
+    <select id="getNextId" resultType="java.lang.Integer">
+        select max(schedule_id) from rider_schedule where worktime_id=#{id}
+    </select>
 
     <!--查询单个-->
     <select id="queryById" resultMap="RiderScheduleMap">

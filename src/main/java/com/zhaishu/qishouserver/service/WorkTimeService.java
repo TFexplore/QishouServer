@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
  */
 public interface WorkTimeService {
 
+    WorkTime queryByMap(WorkTime workTime);
+
     /**
      * 通过ID查询单条数据
      *
@@ -35,7 +37,7 @@ public interface WorkTimeService {
      * @param workTime 实例对象
      * @return 实例对象
      */
-    WorkTime insert(WorkTime workTime);
+    int insert(WorkTime workTime);
 
     /**
      * 修改数据

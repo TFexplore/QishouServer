@@ -22,11 +22,11 @@ public class Md5Utils {
                 buf.append(Integer.toHexString(i));
             }
             //32位加密(小写)
-            return buf.toString();
+           // return buf.toString();
             //32位加密(大写)
             //return buf.toString().toUpperCase();
             // 16位的加密(小写)
-            //return buf.toString().substring(8, 24);
+            return buf.toString().substring(8, 24);
             // 16位的加密(大写)
             //return buf.toString().substring(8, 24).toUpperCase();
         } catch (NoSuchAlgorithmException e) {

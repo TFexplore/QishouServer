@@ -25,24 +25,39 @@ public interface EmployeeDao {
      * @return 实例对象
      */
     Employee queryById(Integer id);
-
     Employee queryByTel(String tel);
-
+    Employee queryByType(int type);
+    Employee queryByName(String name);
     /**
      * 查询指定行数据
      *
-     * @param employee 查询条件
-     * @param pageable         分页对象
+     * @param
      * @return 对象列表
      */
-    List<Employee> queryAllByLimit(Employee employee, @Param("pageable") Pageable pageable);
+    List<Employee> queryByMap(int offset,int limit,@Param("employee") Employee employee);
+    int countMap(@Param("employee") Employee employee);
+    List<Employee> queryAdminByLimit(int offset, int limit);
 
+    List<Employee> queryAdminByStatus(int status,int offset, int limit);
+
+    List<Employee> queryAdminByType(int type,int offset, int limit);
     /**
      * 统计总行数
      *
      * @return 总行数
      */
     int count();
+    /**
+     * 统计管理员总行数
+     *
+     * @return 总行数
+     */
+    int countAdmin();
+
+    int countAdminByStatus(Integer status);
+
+    int countAdminbyType(Integer type);
+
 
     /**
      * 新增数据

@@ -22,6 +22,11 @@ public class RuntimeExceptions extends RuntimeException{
         this.msg = resultCode.getMsg();
         this.resultCode = resultCode;
     }
+    public RuntimeExceptions(String errorCode ,String msg){
+        super(msg);
+        this.code=errorCode;
+        this.msg=msg;
+    }
 
     public String getCode() {
         return code;

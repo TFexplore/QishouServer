@@ -13,6 +13,7 @@ import java.util.List;
  */
 public interface InApplicationDao {
 
+
     /**
      * 通过ID查询单条数据
      *
@@ -20,6 +21,8 @@ public interface InApplicationDao {
      * @return 实例对象
      */
     InApplication queryById(Integer id);
+
+
 
     /**
      * 查询指定行数据

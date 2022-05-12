@@ -19,9 +19,9 @@
     <!--查询单个-->
     <select id="queryById" resultMap="EmployeeWalletMap">
         select
-          id, employee_id, balance, password, weixin_id, alipay, is_delete, create_time, create_by, update_time, update_by
+        employee_id, balance, weixin_id, alipay, is_delete
         from employee_wallet
-        where id = #{id}
+        where employee_id = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -176,12 +176,12 @@
                 update_by = #{updateBy},
             </if>
         </set>
-        where id = #{id}
+        where employee_id = #{employeeId}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from employee_wallet where id = #{id}
+        delete from employee_wallet where employee_id = #{id}
     </delete>
 
 </mapper>

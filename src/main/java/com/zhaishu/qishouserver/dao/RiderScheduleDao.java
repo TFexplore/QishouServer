@@ -1,5 +1,8 @@
 package com.zhaishu.qishouserver.dao;
 
+import com.zhaishu.qishouserver.Vo.RiderVo;
+import com.zhaishu.qishouserver.Vo.ScheduleVo;
+import com.zhaishu.qishouserver.entity.Rider;
 import com.zhaishu.qishouserver.entity.RiderSchedule;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +15,11 @@ import java.util.List;
  * @since 2022-04-18 19:22:41
  */
 public interface RiderScheduleDao {
+
+    List<RiderVo> getRiders(@Param("rider")RiderVo rider,Integer limit,Integer offset);
+
+    List<ScheduleVo> getSchedules(Integer id);
+    Integer getNextId(Integer id);
 
     /**
      * 通过ID查询单条数据

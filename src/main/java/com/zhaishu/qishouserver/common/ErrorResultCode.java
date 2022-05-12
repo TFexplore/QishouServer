@@ -10,11 +10,16 @@ public enum ErrorResultCode {
 
     USER_NOT_FOUND("1004","用户不存在"),
 
-    PASSWORD_ERROR("1005","密码错误" ),
+    USER_EXIST_FAIL("1009","用户已存在"),
 
+    PASSWORD_ERROR("1005","密码错误" ),
+    USER_LOGIN_NOT_ALLOW_MODIFY("1016","用户不允许修改"),
     TOKEN_MISS("1007","toekn缺失"),
 
-    TOKEN_TIMEOUT("1006","无效token，请重新登陆" );
+    TOKEN_ERROR_ROLE("1008","权限不足"),
+
+    TOKEN_TIMEOUT("1006","无效token，请重新登陆" ),
+    PERMISSION_DENIED("1010","权限不足");
 
     /**
      * 结果码

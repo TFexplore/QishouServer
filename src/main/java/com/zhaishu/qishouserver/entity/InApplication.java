@@ -1,5 +1,8 @@
 package com.zhaishu.qishouserver.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.io.Serializable;
 
@@ -18,22 +21,28 @@ public class InApplication implements Serializable {
     /**
      * 工号
      */
+    @ApiModelProperty(value = "工号")
     private Integer employeeId;
     /**
      * 申请骑手类型
      */
+    @ApiModelProperty(value = "申请骑手类型")
     private Integer applyRiderType;
     /**
      * 申请时间
      */
+    @ApiModelProperty(value = "申请时间")
     private Date applyTime;
     /**
      * 审核不通过原因
      */
+    @Size( max = 500, message = "长度在1-500之间")
+    @ApiModelProperty(value = "审核不通过原因")
     private String checkContent;
     /**
      * 审核状态
      */
+    @ApiModelProperty(value = "审核状态")
     private Integer checkState;
     
     private Integer isDelete;

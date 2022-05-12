@@ -1,13 +1,25 @@
 package com.zhaishu.qishouserver.controller;
 
+import com.zhaishu.qishouserver.Security.UserToken;
+import com.zhaishu.qishouserver.Vo.RiderVo;
+import com.zhaishu.qishouserver.Vo.ScheduleVo;
+import com.zhaishu.qishouserver.common.ResultResponse;
 import com.zhaishu.qishouserver.entity.RiderSchedule;
+import com.zhaishu.qishouserver.entity.WorkTime;
 import com.zhaishu.qishouserver.service.RiderScheduleService;
+import com.zhaishu.qishouserver.service.WorkTimeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 骑手排班表(RiderSchedule)表控制层
@@ -17,67 +29,53 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("riderSchedule")
+@Api(tags = "骑手排班表", description = "")
 public class RiderScheduleController {
     /**
      * 服务对象
      */
     @Resource
     private RiderScheduleService riderScheduleService;
+    @Resource
+    private WorkTimeService workTimeService;
 
-    /**
-     * 分页查询
-     *
-     * @param riderSchedule 筛选条件
-     * @param pageRequest      分页对象
-     * @return 查询结果
-     */
-    @GetMapping
-    public ResponseEntity<Page<RiderSchedule>> queryByPage(RiderSchedule riderSchedule, PageRequest pageRequest) {
-        return ResponseEntity.ok(this.riderScheduleService.queryByPage(riderSchedule, pageRequest));
+
+    @GetMapping("/getRiders")
+    @ApiOperation(value = "获取骑手列表",notes="传入可通过姓名，电话，工号进行精确查找")
+    @UserToken.Admin
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),
+    })
+    public ResultResponse getRiders(@RequestBody RiderVo rider, Integer limit, Integer offset){
+        List<RiderVo> list=this.riderScheduleService.getRiders(rider,limit,offset);
+        return ResultResponse.resultSuccess(list);
     }
+    @GetMapping("/getSchedules")
+    @ApiOperation(value = "获取时段排班列表",notes="传入worktimeId")
+    @UserToken.Admin
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),
+    })
+    public ResultResponse getSchedules(Integer workTimeId){
+        List<ScheduleVo> list=this.riderScheduleService.getSchedules(workTimeId);
+        return ResultResponse.resultSuccess(list);
+        }
+    @GetMapping("/addSchedule")
+    @ApiOperation(value = "新增排班记录",notes="传入worktimeId等必要信息")
+    @UserToken.Admin
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),
+    })
+    public ResultResponse addSchedule(@RequestBody RiderSchedule schedule){
+        WorkTime workTime= workTimeService.queryById(schedule.getWorktimeId());
+        if (workTime==null){
+            return ResultResponse.error("404","workTime 不存在，添加失败");
+        }
+        if (this.riderScheduleService.insert(schedule)!=1){
+            return ResultResponse.error("500","插入记录失败，请联系管理员");
+        }
 
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public ResponseEntity<RiderSchedule> queryById(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(this.riderScheduleService.queryById(id));
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param riderSchedule 实体
-     * @return 新增结果
-     */
-    @PostMapping
-    public ResponseEntity<RiderSchedule> add(RiderSchedule riderSchedule) {
-        return ResponseEntity.ok(this.riderScheduleService.insert(riderSchedule));
-    }
-
-    /**
-     * 编辑数据
-     *
-     * @param riderSchedule 实体
-     * @return 编辑结果
-     */
-    @PutMapping
-    public ResponseEntity<RiderSchedule> edit(RiderSchedule riderSchedule) {
-        return ResponseEntity.ok(this.riderScheduleService.update(riderSchedule));
-    }
-
-    /**
-     * 删除数据
-     *
-     * @param id 主键
-     * @return 删除是否成功
-     */
-    @DeleteMapping
-    public ResponseEntity<Boolean> deleteById(Integer id) {
-        return ResponseEntity.ok(this.riderScheduleService.deleteById(id));
+        return ResultResponse.resultSuccess("操作成功");
     }
 
 }

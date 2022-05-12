@@ -2,6 +2,7 @@ package com.zhaishu.qishouserver.controller;
 
 import com.zhaishu.qishouserver.entity.DistributeOrder;
 import com.zhaishu.qishouserver.service.DistributeOrderService;
+import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("distributeOrder")
+@Api(tags = "配送订单表", description = "")
 public class DistributeOrderController {
     /**
      * 服务对象

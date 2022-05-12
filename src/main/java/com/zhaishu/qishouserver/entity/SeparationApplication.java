@@ -1,5 +1,7 @@
 package com.zhaishu.qishouserver.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 import java.io.Serializable;
 
@@ -18,18 +20,22 @@ public class SeparationApplication implements Serializable {
     /**
      * 工号
      */
+    @ApiModelProperty(value = "工号")
     private Integer employeeId;
     /**
      * 申请时间
      */
+    @ApiModelProperty(value = "申请时间")
     private Date applyTime;
     /**
      * 审核内容
      */
+    @ApiModelProperty(value = "审核内容")
     private String checkContent;
     /**
      * 审核状态
      */
+    @ApiModelProperty(value = "审核状态")
     private Integer checkState;
     
     private Integer isDelete;
