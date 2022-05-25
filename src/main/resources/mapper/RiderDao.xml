@@ -12,6 +12,7 @@
         <result property="hr" column="hr" jdbcType="VARCHAR"/>
         <result property="invitationCode" column="invitation_code" jdbcType="INTEGER"/>
         <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="isOnline" column="is_online" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="createBy" column="create_by" jdbcType="INTEGER"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -27,6 +28,7 @@
         <result property="checkTime" column="check_time" jdbcType="TIMESTAMP"/>
         <result property="hr" column="hr" jdbcType="VARCHAR"/>
         <result property="invitationCode" column="invitation_code" jdbcType="INTEGER"/>
+        <result property="isOnline" column="is_online" jdbcType="INTEGER"/>
         <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="createBy" column="create_by" jdbcType="INTEGER"/>
@@ -50,6 +52,7 @@
         <result property="hr" column="hr" jdbcType="VARCHAR"/>
         <result property="invitationCode" column="invitation_code" jdbcType="INTEGER"/>
         <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="isOnline" column="is_online" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="createBy" column="create_by" jdbcType="INTEGER"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -71,6 +74,8 @@
         <result property="holdingIdCard" column="holding_id_card" jdbcType="VARCHAR"/>
         <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
     </resultMap>
+
+
     <select id="getRiderById" resultMap="RiderVoMap">
         select r.employee_id, r.location_id,r.regist_time, r.check_time, r.hr, r.invitation_code,
         e.name,e.phone_num,e.sex,e.avatar,e.front_id_card,e.behind_id_card,e.holding_id_card,e.id_card,e.employee_type,e.is_delete,
@@ -81,8 +86,9 @@
 
     <!--查询指定行数据-->
     <select id="getAllRiders" resultMap="RiderVoMap">
-        select r.employee_id, r.location_id,r.regist_time, r.check_time, r.hr, r.invitation_code,
-               e.name,e.phone_num,e.sex,e.employee_type,e.is_delete, e.front_id_card, e.behind_id_card, e.holding_id_card, e.id_card,e.avatar,
+        select r.employee_id, r.location_id,r.regist_time, r.check_time, r.hr, r.invitation_code,r.is_online,
+               e.name,e.phone_num,e.sex,e.employee_type,e.is_delete, e.front_id_card, e.behind_id_card,
+               e.holding_id_card, e.id_card,e.avatar,
                s.check_content,
                t.tname
         from (rider r,employee e,t_apartment t) left join separation_application s on r.employee_id = s.employee_id
@@ -116,6 +122,9 @@
              <if test="rider.isDelete != null and rider.isDelete == 1">
                  and e.is_delete = 1 or e.is_delete = 2
              </if>
+            <if test="rider.isOnline != null">
+                and r.is_online = #{rider.isOnline}
+            </if>
             <if test="rider.name != null and rider.name != ''">
                 and e.name = #{rider.name}
             </if>
@@ -155,11 +164,13 @@
                 and r.invitation_code = #{rider.invitationCode}
             </if>
             <if test="rider.isDelete != null and rider.isDelete == 0">
-
                 and e.is_delete = #{rider.isDelete}
             </if>
             <if test="rider.isDelete != null and rider.isDelete == 1">
                 and e.is_delete = 1 or e.is_delete = 2
+            </if>
+            <if test="rider.isOnline != null">
+                and r.is_online = #{rider.isOnline}
             </if>
             <if test="rider.name != null and rider.name != ''">
                 and e.name = #{rider.name}
@@ -449,40 +460,15 @@
         values (#{employeeId}, #{riderType}, #{locationId}, #{registTime}, #{checkTime}, #{hr}, #{invitationCode}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
     </insert>
 
-    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into rider(employee_id, rider_type, location_id, regist_time, check_time, hr, invitation_code, is_delete, create_time, create_by, update_time, update_by)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-        (#{entity.employeeId}, #{entity.riderType}, #{entity.locationId}, #{entity.registTime}, #{entity.checkTime}, #{entity.hr}, #{entity.invitationCode}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into rider(employee_id, rider_type, location_id, regist_time, check_time, hr, invitation_code, is_delete, create_time, create_by, update_time, update_by)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.employeeId}, #{entity.riderType}, #{entity.locationId}, #{entity.registTime}, #{entity.checkTime}, #{entity.hr}, #{entity.invitationCode}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
-        </foreach>
-        on duplicate key update
-        employee_id = values(employee_id),
-        rider_type = values(rider_type),
-        location_id = values(location_id),
-        regist_time = values(regist_time),
-        check_time = values(check_time),
-        hr = values(hr),
-        invitation_code = values(invitation_code),
-        is_delete = values(is_delete),
-        create_time = values(create_time),
-        create_by = values(create_by),
-        update_time = values(update_time),
-        update_by = values(update_by)
-    </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
         update rider r left join employee e
             on r.employee_id = e.employee_id
         <set>
+                <if test="isOnline !=null">
+                    r.is_online=#{isOnline}
+                </if>
             <if test="riderType != null">
                 r.rider_type = #{riderType},
                 e.employee_type=#{riderType},
@@ -492,7 +478,7 @@
             </if>
             <if test="isDelete != null">
                 r.is_delete = #{isDelete},
-                r.is_delete = #{isDelete},
+                e.is_delete = #{isDelete},
             </if>
             <if test="hr != null and hr != ''">
                 r.hr = #{hr},

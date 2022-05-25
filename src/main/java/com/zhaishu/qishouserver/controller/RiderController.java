@@ -5,10 +5,7 @@ import com.zhaishu.qishouserver.Security.UserToken;
 import com.zhaishu.qishouserver.Vo.RiderVo;
 import com.zhaishu.qishouserver.common.ResultResponse;
 import com.zhaishu.qishouserver.common.TokenUtils;
-import com.zhaishu.qishouserver.common.Utils;
-import com.zhaishu.qishouserver.entity.Employee;
 import com.zhaishu.qishouserver.entity.InApplication;
-import com.zhaishu.qishouserver.entity.Rider;
 import com.zhaishu.qishouserver.entity.SeparationApplication;
 import com.zhaishu.qishouserver.service.EmployeeService;
 import com.zhaishu.qishouserver.service.InApplicationService;
@@ -18,16 +15,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
-import java.net.Socket;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +45,8 @@ public class RiderController {
     private InApplicationService inApplicationService;
     @Resource
     private SeparationApplicationService separationService;
+
+
 
 
     @PostMapping("/riderIn")
@@ -114,7 +107,7 @@ public class RiderController {
             if (se.getEmployeeId()==null){
                 return  ResultResponse.error("400","SeparationApplication：缺少必要参数工号");
             }
-        if (separationService.queryById(se.getEmployeeId())!=null){
+        if (separationService.queryById(se.getEmployeeId())!=null){//主动离职申请处理
             RiderVo rider=new RiderVo();
             rider.setIsDelete(1);
             rider.setEmployeeId(se.getEmployeeId());
@@ -123,7 +116,7 @@ public class RiderController {
             return ResultResponse.resultSuccess("骑手解雇成功");
         }
             RiderVo rider=new RiderVo();
-            rider.setIsDelete(2);
+            rider.setIsDelete(2);//直接解雇
             rider.setEmployeeId(se.getEmployeeId());
             riderService.update(rider);
             separationService.insert(se);
@@ -201,7 +194,7 @@ public class RiderController {
     }
 
     @GetMapping("/getRiderById")
-    @ApiOperation(value = "查询", notes = "")
+    @ApiOperation(value = "查询", notes = "..")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
     })

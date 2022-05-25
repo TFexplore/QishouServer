@@ -69,7 +69,7 @@ public class UploadDownHandler {
         System.out.println("新文件名称" +fileName);
 
         //在指定路径下创建文件
-        File targetFile = new File(path,fileName);
+        File targetFile = new File(path+"av/",fileName);
 
         Map<String,Object> result = new HashMap<String,Object>();//定义结果
         //将文件保存到服务器指定位置

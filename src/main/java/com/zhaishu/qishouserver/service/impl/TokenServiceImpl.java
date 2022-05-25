@@ -32,7 +32,7 @@ public class TokenServiceImpl implements TokenService {
                 .withClaim("userId",user.getEmployeeId())
                 .withClaim("phone_num",user.getPhoneNum())
                 .withClaim("userType",user.getEmployeeType())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 72))//过期时间,三天
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 720))//过期时间,三天
                 .sign(Algorithm.HMAC256(user.getPhoneNum())); //加密
     }
 

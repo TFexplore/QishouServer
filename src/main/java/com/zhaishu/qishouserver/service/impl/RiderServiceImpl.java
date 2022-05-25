@@ -49,18 +49,7 @@ public class RiderServiceImpl implements RiderService {
     public int countAllRidersSe(@Param("rider") RiderVo riderVo){
         return this.riderDao.countAllRidersSe(riderVo);
     }
-    /**
-     * 骑手注册
-     *
-     * @param rider 骑手信息
-     * @return 实例对象
-     */
-    public Rider register(Rider rider) {
 
-
-        this.riderDao.insert(rider);
-        return rider;
-    }
     @Override
     public Rider queryByEmployeeId(Integer id){
 

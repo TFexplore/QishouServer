@@ -59,9 +59,11 @@ public class Rider{
     @ApiModelProperty(value = "骑手邀请码")
     private Integer invitationCode;
 
-    @ApiModelProperty(value = "骑手状态")
+    @ApiModelProperty(value = "骑手状态：0下班，1上班")
+    private Integer isOnline;
+
+    @ApiModelProperty(value = "删除标识")
     private Integer isDelete;
-    
     private Date createTime;
     
     private Integer createBy;
@@ -184,5 +186,12 @@ public class Rider{
         this.updateBy = updateBy;
     }
 
+    public Integer getIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(Integer isOnline) {
+        this.isOnline = isOnline;
+    }
 }
 

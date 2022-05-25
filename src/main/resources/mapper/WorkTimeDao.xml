@@ -21,12 +21,15 @@
         from work_time
         where worktime_id = #{id}
     </select>
-    <select id="queryByMap" resultMap="WorkTimeMap">
+    <select id="queryByMap" resultMap="WorkTimeMap"><!--查找是否冲突时间-->
         select
             id, worktime_id, date_id, start_time, end_time, create_time, create_by, update_time, update_by
         from work_time
-        where  (start_time <![CDATA[<= ]]> #{endTime} and end_time >= #{endTime}) or (start_time <![CDATA[<= ]]> #{startTime} and end_time >= #{startTime}) or (start_time >= #{startTime} and end_time <![CDATA[<= ]]> #{endTime})
-
+        where  date_id = #{dateId} and (
+              (start_time <![CDATA[< ]]> #{endTime} and end_time >= #{endTime})
+            or (start_time <![CDATA[<= ]]> #{startTime} and end_time > #{startTime})
+            or (start_time >= #{startTime} and end_time <![CDATA[<= ]]> #{endTime})
+            )
     </select>
     <select id="getNextId" resultType="java.lang.Integer">
         select max(worktime_id) from work_time where  date_id = #{dateId}
@@ -68,7 +71,40 @@
         </where>
         limit #{pageable.offset}, #{pageable.pageSize}
     </select>
-
+    <select id="getTemplates" resultMap="WorkTimeMap"><!--查找模板-->
+        select
+        id, worktime_id, date_id, start_time, end_time, create_time, create_by, update_time, update_by
+        from work_time
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="worktimeId != null">
+                and worktime_id = #{worktimeId}
+            </if>
+            <if test="dateId != null">
+                and date_id <![CDATA[<= ]]> #{dateId}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+    </select>
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
         select count(1)

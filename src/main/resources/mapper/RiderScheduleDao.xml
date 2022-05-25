@@ -55,10 +55,122 @@
         <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap id="WorkRecordVoMap" type="com.zhaishu.qishouserver.Vo.WorkRecordVo">
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="phoneNum" column="phone_num" jdbcType="VARCHAR"/>
+        <result property="tName" column="tname" jdbcType="VARCHAR"/>
+        <collection property="workTime" javaType="java.lang.Long" column="{id=employee_id,start=start_time,end=end_time}"
+                    select="getWorkTime"/>
+        <collection property="unWorkTimes" javaType="java.lang.Integer" column="{id=employee_id,start=start_time,end=end_time}"
+                    select="getUnWorkTimes"/>
+        <collection property="orders" javaType="java.lang.Integer" column="{id=employee_id,start=start_time,end=end_time}"
+                    select="getOrders"/>
+        <collection property="timesOut" javaType="java.lang.Integer" column="{id=employee_id,start=start_time,end=end_time}"
+                    select="getTimesOut"/>
+        <collection property="goodOrders" javaType="java.lang.Integer" column="{id=employee_id,start=start_time,end=end_time}"
+                    select="getGoodOrders"/>
+        <collection property="badOrders" javaType="java.lang.Integer" column="{id=employee_id,start=start_time,end=end_time}"
+                    select="getBadOrders"/>
+    </resultMap>
+
+    <select id="countWorkRecord" resultType="int">
+        select  count(distinct e.employee_id)
+        from employee e,rider r,t_apartment t,rider_schedule s
+        <where>
+            e.employee_id = r.employee_id
+            and e.employee_id = s.employee_id
+            and t.id = r.location_id
+            and e.is_delete = 0
+            <if test="rider.employeeId !=null">
+                and e.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.name != null and rider.name != ''">
+                and e.name = #{rider.name}
+            </if>
+            <if test="rider.phoneNum != null and rider.phoneNum != ''">
+                and e.phone_num = #{rider.phoneNum}
+            </if>
+            <if test="rider.locationId !=null">
+                and r.location_id=#{rider.locationId}
+            </if>
+            <if test="rider.riderType !=null">
+                and r.rider_type=#{rider.riderType}
+            </if>
+        </where>
+    </select>
+    <select id="getWorkRecord" resultMap="WorkRecordVoMap">
+        select  distinct  e.name,e.employee_id,e.phone_num,t.tname,#{rider.startTime} as start_time,#{rider.endTime} as end_time
+        from employee e,rider r,t_apartment t,rider_schedule s
+        <where>
+            e.employee_id = r.employee_id
+            and e.employee_id = s.employee_id
+            and t.id = r.location_id
+            and e.is_delete = 0
+            <if test="rider.employeeId !=null">
+                and e.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.name != null and rider.name != ''">
+                and e.name = #{rider.name}
+            </if>
+            <if test="rider.phoneNum != null and rider.phoneNum != ''">
+                and e.phone_num = #{rider.phoneNum}
+            </if>
+            <if test="rider.locationId !=null">
+                and r.location_id=#{rider.locationId}
+            </if>
+            <if test="rider.riderType !=null">
+                and r.rider_type=#{rider.riderType}
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+
+    <select id="getWorkTime" resultType="java.lang.Long">
+        select sum(s.work_end_time-s.work_start_time)
+        from rider_schedule s
+        where s.employee_id=#{id}
+          and s.work_start_time IS NOT NULL
+          and s.work_start_time between #{start} and #{end}
+          and s.work_end_time between #{start} and #{end}
+    </select>
+    <select id="getUnWorkTimes" resultType="int">
+        select  count(1) from rider_schedule s,work_time t
+        where s.employee_id=#{id} and s.worktime_id=t.worktime_id
+          and t.start_time between #{start} and #{end}
+          and s.work_start_time is null
+    </select>
+    <select id="getOrders" resultType="int">
+        select count(1) from distribute_order
+        where employee_id=#{id}
+        and order_finish_time between #{start} and #{end}
+    </select>
+    <select id="getGoodOrders" resultType="int">
+        select count(1) from distribute_order
+        where employee_id=#{id}
+          and comment_level >= 3
+          and order_finish_time between #{start} and #{end}
+    </select>
+    <select id="getBadOrders" resultType="int">
+        select count(1) from distribute_order
+        where employee_id=#{id}
+          and comment_level <![CDATA[< ]]> 3
+          and order_finish_time between #{start} and #{end}
+    </select>
+    <select id="getTimesOut" resultType="int">
+        select count(1) from reject_record
+        where
+            employee_id=#{id}
+            and record_type = 2
+            and record_time between #{start} and #{end}
+    </select>
+
+
     <select id="getRiders" resultMap="RiderVoMap">
         select
             e.name,e.employee_id,t.tname
         from employee e,rider r,t_apartment t
+
         <where>
             e.is_delete=0 and r.rider_type!=0 and e.employee_id=r.employee_id and r.location_id=t.id
             <if test="rider.name != null and rider.name != ''">
@@ -73,6 +185,22 @@
         </where>
         limit #{offset},#{limit}
     </select>
+    <select id="countRiders" resultType="int">
+        select  count(1)
+        from employee e,rider r,t_apartment t
+        <where>
+            e.is_delete=0 and r.rider_type!=0 and e.employee_id=r.employee_id and r.location_id=t.id
+            <if test="rider.name != null and rider.name != ''">
+                and e.name = #{rider.name}
+            </if>
+            <if test="rider.employeeId != null">
+                and r.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.phoneNum != null and rider.phoneNum != ''">
+                and e.phone_num = #{rider.phoneNum}
+            </if>
+        </where>
+    </select>
     <select id="getSchedules" resultMap="schedulesMap">
         select
            s.schedule_id, s.worktime_id, s.employee_id, s.work_start_time, s.work_end_time,
@@ -80,6 +208,7 @@
         from rider_schedule s,employee e,rider r,t_apartment t
         where s.worktime_id = #{id} and s.employee_id =e.employee_id and s.employee_id=r.employee_id and r.location_id=t.id
     </select>
+
     <select id="getNextId" resultType="java.lang.Integer">
         select max(schedule_id) from rider_schedule where worktime_id=#{id}
     </select>
@@ -89,7 +218,7 @@
         select
           id, schedule_id, worktime_id, employee_id, work_start_time, work_end_time, create_time, create_by, update_time, update_by
         from rider_schedule
-        where id = #{id}
+        where worktime_id = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -133,7 +262,7 @@
     </select>
 
     <!--统计总行数-->
-    <select id="count" resultType="java.lang.Long">
+    <select id="count" resultType="int">
         select count(1)
         from rider_schedule
         <where>

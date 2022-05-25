@@ -30,7 +30,7 @@ public class DistributeBill implements Serializable {
     /**
      * 账单生成时间
      */
-    private Date billTime;
+    private Long billTime;
     
     private Integer isDelete;
     
@@ -75,11 +75,11 @@ public class DistributeBill implements Serializable {
         this.billAmount = billAmount;
     }
 
-    public Date getBillTime() {
+    public Long getBillTime() {
         return billTime;
     }
 
-    public void setBillTime(Date billTime) {
+    public void setBillTime(Long billTime) {
         this.billTime = billTime;
     }
 

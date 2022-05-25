@@ -1,5 +1,6 @@
 package com.zhaishu.qishouserver.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -19,12 +20,16 @@ swagger配置类 http://localhost:8080/swagger-ui.html http://localhost:8080/swa
 @EnableSwagger2
 @EnableWebMvc
 public class SwaggerConfig {
+
+    @Value("${swagger.host}")
+    private String swaggerHost;
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 //是否开启 (true 开启  false隐藏。生产环境建议隐藏)
-                //.enable(false)
+                .enable(true)
+                .host(swaggerHost)
                 .select()
                 //扫描的路径包,设置basePackage会将包下的所有被@Api标记类的所有方法作为api
                 .apis(RequestHandlerSelectors.basePackage("com.zhaishu.qishouserver.controller"))
@@ -38,7 +43,7 @@ public class SwaggerConfig {
                 .title("swagger 接口文档")
                 .contact(new Contact("review", "", ""))
                 .description("swagger-bootstrap-ui")
-                .termsOfServiceUrl("http://localhost:8888/")
+                .termsOfServiceUrl("https://www.zmice.top:8080/")
                 .version("1.0")
                 .build();
     }

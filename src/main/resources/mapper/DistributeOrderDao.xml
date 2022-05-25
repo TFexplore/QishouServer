@@ -20,6 +20,16 @@
         <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
     </resultMap>
 
+
+    <select id="countByLimit" resultType="int">
+        select count(1) from distribute_order
+        where  employee_id =#{id} and distribute_finish_time between
+
+    </select>
+
+
+
+
     <!--查询单个-->
     <select id="queryById" resultMap="DistributeOrderMap">
         select

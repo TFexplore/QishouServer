@@ -21,13 +21,15 @@ public interface RiderCalendarDao {
 
     List<RiderCalendar> queryAllByLimit(@Param("c") RiderCalendar riderCalendar, Integer limit,Integer offset);
 
+    List<DateVo> getTemplates(@Param("c") RiderCalendar riderCalendar, Integer limit,Integer offset);
+    int countTemplate(@Param("c") RiderCalendar riderCalendar);
     /**
      * 统计总行数
      *
      * @param riderCalendar 查询条件
      * @return 总行数
      */
-    long count(RiderCalendar riderCalendar);
+    int count(RiderCalendar riderCalendar);
 
     /**
      * 新增数据

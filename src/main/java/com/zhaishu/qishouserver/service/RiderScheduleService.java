@@ -2,6 +2,7 @@ package com.zhaishu.qishouserver.service;
 
 import com.zhaishu.qishouserver.Vo.RiderVo;
 import com.zhaishu.qishouserver.Vo.ScheduleVo;
+import com.zhaishu.qishouserver.Vo.WorkRecordVo;
 import com.zhaishu.qishouserver.entity.RiderSchedule;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,14 @@ import java.util.List;
  */
 public interface RiderScheduleService {
 
-    List<RiderVo> getRiders(@Param("rider") RiderVo rider, Integer limit, Integer offset);
+    List<WorkRecordVo> getWorkRecord( WorkRecordVo rider,Integer limit, Integer offset);
+
+
+    int countWorkRecord(WorkRecordVo recordVo);
+
+    List<RiderVo> getRiders( RiderVo rider, Integer limit, Integer offset);
+
+    int countRiders(RiderVo rider);
 
     List<ScheduleVo> getSchedules(Integer id);
 

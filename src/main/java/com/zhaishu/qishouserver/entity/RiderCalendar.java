@@ -1,5 +1,8 @@
 package com.zhaishu.qishouserver.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
+
 import java.util.Date;
 import java.io.Serializable;
 
@@ -18,10 +21,12 @@ public class RiderCalendar implements Serializable {
     /**
      * 日期编号
      */
+    @ApiModelProperty(value = "日期编号,格式：yyyyMMdd,如：20200101,小于20000101开始的日期是模板日期")
     private Integer dateId;
     /**
      * 日期类型
      */
+    @ApiModelProperty(value = "日期类型，1正常工作日，2周末、3寒暑假、4节日、5其他特殊日")
     private Integer dateType;
     
     private Integer isDelete;

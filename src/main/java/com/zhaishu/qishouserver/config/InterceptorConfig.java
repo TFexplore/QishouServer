@@ -21,27 +21,22 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/employee/login","/employee/register","/swagger-ui/**","/image/**")
                 .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
     }
-    /**上传地址*/
-    @Value("${file.upload.path}")
-    private String filePath;
+
 
     public static final String[] JIN_TAI = {"classpath:/META-INF/resources/", "classpath:/resources/",
             "classpath:/static/", "classpath:/public/"};
 
-    /**
-     * 显示swagger-ui.html文档展示页，还必须注入swagger资源：
-     *
-     * @param registry
-     */
+    /**上传地址*/
+    @Value("${file.upload.path}")
+    private String filePath;
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
+                .addResourceLocations("classpath:/META-INF/resources/swagger-ui.html");
         registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
         registry.addResourceHandler("/image/**").addResourceLocations("file:"+filePath);
-        WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 
     @Bean

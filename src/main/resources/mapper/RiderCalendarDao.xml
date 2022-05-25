@@ -61,6 +61,37 @@
         </where>
         limit #{offset}, #{limit}
     </select>
+    <select id="getTemplates" resultMap="CalendarVoMap">
+        select id, date_id, date_type, is_delete
+        from rider_calendar
+        <where>
+            <if test="c.dateId != null">
+                and date_id <![CDATA[<= ]]> #{c.dateId}
+            </if>
+            <if test="c.dateType != null">
+                and date_type = #{c.dateType}
+            </if>
+            <if test="c.isDelete != null">
+                and is_delete = #{c.isDelete}
+            </if>
+        </where>
+        limit #{offset}, #{limit}
+    </select>
+    <select id="countTemplate" resultType="int">
+        select count(1)
+        from rider_calendar
+        <where>
+            <if test="c.dateId != null">
+                and date_id <![CDATA[<= ]]> #{c.dateId}
+            </if>
+            <if test="c.dateType != null">
+                and date_type = #{c.dateType}
+            </if>
+            <if test="c.isDelete != null">
+                and is_delete = #{c.isDelete}
+            </if>
+        </where>
+    </select>
 
 
     <!--查询单个-->
@@ -81,7 +112,7 @@
                 and id = #{c.id}
             </if>
             <if test="c.dateId != null">
-                and date_id >= #{dateId}
+                and date_id >= #{c.dateId}
             </if>
             <if test="c.dateType != null">
                 and date_type = #{c.dateType}
@@ -94,7 +125,7 @@
     </select>
 
     <!--统计总行数-->
-    <select id="count" resultType="java.lang.Long">
+    <select id="count" resultType="int">
         select count(1)
         from rider_calendar
         <where>
@@ -160,7 +191,7 @@
         update rider_calendar
         <set>
             <if test="dateType != null">
-                date_type = #{dateType},
+                date_type = #{dateType}
             </if>
         </set>
         where date_id = #{dateId}

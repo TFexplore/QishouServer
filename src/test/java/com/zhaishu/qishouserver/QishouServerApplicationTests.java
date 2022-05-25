@@ -4,14 +4,13 @@ import com.github.houbb.data.factory.core.util.DataUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.zhaishu.qishouserver.Security.HashPasswordEncoder;
-import com.zhaishu.qishouserver.Vo.DateVo;
-import com.zhaishu.qishouserver.Vo.RiderVo;
-import com.zhaishu.qishouserver.Vo.ScheduleVo;
+import com.zhaishu.qishouserver.Vo.*;
 import com.zhaishu.qishouserver.common.Utils;
 import com.zhaishu.qishouserver.dao.*;
 import com.zhaishu.qishouserver.entity.*;
 import com.zhaishu.qishouserver.service.EmployeeService;
 import com.zhaishu.qishouserver.service.RiderScheduleService;
+import com.zhaishu.qishouserver.service.ScheduleTemplateService;
 import com.zhaishu.qishouserver.service.WorkTimeService;
 import com.zhaishu.qishouserver.service.impl.RiderServiceImpl;
 import org.apache.commons.lang3.RandomUtils;
@@ -50,15 +49,16 @@ class QishouServerApplicationTests {
     WorkTimeDao workTimeDao;
     @Resource
     RiderScheduleDao riderScheduleDao;
+    @Resource
+    ScheduleTemplateService templateService;
+    @Resource
+    ScheduleTemplateDao templateDao;
     @Test
     void test() {
         WorkTime workTime=new WorkTime();
-        workTime.setDateId(20220514);
-        workTime.setWorktimeId(7);
-        workTime.setStartTime(System.currentTimeMillis()+1000*60*60);
-        workTime.setEndTime(System.currentTimeMillis()+1000*60*60*3);
-        System.out.println(workTime.getStartTime());
-        workTimeDao.insert(workTime);
+        workTime.setWorktimeId(1);
+        workTime.setCreateBy(11111);
+        workTimeDao.update(workTime);
     }
     @Resource
     WorkTimeService workTimeService;
@@ -66,10 +66,15 @@ class QishouServerApplicationTests {
     RiderScheduleService service;
     @Test
     void contextLoads() {
+        WorkRecordVo recordVo=new WorkRecordVo();
+        recordVo.setStartTime(1653235200000L);
+        recordVo.setEndTime(1653452842000L);
+        recordVo.setLocationId(2);
+        System.out.println(riderScheduleDao.countWorkRecord(recordVo));
+        List<WorkRecordVo> recordVos=riderScheduleDao.getWorkRecord(recordVo,10,0);
         Gson gson=new Gson();
-        RiderVo riderVo=new RiderVo();
-        riderVo.setName("koofa");
-        System.out.println(gson.toJson(riderScheduleDao.getRiders(riderVo,3,0)));
+        System.out.println(gson.toJson(recordVos));
+
     }
     @Test
 

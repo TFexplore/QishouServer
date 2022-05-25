@@ -1,5 +1,8 @@
 package com.zhaishu.qishouserver.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.io.Serializable;
 
@@ -18,21 +21,27 @@ public class RiderSchedule implements Serializable {
     /**
      * 排班编号
      */
+    @ApiModelProperty("排班编号")
     private Integer scheduleId;
     /**
      * 工作时段编号
      */
+    @ApiModelProperty("工作时段编号，与时段表对应，通过时段表id分组查询")
+    @NotNull(message = "工作时段编号不能为空")
     private Integer worktimeId;
-    
+
+    @NotNull(message = "骑手编号不能为空")
     private Integer employeeId;
     /**
      * 骑手实际上班开始时间
      */
-    private long workStartTime;
+    @ApiModelProperty("骑手实际上班开始时间")
+    private Long workStartTime;
     /**
      * 骑手实际上班结束时间
      */
-    private long workEndTime;
+    @ApiModelProperty("骑手实际上班结束时间")
+    private Long workEndTime;
     
     private Date createTime;
     
@@ -75,19 +84,19 @@ public class RiderSchedule implements Serializable {
         this.employeeId = employeeId;
     }
 
-    public long getWorkStartTime() {
+    public Long getWorkStartTime() {
         return workStartTime;
     }
 
-    public void setWorkStartTime(long workStartTime) {
+    public void setWorkStartTime(Long workStartTime) {
         this.workStartTime = workStartTime;
     }
 
-    public long getWorkEndTime() {
+    public Long getWorkEndTime() {
         return workEndTime;
     }
 
-    public void setWorkEndTime(long workEndTime) {
+    public void setWorkEndTime(Long workEndTime) {
         this.workEndTime = workEndTime;
     }
 

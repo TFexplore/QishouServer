@@ -2,6 +2,7 @@ package com.zhaishu.qishouserver.service.impl;
 
 import com.zhaishu.qishouserver.Vo.RiderVo;
 import com.zhaishu.qishouserver.Vo.ScheduleVo;
+import com.zhaishu.qishouserver.Vo.WorkRecordVo;
 import com.zhaishu.qishouserver.entity.RiderSchedule;
 import com.zhaishu.qishouserver.dao.RiderScheduleDao;
 import com.zhaishu.qishouserver.service.RiderScheduleService;
@@ -26,10 +27,23 @@ public class RiderScheduleServiceImpl implements RiderScheduleService {
     private RiderScheduleDao riderScheduleDao;
 
     @Override
+    public List<WorkRecordVo> getWorkRecord(WorkRecordVo rider, Integer limit, Integer offset){
+
+       return riderScheduleDao.getWorkRecord(rider, limit, offset);
+    }
+    @Override
+    public int countWorkRecord(WorkRecordVo recordVo){
+        return riderScheduleDao.countWorkRecord(recordVo);
+    }
+
+    @Override
     public List<RiderVo> getRiders(@Param("rider") RiderVo rider, Integer limit, Integer offset){
         return this.riderScheduleDao.getRiders(rider,limit,offset);
     }
-
+    @Override
+    public int countRiders(RiderVo rider){
+        return this.riderScheduleDao.countRiders(rider);
+    }
     @Override
     public List<ScheduleVo> getSchedules(Integer id){
         return this.riderScheduleDao.getSchedules(id);

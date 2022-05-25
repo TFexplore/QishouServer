@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 工作时段表(WorkTime)表服务实现类
@@ -22,10 +23,15 @@ public class WorkTimeServiceImpl implements WorkTimeService {
     private WorkTimeDao workTimeDao;
 
     @Override
-    public WorkTime queryByMap(WorkTime workTime){
+    public List<WorkTime> queryByMap(WorkTime workTime){
         return this.workTimeDao.queryByMap(workTime);
     }
-
+    @Override
+    public List<WorkTime> getTemplates(){
+        WorkTime workTime = new WorkTime();
+        workTime.setDateId(20190808);//模板开始日期20000101
+        return this.workTimeDao.getTemplates(workTime);
+    }
     /**
      * 通过ID查询单条数据
      *
@@ -57,13 +63,14 @@ public class WorkTimeServiceImpl implements WorkTimeService {
      * @return 实例对象
      */
     @Override
-    public int insert(WorkTime workTime) {
+    public WorkTime insert(WorkTime workTime) {
         Integer id = this.workTimeDao.getNextId(workTime.getDateId());
         if (id==null){
             id=workTime.getDateId()*100;
         }
         workTime.setWorktimeId(id+1);
-        return this.workTimeDao.insert(workTime);
+        this.workTimeDao.insert(workTime);
+        return workTime;
     }
 
     /**

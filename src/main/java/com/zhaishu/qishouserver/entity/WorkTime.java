@@ -1,5 +1,7 @@
 package com.zhaishu.qishouserver.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 import java.io.Serializable;
 
@@ -19,16 +21,19 @@ public class WorkTime implements Serializable {
      * 工作时段编号
      */
     private Integer worktimeId;
-    
+
+    @ApiModelProperty("日期id，8位")
     private Integer dateId;
     /**
      * 时段开始时间
      */
-    private long startTime;
+    @ApiModelProperty("时段开始时间")
+    private Long startTime;
     /**
      * 时段结束时间
      */
-    private long endTime;
+    @ApiModelProperty("时段结束时间,13位时间戳")
+    private Long endTime;
     
     private Date createTime;
     
@@ -63,19 +68,19 @@ public class WorkTime implements Serializable {
         this.dateId = dateId;
     }
 
-    public long getStartTime() {
+    public Long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(long startTime) {
+    public void setStartTime(Long startTime) {
         this.startTime = startTime;
     }
 
-    public long getEndTime() {
+    public Long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(long endTime) {
+    public void setEndTime(Long endTime) {
         this.endTime = endTime;
     }
 

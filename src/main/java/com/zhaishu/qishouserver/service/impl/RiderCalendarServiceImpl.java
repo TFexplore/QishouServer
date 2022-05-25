@@ -25,6 +25,10 @@ public class RiderCalendarServiceImpl implements RiderCalendarService {
 
         return riderCalendarDao.getCalendars(riderCalendar,limit,offset);
     }
+    @Override
+    public List<DateVo> getTemplates(RiderCalendar riderCalendar, Integer limit, Integer offset){
+        return this.riderCalendarDao.getTemplates(riderCalendar,limit,offset);
+    }
 
 
     @Override
@@ -44,17 +48,18 @@ public class RiderCalendarServiceImpl implements RiderCalendarService {
         return this.riderCalendarDao.queryAllByLimit(riderCalendar,limit,offset);
     }
 
-    /**
-     * 新增数据
-     *
-     * @param riderCalendar 实例对象
-     * @return 实例对象
-     */
     @Override
-    public RiderCalendar insert(RiderCalendar riderCalendar) {
+    public int countTemplate(){
+        RiderCalendar calendar = new RiderCalendar();
+        calendar.setDateId(20220101);//查询模板数目
+        return this.riderCalendarDao.countTemplate(calendar);
+    }
+    @Override
+    public RiderCalendar insert(RiderCalendar riderCalendar){
         this.riderCalendarDao.insert(riderCalendar);
         return riderCalendar;
     }
+
 
     /**
      * 修改数据

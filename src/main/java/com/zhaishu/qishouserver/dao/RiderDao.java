@@ -1,7 +1,7 @@
 package com.zhaishu.qishouserver.dao;
 
+import com.zhaishu.qishouserver.Vo.WorkRecordVo;
 import com.zhaishu.qishouserver.Vo.RiderVo;
-import com.zhaishu.qishouserver.entity.InApplication;
 import com.zhaishu.qishouserver.entity.Rider;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +15,11 @@ import java.util.List;
  */
 public interface RiderDao {
 
+    WorkRecordVo getWorkInfo(Integer id, Long startTime, Long endTime);
+
+    long getWorkTime(Integer id);
+    int getUnWorkTimes(Integer id);
+    long getTimes();
     List<RiderVo> getAllRiders(Integer offset, Integer limit,@Param("rider")RiderVo riderVo);
     List<RiderVo> getAllRidersIn(Integer offset, Integer limit,@Param("rider")RiderVo riderVo);
     List<RiderVo> getAllRidersSe(Integer offset, Integer limit,@Param("rider")RiderVo riderVo);
@@ -56,27 +61,11 @@ public interface RiderDao {
      */
     int insert(Rider rider);
 
-    /**
-     * 批量新增数据（MyBatis原生foreach方法）
-     *
-     * @param entities List<Rider> 实例对象列表
-     * @return 影响行数
-     */
-    int insertBatch(@Param("entities") List<Rider> entities);
 
-    /**
-     * 批量新增或按主键更新数据（MyBatis原生foreach方法）
-     *
-     * @param entities List<Rider> 实例对象列表
-     * @return 影响行数
-     * @throws org.springframework.jdbc.BadSqlGrammarException 入参是空List的时候会抛SQL语句错误的异常，请自行校验入参
-     */
-    int insertOrUpdateBatch(@Param("entities") List<Rider> entities);
 
     /**
      * 修改数据
      *
-     * @param
      * @return 影响行数
      */
     int update(RiderVo riderVo);

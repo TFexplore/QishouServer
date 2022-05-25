@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.ScheduleTemplateDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.ScheduleTemplate" id="ScheduleTemplateMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="discribe" column="discribe" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="TemplateVoMap" type="com.zhaishu.qishouserver.Vo.TemplateVo">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="discribe" column="discribe" jdbcType="VARCHAR"/>
+        <collection property="riders" javaType="java.util.ArrayList"
+                    column="{ID=id}"
+                    ofType="RiderVoMap" select="getRiders"/>
+    </resultMap>
+    <resultMap type="com.zhaishu.qishouserver.Vo.RiderVo" id="RiderVoMap">
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="location_note" column="tname" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="getRiders" resultMap="RiderVoMap">
+        select
+            s.employee_id,e.name,t.tname
+        from rider_schedule s,employee e,rider r,t_apartment t
+        where s.worktime_id = #{ID} and s.employee_id =e.employee_id and e.employee_id=r.employee_id and r.location_id=t.id
+    </select>
+    <select id="getTempletes" resultMap="TemplateVoMap">
+        select  id, discribe
+        from schedule_template
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ScheduleTemplateMap">
+        select
+          id, discribe
+        from schedule_template
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ScheduleTemplateMap">
+        select
+          id, discribe
+        from schedule_template
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="discribe != null and discribe != ''">
+                and discribe = #{discribe}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="int">
+        select count(1)
+        from schedule_template
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="discribe != null and discribe != ''">
+                and discribe = #{discribe}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into schedule_template(discribe)
+        values (#{discribe})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into schedule_template(discribe)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.discribe})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into schedule_template(discribe)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.discribe})
+        </foreach>
+        on duplicate key update
+        discribe = values(discribe)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update schedule_template
+        <set>
+            <if test="discribe != null and discribe != ''">
+                discribe = #{discribe},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from schedule_template where id = #{id}
+    </delete>
+
+</mapper>
+

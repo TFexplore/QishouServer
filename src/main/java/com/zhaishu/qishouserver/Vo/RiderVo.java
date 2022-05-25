@@ -23,15 +23,16 @@ public class RiderVo extends Rider {
     private String holdingIdCard;
     @ApiModelProperty(value = "身份证号码")
     private String idCard;
-    @ApiModelProperty(name = "楼栋描述")
+    @ApiModelProperty("楼栋描述")
     private String location_note;
-    @ApiModelProperty(name= "审核状态")
+    @ApiModelProperty("审核状态")
     private Integer checkState;
-    @ApiModelProperty(name= "审核描述")
+    @ApiModelProperty("审核描述")
     private String checkContent;
 
     public RiderVo() {
     }
+
 
 
     public String getName() {

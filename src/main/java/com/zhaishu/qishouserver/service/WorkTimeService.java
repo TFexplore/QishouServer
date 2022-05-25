@@ -4,6 +4,8 @@ import com.zhaishu.qishouserver.entity.WorkTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 /**
  * 工作时段表(WorkTime)表服务接口
  *
@@ -12,7 +14,9 @@ import org.springframework.data.domain.PageRequest;
  */
 public interface WorkTimeService {
 
-    WorkTime queryByMap(WorkTime workTime);
+    List<WorkTime> queryByMap(WorkTime workTime);
+
+    List<WorkTime> getTemplates();
 
     /**
      * 通过ID查询单条数据
@@ -37,7 +41,7 @@ public interface WorkTimeService {
      * @param workTime 实例对象
      * @return 实例对象
      */
-    int insert(WorkTime workTime);
+    WorkTime insert(WorkTime workTime);
 
     /**
      * 修改数据

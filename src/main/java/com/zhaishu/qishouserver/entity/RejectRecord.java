@@ -30,7 +30,7 @@ public class RejectRecord implements Serializable {
     /**
      * 记录时间
      */
-    private Date recordTime;
+    private Long recordTime;
     /**
      * 是否记录罚款:1-是,0-否
      */
@@ -42,7 +42,7 @@ public class RejectRecord implements Serializable {
     /**
      * 审核时间
      */
-    private Date checkTime;
+    private Long checkTime;
     
     private Date createTime;
     
@@ -85,11 +85,11 @@ public class RejectRecord implements Serializable {
         this.feedback = feedback;
     }
 
-    public Date getRecordTime() {
+    public Long getRecordTime() {
         return recordTime;
     }
 
-    public void setRecordTime(Date recordTime) {
+    public void setRecordTime(Long recordTime) {
         this.recordTime = recordTime;
     }
 
@@ -109,11 +109,11 @@ public class RejectRecord implements Serializable {
         this.checkBy = checkBy;
     }
 
-    public Date getCheckTime() {
+    public Long getCheckTime() {
         return checkTime;
     }
 
-    public void setCheckTime(Date checkTime) {
+    public void setCheckTime(Long checkTime) {
         this.checkTime = checkTime;
     }
 

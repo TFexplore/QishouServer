@@ -38,21 +38,21 @@ public class DistributeOrder implements Serializable {
     /**
      * 接单时间
      */
-    private Date getOrderTime;
+    private Long getOrderTime;
     /**
      * 取货时间
      */
-    private Date takeOrderTime;
+    private Long takeOrderTime;
     /**
      * 配送完成时间
      */
-    private String distributeFinishTime;
+    private Long distributeFinishTime;
     /**
      * 订单完成时间
      */
-    private Date orderFinishTime;
+    private Long orderFinishTime;
     
-    private Date createTime;
+    private Long createTime;
     
     private Integer createBy;
     
@@ -111,43 +111,43 @@ public class DistributeOrder implements Serializable {
         this.commentContent = commentContent;
     }
 
-    public Date getGetOrderTime() {
+    public Long getGetOrderTime() {
         return getOrderTime;
     }
 
-    public void setGetOrderTime(Date getOrderTime) {
+    public void setGetOrderTime(Long getOrderTime) {
         this.getOrderTime = getOrderTime;
     }
 
-    public Date getTakeOrderTime() {
+    public Long getTakeOrderTime() {
         return takeOrderTime;
     }
 
-    public void setTakeOrderTime(Date takeOrderTime) {
+    public void setTakeOrderTime(Long takeOrderTime) {
         this.takeOrderTime = takeOrderTime;
     }
 
-    public String getDistributeFinishTime() {
+    public Long getDistributeFinishTime() {
         return distributeFinishTime;
     }
 
-    public void setDistributeFinishTime(String distributeFinishTime) {
+    public void setDistributeFinishTime(Long distributeFinishTime) {
         this.distributeFinishTime = distributeFinishTime;
     }
 
-    public Date getOrderFinishTime() {
+    public Long getOrderFinishTime() {
         return orderFinishTime;
     }
 
-    public void setOrderFinishTime(Date orderFinishTime) {
+    public void setOrderFinishTime(Long orderFinishTime) {
         this.orderFinishTime = orderFinishTime;
     }
 
-    public Date getCreateTime() {
+    public Long getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(Long createTime) {
         this.createTime = createTime;
     }
 

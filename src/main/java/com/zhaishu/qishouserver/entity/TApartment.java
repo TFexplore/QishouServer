@@ -1,5 +1,7 @@
 package com.zhaishu.qishouserver.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,7 @@ public class TApartment implements Serializable {
     /**
      * 楼栋表id，自增
      */
+    @ApiModelProperty(value = "楼栋表id，自增")
     private Long id;
     /**
      * 关联仓库id，可为空，暂时未关联仓库
@@ -21,6 +24,7 @@ public class TApartment implements Serializable {
     /**
      * 楼栋名
      */
+    @ApiModelProperty(value = "楼栋名")
     private String tname;
     /**
      * 详情

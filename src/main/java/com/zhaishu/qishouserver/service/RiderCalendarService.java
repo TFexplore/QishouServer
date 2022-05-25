@@ -19,10 +19,14 @@ public interface RiderCalendarService {
 
     List<DateVo> getCalendars(RiderCalendar riderCalendar, Integer limit, Integer offset);
 
+    List<DateVo> getTemplates(RiderCalendar riderCalendar, Integer limit, Integer offset);
+
     RiderCalendar queryById(Integer id);
 
 
     List<RiderCalendar> queryByPage(@Param("c") RiderCalendar riderCalendar, Integer limit, Integer offset);
+
+    int countTemplate();
 
     /**
      * 新增数据
