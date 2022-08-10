@@ -1,5 +1,7 @@
 package com.zhaishu.qishouserver.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 import java.io.Serializable;
 
@@ -7,61 +9,60 @@ import java.io.Serializable;
  * 骑手配送信息表(DistributeOrder)实体类
  *
  * @author makejava
- * @since 2022-04-18 19:22:40
+ * @since 2022-07-20 19:11:37
  */
 public class DistributeOrder implements Serializable {
-    private static final long serialVersionUID = 367967492392959767L;
-    /**
-     * 自增id
-     */
-    private Integer id;
-    /**
-     * 骑手配送订单ID
-     */
-    private Integer distributeId;
-    /**
-     * 商品订单ID
-     */
-    private Integer orderId;
-    /**
-     * 骑手ID
-     */
-    private Integer employeeId;
-    /**
-     * 订单评价等级
-     */
-    private Integer commentLevel;
-    /**
-     * 订单评价内容
-     */
-    private String commentContent;
-    /**
-     * 接单时间
-     */
-    private Long getOrderTime;
-    /**
-     * 取货时间
-     */
-    private Long takeOrderTime;
-    /**
-     * 配送完成时间
-     */
-    private Long distributeFinishTime;
-    /**
-     * 订单完成时间
-     */
-    private Long orderFinishTime;
-    
-    private Long createTime;
-    
-    private Integer createBy;
-    
-    private Date updateTime;
-    
-    private Integer updateBy;
-    
-    private Integer isDelete;
+    private static final long serialVersionUID = 433448129749110217L;
+        
+    @ApiModelProperty(value = "自增id")
+         private Integer id;
+        
+    @ApiModelProperty(value = "骑手配送订单ID")
+         private Integer distributeId;
+        
+    @ApiModelProperty(value = "商品订单ID")
+         private Integer orderId;
+        
+    @ApiModelProperty(value = "骑手ID")
+         private Integer employeeId;
+        
+    @ApiModelProperty(value = "订单评价等级:1好评，2差评")
+         private Integer commentLevel;
+        
+    @ApiModelProperty(value = "订单评价内容")
+         private String commentContent;
+        
+    @ApiModelProperty(value = "接单时间")
+         private Long getOrderTime;
+        
+    @ApiModelProperty(value = "取货时间")
+         private Long takeOrderTime;
+        
+    @ApiModelProperty(value = "配送完成时间")
+         private Long distributeFinishTime;
+        
+    @ApiModelProperty(value = "订单完成时间")
+         private Long orderFinishTime;
+        private Date createTime;
+        private Integer createBy;
+        private Date updateTime;
+        private Integer updateBy;
+        private Integer isDelete;
+        
+    @ApiModelProperty(value = "订单状态：1准时送达，2超时配送")
+         private Integer status;
 
+    @ApiModelProperty(value = "是否入账")
+    private Integer isCount;
+
+
+    public Integer getIsCount() {
+        return isCount;
+    }
+
+    public void setIsCount(Integer isCount) {
+        this.isCount = isCount;
+    }
 
     public Integer getId() {
         return id;
@@ -143,11 +144,11 @@ public class DistributeOrder implements Serializable {
         this.orderFinishTime = orderFinishTime;
     }
 
-    public Long getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Long createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
@@ -181,6 +182,14 @@ public class DistributeOrder implements Serializable {
 
     public void setIsDelete(Integer isDelete) {
         this.isDelete = isDelete;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
 }

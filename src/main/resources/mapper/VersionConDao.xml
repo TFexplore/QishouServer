@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.VersionConDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.VersionCon" id="VersionConMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="versionName" column="version_name" jdbcType="VARCHAR"/>
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="INTEGER"/>
+        <result property="isOnline" column="is_online" jdbcType="INTEGER"/>
+        <result property="versionId" column="version_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="VersionConMap">
+        select
+          id, version_name, path, update_time, is_online, version_id
+        from version_con
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="VersionConMap">
+        select
+          id, version_name, path, update_time, is_online, version_id
+        from version_con
+        <where>
+            <if test="param.id != null">
+                and id = #{param.id}
+            </if>
+            <if test="param.versionName != null and param.versionName != ''">
+                and version_name = #{param.versionName}
+            </if>
+            <if test="param.path != null and param.path != ''">
+                and path = #{param.path}
+            </if>
+            <if test="param.updateTime != null">
+                and update_time = #{param.updateTime}
+            </if>
+            <if test="param.isOnline != null">
+                and is_online = #{param.isOnline}
+            </if>
+            <if test="param.versionId != null">
+                and version_id = #{param.versionId}
+            </if>
+        </where>
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from version_con
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="versionName != null and versionName != ''">
+                and version_name = #{versionName}
+            </if>
+            <if test="path != null and path != ''">
+                and path = #{path}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="isOnline != null">
+                and is_online = #{isOnline}
+            </if>
+            <if test="versionId != null">
+                and version_id = #{versionId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into version_con(version_name, path, update_time, is_online, version_id)
+        values (#{versionName}, #{path}, #{updateTime}, #{isOnline}, #{versionId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into version_con(version_name, path, update_time, is_online, version_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.versionName}, #{entity.path}, #{entity.updateTime}, #{entity.isOnline}, #{entity.versionId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into version_con(version_name, path, update_time, is_online, version_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.versionName}, #{entity.path}, #{entity.updateTime}, #{entity.isOnline}, #{entity.versionId})
+        </foreach>
+        on duplicate key update
+        version_name = values(version_name),
+        path = values(path),
+        update_time = values(update_time),
+        is_online = values(is_online),
+        version_id = values(version_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update version_con
+        <set>
+            <if test="versionName != null and versionName != ''">
+                version_name = #{versionName},
+            </if>
+            <if test="path != null and path != ''">
+                path = #{path},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="isOnline != null">
+                is_online = #{isOnline},
+            </if>
+            <if test="versionId != null">
+                version_id = #{versionId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from version_con where id = #{id}
+    </delete>
+
+</mapper>
+

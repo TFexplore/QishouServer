@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.ShopInfoDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.ShopInfo" id="ShopInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="shopName" column="shop_name" jdbcType="VARCHAR"/>
+        <result property="shopDescription" column="shop_description" jdbcType="VARCHAR"/>
+        <result property="shopStatus" column="shop_status" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ShopInfoMap">
+        select
+          id, shop_id, shop_name, shop_description, shop_status, is_delete, create_time, create_by, update_time, update_by
+        from shop_info
+        where shop_id = #{shopId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ShopInfoMap">
+        select
+          id, shop_id, shop_name, shop_description, shop_status, is_delete, create_time, create_by, update_time, update_by
+        from shop_info
+        <where>
+            <if test="s.shopId != null">
+                and shop_id = #{s.shopId}
+            </if>
+            <if test="s.shopName != null and s.shopName != ''">
+                and shop_name = #{s.shopName}
+            </if>
+            <if test="s.shopStatus != null">
+                and shop_status = #{s.shopStatus}
+            </if>
+            <if test="s.isDelete != null">
+                and is_delete = #{s.isDelete}
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+    <select id="maxId" resultType="java.lang.Integer">
+        select max(shop_id) from shop_info
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="int">
+        select count(1)
+        from shop_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="shopId != null">
+                and shop_id = #{shopId}
+            </if>
+            <if test="shopName != null and shopName != ''">
+                and shop_name = #{shopName}
+            </if>
+            <if test="shopDescription != null and shopDescription != ''">
+                and shop_description = #{shopDescription}
+            </if>
+            <if test="shopStatus != null">
+                and shop_status = #{shopStatus}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shop_info(shop_id, shop_name, shop_description, shop_status, is_delete, create_time, create_by, update_time, update_by)
+        values (#{shopId}, #{shopName}, #{shopDescription}, #{shopStatus}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into shop_info(shop_id, shop_name, shop_description, shop_status, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.shopId}, #{entity.shopName}, #{entity.shopDescription}, #{entity.shopStatus}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into shop_info(shop_id, shop_name, shop_description, shop_status, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.shopId}, #{entity.shopName}, #{entity.shopDescription}, #{entity.shopStatus}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+        on duplicate key update
+        shop_id = values(shop_id),
+        shop_name = values(shop_name),
+        shop_description = values(shop_description),
+        shop_status = values(shop_status),
+        is_delete = values(is_delete),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shop_info
+        <set>
+            <if test="shopId != null">
+                shop_id = #{shopId},
+            </if>
+            <if test="shopName != null and shopName != ''">
+                shop_name = #{shopName},
+            </if>
+            <if test="shopDescription != null and shopDescription != ''">
+                shop_description = #{shopDescription},
+            </if>
+            <if test="shopStatus != null">
+                shop_status = #{shopStatus},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+        </set>
+        where shop_id = #{shopId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from shop_info where shop_id = #{shopId}
+    </delete>
+
+</mapper>
+

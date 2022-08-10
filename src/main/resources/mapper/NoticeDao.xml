@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.NoticeDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.Notice" id="NoticeMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="noticeId" column="notice_id" jdbcType="INTEGER"/>
+        <result property="noticeTitle" column="notice_title" jdbcType="VARCHAR"/>
+        <result property="noticeContent" column="notice_content" jdbcType="VARCHAR"/>
+        <result property="noticeImg" column="notice_img" jdbcType="VARCHAR"/>
+        <result property="noticeType" column="notice_type" jdbcType="INTEGER"/>
+        <result property="startTime" column="start_time" jdbcType="INTEGER"/>
+        <result property="endTime" column="end_time" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap type="com.zhaishu.qishouserver.Vo.NoticeVo" id="NoticeVoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="noticeId" column="notice_id" jdbcType="INTEGER"/>
+        <result property="noticeTitle" column="notice_title" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="noticeContent" column="notice_content" jdbcType="VARCHAR"/>
+        <result property="noticeImg" column="notice_img" jdbcType="VARCHAR"/>
+        <result property="noticeType" column="notice_type" jdbcType="INTEGER"/>
+        <result property="startTime" column="start_time" jdbcType="INTEGER"/>
+        <result property="endTime" column="end_time" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap type="com.zhaishu.qishouserver.entity.Employee" id="EmployeeMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
+        <result property="phoneNum" column="phone_num" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="frontIdCard" column="front_id_card" jdbcType="VARCHAR"/>
+        <result property="behindIdCard" column="behind_id_card" jdbcType="VARCHAR"/>
+        <result property="holdingIdCard" column="holding_id_card" jdbcType="VARCHAR"/>
+        <result property="employeeType" column="employee_type" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="sarlaryLevel" column="sarlary_level" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+    <!--查询单个-->
+    <select id="queryById" resultMap="NoticeMap">
+        select
+          id, notice_id, notice_title,update_time, notice_content, notice_img, notice_type, start_time, end_time, create_time, is_delete, employee_id
+        from notice
+        where notice_id = #{id}
+    </select>
+    <select id="getEmployeeList" resultMap="EmployeeMap">
+        select n.employee_id,e.name
+        from   notice n  left join employee e on e.employee_id=n.employee_id
+    </select>
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="NoticeVoMap">
+        select
+        n.id, n.notice_id, n.notice_title,n.update_time, n.notice_content, n.notice_img, n.notice_type, n.start_time, n.end_time, n.create_time, n.is_delete, n.employee_id,
+        e.name
+        from notice n left join employee e on e.employee_id=n.employee_id
+        <where>
+
+            <if test="param.id != null">
+                and id = #{param.id}
+            </if>
+            <if test="param.noticeId != null">
+                and notice_id = #{param.noticeId}
+            </if>
+            <if test="param.noticeTitle != null and param.noticeTitle != ''">
+                and notice_title = #{param.noticeTitle}
+            </if>
+            <if test="param.noticeContent != null and param.noticeContent != ''">
+                and notice_content = #{param.noticeContent}
+            </if>
+            <if test="param.noticeImg != null and param.noticeImg != ''">
+                and notice_img = #{param.noticeImg}
+            </if>
+            <if test="param.noticeType != null">
+                and notice_type = #{param.noticeType}
+            </if>
+            <if test="param.startTime != null">
+                and  #{param.startTime} between start_time and end_time
+            </if>
+            <if test="param.createTime != null">
+                and create_time = #{param.createTime}
+            </if>
+            <if test="param.isDelete != null">
+                and is_delete = #{param.isDelete}
+            </if>
+            <if test="param.employeeId != null">
+                and n.employee_id = #{param.employeeId}
+            </if>
+        </where>
+        order by start_time desc
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from notice
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="noticeId != null">
+                and notice_id = #{noticeId}
+            </if>
+            <if test="noticeTitle != null and noticeTitle != ''">
+                and notice_title = #{noticeTitle}
+            </if>
+            <if test="noticeContent != null and noticeContent != ''">
+                and notice_content = #{noticeContent}
+            </if>
+            <if test="noticeImg != null and noticeImg != ''">
+                and notice_img = #{noticeImg}
+            </if>
+            <if test="noticeType != null">
+                and notice_type = #{noticeType}
+            </if>
+            <if test="startTime != null">
+                and  #{startTime} between start_time and end_time
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into notice(notice_id, notice_title, notice_content, notice_img, notice_type, start_time, end_time, create_time, is_delete, employee_id)
+        values (#{noticeId}, #{noticeTitle}, #{noticeContent}, #{noticeImg}, #{noticeType}, #{startTime}, #{endTime}, #{createTime}, #{isDelete}, #{employeeId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into notice(notice_id, notice_title, notice_content, notice_img, notice_type, start_time, end_time, create_time, is_delete, employee_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.noticeId}, #{entity.noticeTitle}, #{entity.noticeContent}, #{entity.noticeImg}, #{entity.noticeType}, #{entity.startTime}, #{entity.endTime}, #{entity.createTime}, #{entity.isDelete}, #{entity.employeeId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into notice(notice_id, notice_title, notice_content, notice_img, notice_type, start_time, end_time, create_time, is_delete, employee_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.noticeId}, #{entity.noticeTitle}, #{entity.noticeContent}, #{entity.noticeImg}, #{entity.noticeType}, #{entity.startTime}, #{entity.endTime}, #{entity.createTime}, #{entity.isDelete}, #{entity.employeeId})
+        </foreach>
+        on duplicate key update
+        notice_id = values(notice_id),
+        notice_title = values(notice_title),
+        notice_content = values(notice_content),
+        notice_img = values(notice_img),
+        notice_type = values(notice_type),
+        start_time = values(start_time),
+        end_time = values(end_time),
+        create_time = values(create_time),
+        is_delete = values(is_delete),
+        employee_id = values(employee_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update notice
+        <set>
+            <if test="noticeId != null">
+                notice_id = #{noticeId},
+            </if>
+            <if test="noticeTitle != null and noticeTitle != ''">
+                notice_title = #{noticeTitle},
+            </if>
+            <if test="noticeContent != null and noticeContent != ''">
+                notice_content = #{noticeContent},
+            </if>
+            <if test="noticeImg != null and noticeImg != ''">
+                notice_img = #{noticeImg},
+            </if>
+            <if test="noticeType != null">
+                notice_type = #{noticeType},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="employeeId != null">
+                employee_id = #{employeeId},
+            </if>
+        </set>
+        where notice_id = #{noticeId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from notice where notice_id = #{id}
+    </delete>
+
+</mapper>
+

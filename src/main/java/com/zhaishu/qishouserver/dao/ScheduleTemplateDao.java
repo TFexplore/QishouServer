@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface ScheduleTemplateDao {
 
-    List<TemplateVo> getTempletes();
+    List<TemplateVo> getTempletes(Integer limit,Integer offset);
     List<RiderVo> getRiders(Integer ID);
 
     /**
@@ -36,13 +36,8 @@ public interface ScheduleTemplateDao {
      */
     List<ScheduleTemplate> queryAllByLimit(ScheduleTemplate scheduleTemplate, @Param("pageable") Pageable pageable);
 
-    /**
-     * 统计总行数
-     *
-     * @param scheduleTemplate 查询条件
-     * @return 总行数
-     */
-    int count(ScheduleTemplate scheduleTemplate);
+
+    int count();
 
     /**
      * 新增数据

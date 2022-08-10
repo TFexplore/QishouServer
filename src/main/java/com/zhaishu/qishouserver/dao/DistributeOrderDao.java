@@ -1,6 +1,9 @@
 package com.zhaishu.qishouserver.dao;
 
+import com.zhaishu.qishouserver.Vo.OrderVo;
+import com.zhaishu.qishouserver.Vo.ShipRiderVo;
 import com.zhaishu.qishouserver.entity.DistributeOrder;
+import com.zhaishu.qishouserver.entity.TGoodsSs;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
@@ -13,6 +16,14 @@ import java.util.List;
  */
 public interface DistributeOrderDao {
 
+    List<TGoodsSs> getGoodsList(Integer orderId);
+
+    List<OrderVo> getOrdersAll(@Param("order") OrderVo orderVo,Integer limit,Integer offset);
+    int countOrders(OrderVo orderVo);
+    int countOrdersOnDeal(OrderVo orderVo);
+    int updateOrders(OrderVo orderVo);
+
+    List<DistributeOrder> queryAllByMap(DistributeOrder distributeOrder);
     /**
      * 通过ID查询单条数据
      *

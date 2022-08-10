@@ -5,12 +5,8 @@ import com.zhaishu.qishouserver.Security.UserToken;
 import com.zhaishu.qishouserver.Vo.RiderVo;
 import com.zhaishu.qishouserver.common.ResultResponse;
 import com.zhaishu.qishouserver.common.TokenUtils;
-import com.zhaishu.qishouserver.entity.InApplication;
-import com.zhaishu.qishouserver.entity.SeparationApplication;
-import com.zhaishu.qishouserver.service.EmployeeService;
-import com.zhaishu.qishouserver.service.InApplicationService;
-import com.zhaishu.qishouserver.service.RiderService;
-import com.zhaishu.qishouserver.service.SeparationApplicationService;
+import com.zhaishu.qishouserver.entity.*;
+import com.zhaishu.qishouserver.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -32,7 +28,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("rider")
-@Api(tags = "RiderController", description = "骑手信息表")
+@Api(tags = "AAA骑手管理接口", description = "骑手信息表")
 public class RiderController {
     /**
      * 服务对象
@@ -46,15 +42,18 @@ public class RiderController {
     @Resource
     private SeparationApplicationService separationService;
 
+    @Resource
+    private EmployeeWalletService walletService;
 
-
+    @Resource
+    private SalaryLevelService levelService;
 
     @PostMapping("/riderIn")
     @ApiOperation(value = "入职申请处理", notes = "mode：inApplication,传入骑手id，审核人id:CreatBy，审核状态等必要信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
     })
-    @UserToken.Admin
+    @UserToken.HR
     @Transactional
     public ResultResponse RiderIn(@RequestHeader String token,Integer type,@RequestBody InApplication in){
        if (in.getEmployeeId()==null){
@@ -65,18 +64,59 @@ public class RiderController {
         if (in.getCheckState()==1){//审核通过
             rider.setRiderType(type);
             rider.setCheckTime(new Date());
-        }
+            Employee employee=new Employee();
+            employee.setEmployeeId(in.getEmployeeId());
+            employee.setStatus(1);
+            employee.setIsDelete(0);
+            employeeService.update(employee);
+
+            //钱包初始化
+            if (walletService.queryById(employee.getEmployeeId())==null){
+                EmployeeWallet wallet=new EmployeeWallet();
+                wallet.setEmployeeId(employee.getEmployeeId());
+                wallet.setBalance(0.0);
+                walletService.insert(wallet);
+            }
+            //骑手等级初始化
+            try {
+                SalaryLevel salaryLevel;
+                salaryLevel=levelService.queryByEmId(rider.getEmployeeId());
+                if (salaryLevel==null){
+                     salaryLevel=new SalaryLevel();
+                    salaryLevel=levelService.getList(salaryLevel,1,0).get(0);
+                    salaryLevel.setEmployeeId(rider.getEmployeeId());
+                    salaryLevel.setId(null);
+                    levelService.insert(salaryLevel);
+                    salaryLevel=levelService.queryByEmId(rider.getEmployeeId());
+                }
+               rider.setSalaryLevelId(salaryLevel.getEmployeeId());
+
+            }catch (IndexOutOfBoundsException e){
+
+                SalaryLevel salaryLevel=new SalaryLevel();
+                salaryLevel.setEmployeeId(rider.getEmployeeId());
+                salaryLevel.setId(null);
+                salaryLevel.setSalary(2000.00);
+                salaryLevel.setName("p0");
+                levelService.insert(salaryLevel);
+                salaryLevel=levelService.queryByEmId(rider.getEmployeeId());
+                rider.setSalaryLevelId(salaryLevel.getId());
+            }
+            rider.setIsDelete(0);
             rider.setHr(""+TokenUtils.getIntegerValus("userId",token));
             riderService.update(rider);
+        }
+
             inApplicationService.update(in);
 
-        return ResultResponse.resultSuccess("操作成功");
+            return ResultResponse.resultSuccess("操作成功");
     }
     @PostMapping("/riderSe")
     @ApiOperation(value = "处理主动离职骑手申请", notes = "mode：SeparationApplication,处理离职申请表,传入需要更新的参数列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
     })
+    @UserToken.HR
     @Transactional
     public ResultResponse RiderSe(@RequestBody SeparationApplication se){
         if (se.getEmployeeId()==null){
@@ -91,7 +131,13 @@ public class RiderController {
             rider.setIsDelete(1);
             rider.setEmployeeId(se.getEmployeeId());
             riderService.update(rider);
+            Employee employee=new Employee();
+            employee.setEmployeeId(se.getEmployeeId());
+            employee.setStatus(2);
+            employee.setIsDelete(1);
+            employeeService.update(employee);
         }
+
 
         separationService.update(se);
 
@@ -102,6 +148,7 @@ public class RiderController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
     })
+    @UserToken.HR
     @Transactional
     public ResultResponse RiderOut(@RequestBody SeparationApplication se){
             if (se.getEmployeeId()==null){
@@ -119,8 +166,12 @@ public class RiderController {
             rider.setIsDelete(2);//直接解雇
             rider.setEmployeeId(se.getEmployeeId());
             riderService.update(rider);
+            se.setCheckState(1);
             separationService.insert(se);
-
+        Employee employee=new Employee();
+        employee.setEmployeeId(se.getEmployeeId());
+        employee.setStatus(2);
+        employeeService.update(employee);
         return ResultResponse.resultSuccess("骑手解雇成功");
     }
 
@@ -128,7 +179,7 @@ public class RiderController {
     @ApiOperation(value = "获取所有骑手", notes = "不包含未入职的骑手，mode：RiderVo 通过map进行筛选，map为空则获取所有骑手{\n"+
             "  \"employeeId\": 0, 工号\n" +
             "  \"invitationCode\": 0,  邀请码\n" +
-            "  \"isDelete\": 0, 是否在职0为在职\n" +
+            "  \"isDelete\": 0, 是否在职，0为在职,1为离职，2为被解雇\n" +
             "  \"locationId\": 0, 楼栋\n" +
             "  \"name\": \"string\", 通过姓名查找\n" +
             "  \"phoneNum\": \"string\",通过电话查找\n" +
@@ -138,6 +189,7 @@ public class RiderController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
     })
+    @UserToken.HR
     public ResultResponse getAllRiders(@RequestBody RiderVo riderVo,int offset,int limit){
         List<RiderVo> riderVoList = this.riderService.getAllRiders(offset,limit,riderVo);
         Map<String,Object> map = new HashMap<>();
@@ -153,6 +205,7 @@ public class RiderController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
     })
+    @UserToken.HR
     public ResultResponse getAllRidersIn(@RequestBody RiderVo riderVo,int offset,int limit){
         List<RiderVo> riderVoList = this.riderService.getAllRidersIn(offset,limit,riderVo);
         Map<String,Object> map = new HashMap<>();
@@ -168,6 +221,7 @@ public class RiderController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
     })
+    @UserToken.HR
     public ResultResponse getAllRidersSe(@RequestBody RiderVo riderVo,int offset,int limit){
         List<RiderVo> riderVoList = this.riderService.getAllRidersSe(offset,limit,riderVo);
         Map<String,Object> map = new HashMap<>();
@@ -181,10 +235,25 @@ public class RiderController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
     })
+    @UserToken.HR
     public ResultResponse edit(@RequestBody RiderVo rider) {
         //参数校验
         if (rider.getEmployeeId() == null) {
             return ResultResponse.error("400","缺少工号");
+        }
+        if (rider.getPhoneNum()!=null){
+            Employee employee1=this.employeeService.queryByTel(rider.getPhoneNum());
+            if (employee1!=null){
+                return ResultResponse.error("403","存在相同电话号，一个电话号只能绑定一个用户");
+            }
+        }
+        if (rider.getRiderType()!=null){
+            if (rider.getRiderType()<=5){
+                return ResultResponse.error("403","只能修改员工信息，不能修改骑手为管理");
+            }
+        }
+        if (rider.getIsDelete()!=null){
+            return ResultResponse.error("403","只能修改员工信息，不能通过此接口删除");
         }
 
         //更新骑手信息
@@ -198,6 +267,7 @@ public class RiderController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
     })
+    @UserToken.HR
     public ResultResponse getRiderById(String id) {
         //判断是否存在
         RiderVo rider = this.riderService.getRiderById(Integer.valueOf(id));

@@ -1,5 +1,6 @@
 package com.zhaishu.qishouserver.controller;
 
+import com.zhaishu.qishouserver.Security.UserToken;
 import com.zhaishu.qishouserver.common.ResultResponse;
 import com.zhaishu.qishouserver.entity.TApartment;
 import com.zhaishu.qishouserver.service.TApartmentService;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("tApartment")
-@Api(tags = "楼栋信息表", description = "modle ：TApartment")
+@Api(tags = "B楼栋信息表", description = "modle ：TApartment")
 public class TApartmentController {
     /**
      * 服务对象
@@ -37,6 +38,7 @@ public class TApartmentController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "Token", required = true, dataTypeClass = String.class, paramType = "header")
     })
+    @UserToken.Admin
     public ResultResponse getLocatinMap(){
         List<TApartment> list=tApartmentService.getAll();
 

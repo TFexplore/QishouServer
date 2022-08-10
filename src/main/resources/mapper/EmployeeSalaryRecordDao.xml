@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.EmployeeSalaryRecordDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.EmployeeSalaryRecord" id="EmployeeSalaryRecordMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="desc" column="record_explain" jdbcType="VARCHAR"/>
+        <result property="num" column="num" jdbcType="NUMERIC"/>
+        <result property="recordTime" column="record_time" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="monthId" column="month_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeSalaryRecordMap">
+        select
+          id, employee_id, type, record_explain, num, record_time, status, month_id
+        from employee_salary_record
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="EmployeeSalaryRecordMap">
+        select
+          id, employee_id, type, record_explain, num, record_time, status, month_id
+        from employee_salary_record
+        <where>
+            <if test="param.id != null">
+                and id = #{param.id}
+            </if>
+            <if test="param.employeeId != null">
+                and employee_id = #{param.employeeId}
+            </if>
+            <if test="param.type != null">
+                and type = #{param.type}
+            </if>
+            <if test="param.desc != null and param.desc != ''">
+                and record_explain = #{param.desc}
+            </if>
+            <if test="param.num != null">
+                and num = #{param.num}
+            </if>
+            <if test="param.recordTime != null">
+                and record_time = #{param.recordTime}
+            </if>
+            <if test="param.status != null">
+                and status = #{param.status}
+            </if>
+            <if test="param.monthId != null">
+                and month_id = #{param.monthId}
+            </if>
+        </where>
+        order by record_time desc
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from employee_salary_record
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="desc != null and desc != ''">
+                and record_explain = #{desc}
+            </if>
+            <if test="num != null">
+                and num = #{num}
+            </if>
+            <if test="recordTime != null">
+                and record_time = #{recordTime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="monthId != null">
+                and month_id = #{monthId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary_record(employee_id, type, record_explain, num, record_time, status, month_id)
+        values (#{employeeId}, #{type}, #{desc}, #{num}, #{recordTime}, #{status}, #{monthId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary_record(employee_id, type, record_explain, num, record_time, month_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.employeeId}, #{entity.type}, #{entity.desc}, #{entity.num}, #{entity.recordTime}, #{entity.monthId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary_record(employee_id, type, record_explain, num, record_time, status, month_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.employeeId}, #{entity.type}, #{entity.desc}, #{entity.num}, #{entity.recordTime}, #{entity.status}, #{entity.monthId})
+        </foreach>
+        on duplicate key update
+        employee_id = values(employee_id),
+        type = values(type),
+        record_explain = values(desc),
+        num = values(num),
+        record_time = values(record_time),
+        status = values(status),
+        month_id = values(month_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update employee_salary_record
+        <set>
+            <if test="employeeId != null">
+                employee_id = #{employeeId},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="desc != null and desc != ''">
+                record_explain = #{desc},
+            </if>
+            <if test="num != null">
+                num = #{num},
+            </if>
+            <if test="recordTime != null">
+                record_time = #{recordTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="monthId != null">
+                month_id = #{monthId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from employee_salary_record where id = #{id}
+    </delete>
+
+</mapper>
+

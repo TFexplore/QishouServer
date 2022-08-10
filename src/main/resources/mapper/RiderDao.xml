@@ -28,6 +28,8 @@
         <result property="checkTime" column="check_time" jdbcType="TIMESTAMP"/>
         <result property="hr" column="hr" jdbcType="VARCHAR"/>
         <result property="invitationCode" column="invitation_code" jdbcType="INTEGER"/>
+        <result property="salaryLevel" column="salary_level" jdbcType="VARCHAR"/>
+        <result property="salaryLevelId" column="sl_id" jdbcType="INTEGER"/>
         <result property="isOnline" column="is_online" jdbcType="INTEGER"/>
         <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -86,19 +88,22 @@
 
     <!--查询指定行数据-->
     <select id="getAllRiders" resultMap="RiderVoMap">
-        select r.employee_id, r.location_id,r.regist_time, r.check_time, r.hr, r.invitation_code,r.is_online,
-               e.name,e.phone_num,e.sex,e.employee_type,e.is_delete, e.front_id_card, e.behind_id_card,
+        select  e.employee_id,e.name,e.phone_num,e.sex,e.is_delete, e.front_id_card, e.behind_id_card,e.employee_type,e.is_delete,
+               r.location_id,r.regist_time, r.check_time, r.hr, r.invitation_code,r.is_online,
                e.holding_id_card, e.id_card,e.avatar,
                s.check_content,
-               t.tname
-        from (rider r,employee e,t_apartment t) left join separation_application s on r.employee_id = s.employee_id
+               t.tname,
+               sl.name as salary_level
+        from (rider r,t_apartment t, employee e)
+            left join separation_application s on  s.employee_id=e.employee_id
+            left join  salary_level sl on sl.id=e.sarlary_level
         <where>
-            r.employee_id = e.employee_id and t.id = r.location_id and r.rider_type != 0
+            r.employee_id = e.employee_id  and t.id = r.location_id and r.rider_type != 0
             <if test="rider.employeeId != null">
                 and r.employee_id = #{rider.employeeId}
             </if>
             <if test="rider.riderType != null">
-                and r.rider_type = #{rider.riderType}
+                and e.employee_type = #{rider.riderType}
             </if>
             <if test="rider.locationId != null">
                 and r.location_id = #{rider.locationId}
@@ -135,18 +140,19 @@
                 and e.sex = #{rider.sex}
             </if>
         </where>
+       order by r.check_time desc
             limit #{offset},#{limit}
     </select>
     <select id="countAllRiders" resultType="int">
-        select count(1)
-        from rider r ,employee e
+        select   count(distinct r.employee_id)
+        from rider r left join employee e on r.employee_id = e.employee_id
         <where>
-            r.employee_id = e.employee_id and r.rider_type != 0
+             r.rider_type != 0
             <if test="rider.employeeId != null">
                 and r.employee_id = #{rider.employeeId}
             </if>
             <if test="rider.riderType != null">
-                and r.rider_type = #{rider.riderType}
+                and e.employee_type = #{rider.riderType}
             </if>
             <if test="rider.locationId != null">
                 and r.location_id = #{rider.locationId}
@@ -184,18 +190,18 @@
         </where>
     </select>
     <select id="getAllRidersIn" resultMap="RiderISVoMap">
-        select r.employee_id, r.location_id, r.hr, r.invitation_code,
-               e.name,e.phone_num,e.sex,e.employee_type,e.is_delete, e.front_id_card, e.behind_id_card, e.holding_id_card, e.id_card,e.avatar,
+        select e.employee_id, e.name,e.phone_num,e.sex,e.is_delete, e.front_id_card, e.behind_id_card, e.holding_id_card, e.id_card,e.avatar,e.employee_type,
+               r.location_id, r.hr, r.invitation_code,
                i.apply_time,i.check_state,i.update_time,i.check_content,
                t.tname
         from rider r ,employee e ,in_application i,t_apartment t
         <where>
-            r.employee_id = e.employee_id and r.employee_id=i.employee_id and t.id = r.location_id
+            e.employee_id = r.employee_id and r.employee_id=i.employee_id and t.id = r.location_id
             <if test="rider.employeeId != null">
                 and r.employee_id = #{rider.employeeId}
             </if>
             <if test="rider.riderType != null">
-                and r.rider_type = #{rider.riderType}
+                and e.employee_type = #{rider.riderType}
             </if>
             <if test="rider.locationId != null">
                 and r.location_id = #{rider.locationId}
@@ -225,6 +231,7 @@
                 and e.sex = #{rider.sex}
             </if>
         </where>
+        order by i.apply_time desc
         limit #{offset},#{limit}
     </select>
     <select id="countAllRidersIn" resultType="int">
@@ -236,7 +243,7 @@
                 and r.employee_id = #{rider.employeeId}
             </if>
             <if test="rider.riderType != null">
-                and r.rider_type = #{rider.riderType}
+                and e.employee_type = #{rider.riderType}
             </if>
             <if test="rider.locationId != null">
                 and r.location_id = #{rider.locationId}
@@ -269,7 +276,7 @@
     </select>
     <select id="getAllRidersSe" resultMap="RiderISVoMap">
         select r.employee_id, r.location_id,r.hr, r.invitation_code,
-               e.name,e.phone_num,e.sex,e.employee_type,e.is_delete, e.front_id_card, e.behind_id_card, e.holding_id_card, e.id_card,e.avatar,
+               e.name,e.phone_num,e.sex,e.is_delete, e.front_id_card, e.behind_id_card, e.holding_id_card, e.id_card,e.avatar,e.employee_type,
                s.apply_time ,s.check_state,s.update_time,s.check_content,
                t.tname
         from rider r ,employee e ,separation_application s,t_apartment t
@@ -279,7 +286,7 @@
                 and r.employee_id = #{rider.employeeId}
             </if>
             <if test="rider.riderType != null">
-                and r.rider_type = #{rider.riderType}
+                and e.employee_type = #{rider.riderType}
             </if>
             <if test="rider.locationId != null">
                 and r.location_id = #{rider.locationId}
@@ -309,6 +316,7 @@
                 and e.sex = #{rider.sex}
             </if>
         </where>
+        order by s.apply_time desc
         limit #{offset},#{limit}
     </select>
     <select id="countAllRidersSe" resultType="int">
@@ -320,7 +328,7 @@
                 and r.employee_id = #{rider.employeeId}
             </if>
             <if test="rider.riderType != null">
-                and r.rider_type = #{rider.riderType}
+                and e.employee_type = #{rider.riderType}
             </if>
             <if test="rider.locationId != null">
                 and r.location_id = #{rider.locationId}
@@ -406,7 +414,55 @@
         </where>
         limit #{pageable.offset}, #{pageable.pageSize}
     </select>
-
+    <select id="queryByLimit" resultMap="RiderMap">
+        select
+        employee_id, rider_type, location_id, regist_time, check_time, hr, invitation_code, is_delete
+        from rider
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="riderType != null">
+                and rider_type = #{riderType}
+            </if>
+            <if test="locationId != null">
+                and location_id = #{locationId}
+            </if>
+            <if test="isOnline != null">
+                and is_online = #{isOnline}
+            </if>
+            <if test="registTime != null">
+                and regist_time = #{registTime}
+            </if>
+            <if test="checkTime != null">
+                and check_time = #{checkTime}
+            </if>
+            <if test="hr != null and hr != ''">
+                and hr = #{hr}
+            </if>
+            <if test="invitationCode != null">
+                and invitation_code = #{invitationCode}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+    </select>
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
         select count(1)
@@ -466,18 +522,23 @@
         update rider r left join employee e
             on r.employee_id = e.employee_id
         <set>
-                <if test="isOnline !=null">
+            <if test="isOnline !=null">
                     r.is_online=#{isOnline}
-                </if>
+            </if>
             <if test="riderType != null">
                 r.rider_type = #{riderType},
+            </if>
+            <if test="riderType != null">
                 e.employee_type=#{riderType},
             </if>
+
             <if test="locationId != null">
                 r.location_id = #{locationId},
             </if>
             <if test="isDelete != null">
                 r.is_delete = #{isDelete},
+            </if>
+            <if test="isDelete != null">
                 e.is_delete = #{isDelete},
             </if>
             <if test="hr != null and hr != ''">
@@ -501,8 +562,8 @@
             <if test="sex != null">
                 e.sex = #{sex},
             </if>
-            <if test="sarlaryLevel != null">
-                e.sarlary_level = #{sarlaryLevel},
+            <if test="salaryLevel != null">
+                e.sarlary_level = #{salaryLevel},
             </if>
             <if test="avatar != null and avatar != ''">
                 e.avatar = #{avatar},

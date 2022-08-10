@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface RiderScheduleDao {
 
-
+    RiderSchedule getScheduleById(RiderSchedule schedule);
     List<WorkRecordVo> getWorkRecord(@Param("rider")WorkRecordVo rider, Integer limit,Integer offset);
     int countWorkRecord(@Param("rider")WorkRecordVo rider);
     List<RiderVo> getRiders(@Param("rider")RiderVo rider,Integer limit,Integer offset);
@@ -31,7 +31,7 @@ public interface RiderScheduleDao {
      * @param id 主键
      * @return 实例对象
      */
-    RiderSchedule queryById(Integer id);
+    List<RiderSchedule> queryById(Integer id);
 
     /**
      * 查询指定行数据
@@ -48,7 +48,7 @@ public interface RiderScheduleDao {
      * @param riderSchedule 查询条件
      * @return 总行数
      */
-    long count(RiderSchedule riderSchedule);
+    int count(RiderSchedule riderSchedule);
 
     /**
      * 新增数据
@@ -90,6 +90,8 @@ public interface RiderScheduleDao {
      * @return 影响行数
      */
     int deleteById(Integer id);
+
+    int deleteRider(Integer id,Integer employeeId);
 
 }
 

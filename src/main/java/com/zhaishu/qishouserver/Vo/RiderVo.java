@@ -3,8 +3,6 @@ package com.zhaishu.qishouserver.Vo;
 import com.zhaishu.qishouserver.entity.Rider;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Date;
-
 public class RiderVo extends Rider {
     private String name;
     private Integer sex;
@@ -12,7 +10,9 @@ public class RiderVo extends Rider {
     @ApiModelProperty("pwd")
     private String password;
     @ApiModelProperty("薪资等价")
-    private Integer sarlaryLevel;
+    private String salaryLevel;
+    @ApiModelProperty("薪资等级id")
+    private Integer salaryLevelId;
     @ApiModelProperty("头像")
     private String avatar;
     @ApiModelProperty("身份证头像照")
@@ -33,7 +33,13 @@ public class RiderVo extends Rider {
     public RiderVo() {
     }
 
+    public Integer getSalaryLevelId() {
+        return salaryLevelId;
+    }
 
+    public void setSalaryLevelId(Integer salaryLevelId) {
+        this.salaryLevelId = salaryLevelId;
+    }
 
     public String getName() {
         return name;
@@ -59,12 +65,12 @@ public class RiderVo extends Rider {
         this.phoneNum = phoneNum;
     }
 
-    public Integer getSarlaryLevel() {
-        return sarlaryLevel;
+    public String getSalaryLevel() {
+        return salaryLevel;
     }
 
-    public void setSarlaryLevel(Integer sarlaryLevel) {
-        this.sarlaryLevel = sarlaryLevel;
+    public void setSalaryLevel(String salaryLevel) {
+        this.salaryLevel = salaryLevel;
     }
 
     public String getAvatar() {

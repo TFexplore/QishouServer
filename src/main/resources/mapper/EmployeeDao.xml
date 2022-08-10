@@ -5,6 +5,7 @@
     <resultMap type="com.zhaishu.qishouserver.entity.Employee" id="EmployeeMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="VARCHAR"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
         <result property="phoneNum" column="phone_num" jdbcType="VARCHAR"/>
@@ -15,6 +16,7 @@
         <result property="behindIdCard" column="behind_id_card" jdbcType="VARCHAR"/>
         <result property="holdingIdCard" column="holding_id_card" jdbcType="VARCHAR"/>
         <result property="employeeType" column="employee_type" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
         <result property="sarlaryLevel" column="sarlary_level" jdbcType="INTEGER"/>
         <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -29,14 +31,15 @@
     <!--查询单个-->
     <select id="queryById" resultMap="EmployeeMap">
         select
-          id, employee_id, name, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
+          id, employee_id,status, name, id_card, shop_id,phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
         from employee
         where employee_id = #{id}
     </select>
     <select id="queryByMap"  resultMap="EmployeeMap">
-    select  id, employee_id, name, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
+    select  id, employee_id,shop_id,status, name, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
     from employee
     <where>
+        employee_type <![CDATA[< ]]> 6
         <if test="employee.employeeId != null">
             and employee_id = #{employee.employeeId}
         </if>
@@ -55,7 +58,6 @@
         <if test="employee.employeeType != null">
             and employee_type = #{employee.employeeType}
         </if>
-
         <if test="employee.isDelete != null">
             and is_delete = #{employee.isDelete}
         </if>
@@ -66,6 +68,7 @@
         select count(*)
         from employee
         <where>
+            employee_type <![CDATA[< ]]> 6
             <if test="employee.employeeId != null">
                 and employee_id = #{employee.employeeId}
             </if>
@@ -98,13 +101,14 @@
     </select>
     <select id="queryByTel" resultMap="EmployeeMap">
         select
-        id, employee_id, name,password, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
+        id, employee_id, name,shop_id,password, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
         from employee
         where phone_num = #{tel}
     </select>
+
     <select id="queryByName" resultMap="EmployeeMap">
         select
-            id, employee_id, name, id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
+            id, employee_id, name, shop_id,id_card, phone_num, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete
         from employee
         where name = #{name}
     </select>
@@ -148,8 +152,8 @@
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into employee(employee_id,name, id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by)
-        values (#{employeeId},#{name}, #{idCard}, #{phoneNum}, #{password}, #{sex}, #{avatar}, #{frontIdCard}, #{behindIdCard}, #{holdingIdCard}, #{employeeType}, #{sarlaryLevel}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
+        insert into employee(employee_id,name, shop_id,id_card, phone_num, password, sex, avatar, front_id_card, behind_id_card, holding_id_card, employee_type, sarlary_level, is_delete, create_time, create_by, update_time, update_by)
+        values (#{employeeId},#{name},#{shopId}, #{idCard}, #{phoneNum}, #{password}, #{sex}, #{avatar}, #{frontIdCard}, #{behindIdCard}, #{holdingIdCard}, #{employeeType}, #{sarlaryLevel}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
@@ -186,10 +190,12 @@
         update_by = values(update_by)
     </insert>
 
-    <!--通过tel修改数据-->
     <update id="update">
         update employee
         <set>
+            <if test="shopId != null">
+                shop_id = #{shopId},
+            </if>
             <if test="name != null and name != ''">
                 name = #{name},
             </if>
@@ -226,6 +232,9 @@
             <if test="isDelete != null">
                 is_delete = #{isDelete},
             </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
             <if test="createTime != null">
                 create_time = #{createTime},
             </if>
@@ -241,6 +250,7 @@
         </set>
         where employee_id = #{employeeId}
     </update>
+
     <update id="updateTypeByTel">
         update employee set employee_type = #{type} where  phone_num = #{tel}
     </update>

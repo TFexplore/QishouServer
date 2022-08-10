@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.EmployeeWalletBillDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.EmployeeWalletBill" id="EmployeeWalletBillMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="walletBillId" column="wallet_bill_id" jdbcType="VARCHAR"/>
+        <result property="walletBillName" column="wallet_bill_name" jdbcType="VARCHAR"/>
+        <result property="walletBillDetail" column="wallet_bill_detail" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="totalMoney" column="total_money" jdbcType="NUMERIC"/>
+        <result property="payStatus" column="pay_status" jdbcType="INTEGER"/>
+        <result property="payType" column="pay_type" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeWalletBillMap">
+        select
+          id, wallet_bill_id, wallet_bill_name, wallet_bill_detail, employee_id, total_money, pay_status, pay_type, create_time, create_by, update_time, update_by
+        from employee_wallet_bill
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="EmployeeWalletBillMap">
+        select
+          id, wallet_bill_id, wallet_bill_name, wallet_bill_detail, employee_id, total_money, pay_status, pay_type, create_time, create_by, update_time, update_by
+        from employee_wallet_bill
+        <where>
+            <if test="param.id != null">
+                and id = #{param.id}
+            </if>
+            <if test="param.walletBillId != null and param.walletBillId != ''">
+                and wallet_bill_id = #{param.walletBillId}
+            </if>
+            <if test="param.walletBillName != null and param.walletBillName != ''">
+                and wallet_bill_name = #{param.walletBillName}
+            </if>
+            <if test="param.walletBillDetail != null and param.walletBillDetail != ''">
+                and wallet_bill_detail = #{param.walletBillDetail}
+            </if>
+            <if test="param.employeeId != null">
+                and employee_id = #{param.employeeId}
+            </if>
+            <if test="param.totalMoney != null">
+                and total_money = #{param.totalMoney}
+            </if>
+            <if test="param.payStatus != null">
+                and pay_status = #{param.payStatus}
+            </if>
+            <if test="param.payType != null">
+                and pay_type = #{param.payType}
+            </if>
+            <if test="param.createTime != null">
+                and create_time = #{param.createTime}
+            </if>
+            <if test="param.createBy != null">
+                and create_by = #{param.createBy}
+            </if>
+            <if test="param.updateTime != null">
+                and update_time = #{param.updateTime}
+            </if>
+            <if test="param.updateBy != null">
+                and update_by = #{param.updateBy}
+            </if>
+        </where>
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from employee_wallet_bill
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="walletBillId != null and walletBillId != ''">
+                and wallet_bill_id = #{walletBillId}
+            </if>
+            <if test="walletBillName != null and walletBillName != ''">
+                and wallet_bill_name = #{walletBillName}
+            </if>
+            <if test="walletBillDetail != null and walletBillDetail != ''">
+                and wallet_bill_detail = #{walletBillDetail}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="totalMoney != null">
+                and total_money = #{totalMoney}
+            </if>
+            <if test="payStatus != null">
+                and pay_status = #{payStatus}
+            </if>
+            <if test="payType != null">
+                and pay_type = #{payType}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_wallet_bill(wallet_bill_id, wallet_bill_name, wallet_bill_detail, employee_id, total_money, pay_status, pay_type, create_time, create_by, update_time, update_by)
+        values (#{walletBillId}, #{walletBillName}, #{walletBillDetail}, #{employeeId}, #{totalMoney}, #{payStatus}, #{payType}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_wallet_bill(wallet_bill_id, wallet_bill_name, wallet_bill_detail, employee_id, total_money, pay_status, pay_type, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.walletBillId}, #{entity.walletBillName}, #{entity.walletBillDetail}, #{entity.employeeId}, #{entity.totalMoney}, #{entity.payStatus}, #{entity.payType}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_wallet_bill(wallet_bill_id, wallet_bill_name, wallet_bill_detail, employee_id, total_money, pay_status, pay_type, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.walletBillId}, #{entity.walletBillName}, #{entity.walletBillDetail}, #{entity.employeeId}, #{entity.totalMoney}, #{entity.payStatus}, #{entity.payType}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+        on duplicate key update
+        wallet_bill_id = values(wallet_bill_id),
+        wallet_bill_name = values(wallet_bill_name),
+        wallet_bill_detail = values(wallet_bill_detail),
+        employee_id = values(employee_id),
+        total_money = values(total_money),
+        pay_status = values(pay_status),
+        pay_type = values(pay_type),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update employee_wallet_bill
+        <set>
+            <if test="walletBillId != null and walletBillId != ''">
+                wallet_bill_id = #{walletBillId},
+            </if>
+            <if test="walletBillName != null and walletBillName != ''">
+                wallet_bill_name = #{walletBillName},
+            </if>
+            <if test="walletBillDetail != null and walletBillDetail != ''">
+                wallet_bill_detail = #{walletBillDetail},
+            </if>
+            <if test="employeeId != null">
+                employee_id = #{employeeId},
+            </if>
+            <if test="totalMoney != null">
+                total_money = #{totalMoney},
+            </if>
+            <if test="payStatus != null">
+                pay_status = #{payStatus},
+            </if>
+            <if test="payType != null">
+                pay_type = #{payType},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from employee_wallet_bill where id = #{id}
+    </delete>
+
+</mapper>
+

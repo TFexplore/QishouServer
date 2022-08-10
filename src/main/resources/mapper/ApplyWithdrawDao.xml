@@ -5,128 +5,160 @@
     <resultMap type="com.zhaishu.qishouserver.entity.ApplyWithdraw" id="ApplyWithdrawMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="applyId" column="apply_id" jdbcType="VARCHAR"/>
         <result property="weixinId" column="weixin_id" jdbcType="VARCHAR"/>
         <result property="withdrawNum" column="withdraw_num" jdbcType="NUMERIC"/>
-        <result property="withdrawTime" column="withdraw_time" jdbcType="TIMESTAMP"/>
+        <result property="withdrawTime" column="withdraw_time" jdbcType="INTEGER"/>
         <result property="withdrawFlag" column="withdraw_flag" jdbcType="INTEGER"/>
         <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="createBy" column="create_by" jdbcType="INTEGER"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="checkBy" column="check_by" jdbcType="INTEGER"/>
+        <result property="returnCode" column="return_code" jdbcType="VARCHAR"/>
     </resultMap>
+    <resultMap type="com.zhaishu.qishouserver.Vo.ApplyDrawVo" id="ApplyWithdrawVoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="checkName" column="check_name" jdbcType="VARCHAR"/>
+        <result property="weixinId" column="weixin_id" jdbcType="VARCHAR"/>
+        <result property="withdrawNum" column="withdraw_num" jdbcType="NUMERIC"/>
+        <result property="withdrawTime" column="withdraw_time" jdbcType="INTEGER"/>
+        <result property="withdrawFlag" column="withdraw_flag" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="checkBy" column="check_by" jdbcType="INTEGER"/>
+        <result property="returnCode" column="return_code" jdbcType="VARCHAR"/>
+        <collection property="checkName" javaType="java.lang.String" column="{Id=check_by}"
+                    select="getName"/>
+        <collection property="name" javaType="java.lang.String" column="{Id=employee_id}"
+                    select="getName"/>
+    </resultMap>
+
+    <select id="getName" resultType="java.lang.String">
+        select name from employee where employee_id=#{Id}
+    </select>
+    <select id="getAmountByDate" resultType="java.lang.Double">
+        select sum(withdraw_num) from  apply_withdraw
+        where withdraw_flag=#{flag} and withdraw_time between #{startTime} and #{endTime}
+    </select>
 
     <!--查询单个-->
     <select id="queryById" resultMap="ApplyWithdrawMap">
         select
-          id, employee_id, weixin_id, withdraw_num, withdraw_time, withdraw_flag, is_delete, create_time, create_by, update_time, update_by
+          id, apply_id,employee_id, weixin_id, withdraw_num, withdraw_time, withdraw_flag, is_delete, create_time, create_by, update_time, update_by, check_by, return_code
         from apply_withdraw
-        where id = #{id}
+        where apply_id = #{id} and withdraw_flag=-1
+        limit 0,1
     </select>
 
     <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="ApplyWithdrawMap">
+    <select id="queryAllByLimit" resultMap="ApplyWithdrawVoMap">
         select
-          id, employee_id, weixin_id, withdraw_num, withdraw_time, withdraw_flag, is_delete, create_time, create_by, update_time, update_by
-        from apply_withdraw
+          a.id, a.apply_id,a.employee_id,a. weixin_id, a.withdraw_num, a.withdraw_time, a.withdraw_flag, a.is_delete, a.create_time, a.create_by, a.update_time, a.update_by, a.check_by, a.return_code
+        from apply_withdraw  a
         <where>
-            <if test="id != null">
-                and id = #{id}
+            <if test="param.id != null">
+                and a.id = #{param.id}
             </if>
-            <if test="employeeId != null">
-                and employee_id = #{employeeId}
+            <if test="param.employeeId != null">
+                and a.employee_id = #{param.employeeId}
             </if>
-            <if test="weixinId != null and weixinId != ''">
-                and weixin_id = #{weixinId}
+            <if test="param.name != null and param.name != ''">
+                and e.name = #{param.name}
             </if>
-            <if test="withdrawNum != null">
-                and withdraw_num = #{withdrawNum}
+            <if test="param.weixinId != null and param.weixinId != ''">
+                and a.weixin_id = #{param.weixinId}
             </if>
-            <if test="withdrawTime != null">
-                and withdraw_time = #{withdrawTime}
+            <if test="param.withdrawNum != null">
+                and a.withdraw_num = #{param.withdrawNum}
             </if>
-            <if test="withdrawFlag != null">
-                and withdraw_flag = #{withdrawFlag}
+            <if test="param.withdrawTime != null">
+                and a.withdraw_time = #{param.withdrawTime}
             </if>
-            <if test="isDelete != null">
-                and is_delete = #{isDelete}
+            <if test="param.withdrawFlag != null">
+                and a.withdraw_flag = #{param.withdrawFlag}
             </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
+            <if test="param.isDelete != null">
+                and a.is_delete = #{param.isDelete}
             </if>
-            <if test="createBy != null">
-                and create_by = #{createBy}
+            <if test="param.createTime != null">
+                and a.create_time = #{param.createTime}
             </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
+            <if test="param.createBy != null">
+                and a.create_by = #{param.createBy}
             </if>
-            <if test="updateBy != null">
-                and update_by = #{updateBy}
+            <if test="param.updateTime != null">
+                and a.update_time = #{param.updateTime}
+            </if>
+            <if test="param.updateBy != null">
+                and a.update_by = #{param.updateBy}
+            </if>
+            <if test="param.checkBy != null">
+                and a.check_by = #{param.checkBy}
+            </if>
+            <if test="param.returnCode != null and param.returnCode != ''">
+                and a.return_code = #{param.returnCode}
             </if>
         </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
+        order by a.withdraw_time desc
+        limit #{offset}, #{limit}
     </select>
 
+
     <!--统计总行数-->
-    <select id="count" resultType="java.lang.Long">
+    <select id="count" resultType="java.lang.Integer">
         select count(1)
-        from apply_withdraw
+        from apply_withdraw a
         <where>
-            <if test="id != null">
-                and id = #{id}
-            </if>
             <if test="employeeId != null">
-                and employee_id = #{employeeId}
+                and a.employee_id = #{employeeId}
             </if>
             <if test="weixinId != null and weixinId != ''">
-                and weixin_id = #{weixinId}
+                and a.weixin_id = #{weixinId}
             </if>
-            <if test="withdrawNum != null">
-                and withdraw_num = #{withdrawNum}
+            <if test="name != null and name != ''">
+                and e.name = #{name}
             </if>
             <if test="withdrawTime != null">
-                and withdraw_time = #{withdrawTime}
+                and a.withdraw_time = #{withdrawTime}
             </if>
             <if test="withdrawFlag != null">
-                and withdraw_flag = #{withdrawFlag}
+                and a.withdraw_flag = #{withdrawFlag}
             </if>
             <if test="isDelete != null">
-                and is_delete = #{isDelete}
+                and a.is_delete = #{isDelete}
             </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
-            </if>
-            <if test="createBy != null">
-                and create_by = #{createBy}
-            </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
-            </if>
-            <if test="updateBy != null">
-                and update_by = #{updateBy}
+            <if test="checkBy != null">
+                and a.check_by = #{checkBy}
             </if>
         </where>
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into apply_withdraw(employee_id, weixin_id, withdraw_num, withdraw_time, withdraw_flag, is_delete, create_time, create_by, update_time, update_by)
-        values (#{employeeId}, #{weixinId}, #{withdrawNum}, #{withdrawTime}, #{withdrawFlag}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
+        insert into apply_withdraw(employee_id, apply_id,weixin_id, withdraw_num, withdraw_time, withdraw_flag, is_delete, create_time, create_by, update_time, update_by, check_by, return_code)
+        values (#{employeeId}, #{applyId},#{weixinId}, #{withdrawNum}, #{withdrawTime}, #{withdrawFlag}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy}, #{checkBy}, #{returnCode})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into apply_withdraw(employee_id, weixin_id, withdraw_num, withdraw_time, withdraw_flag, is_delete, create_time, create_by, update_time, update_by)
+        insert into apply_withdraw(employee_id, weixin_id, withdraw_num, withdraw_time, withdraw_flag, is_delete, create_time, create_by, update_time, update_by, check_by, return_code)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.employeeId}, #{entity.weixinId}, #{entity.withdrawNum}, #{entity.withdrawTime}, #{entity.withdrawFlag}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        (#{entity.employeeId}, #{entity.weixinId}, #{entity.withdrawNum}, #{entity.withdrawTime}, #{entity.withdrawFlag}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy}, #{entity.checkBy}, #{entity.returnCode})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into apply_withdraw(employee_id, weixin_id, withdraw_num, withdraw_time, withdraw_flag, is_delete, create_time, create_by, update_time, update_by)
+        insert into apply_withdraw(employee_id, weixin_id, withdraw_num, withdraw_time, withdraw_flag, is_delete, create_time, create_by, update_time, update_by, check_by, return_code)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.employeeId}, #{entity.weixinId}, #{entity.withdrawNum}, #{entity.withdrawTime}, #{entity.withdrawFlag}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+            (#{entity.employeeId}, #{entity.weixinId}, #{entity.withdrawNum}, #{entity.withdrawTime}, #{entity.withdrawFlag}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy}, #{entity.checkBy}, #{entity.returnCode})
         </foreach>
         on duplicate key update
         employee_id = values(employee_id),
@@ -138,7 +170,9 @@
         create_time = values(create_time),
         create_by = values(create_by),
         update_time = values(update_time),
-        update_by = values(update_by)
+        update_by = values(update_by),
+        check_by = values(check_by),
+        return_code = values(return_code)
     </insert>
 
     <!--通过主键修改数据-->
@@ -175,13 +209,19 @@
             <if test="updateBy != null">
                 update_by = #{updateBy},
             </if>
+            <if test="checkBy != null">
+                check_by = #{checkBy},
+            </if>
+            <if test="returnCode != null and returnCode != ''">
+                return_code = #{returnCode},
+            </if>
         </set>
-        where id = #{id}
+        where apply_id = #{applyId}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from apply_withdraw where id = #{id}
+        delete from apply_withdraw where apply_id = #{id}
     </delete>
 
 </mapper>

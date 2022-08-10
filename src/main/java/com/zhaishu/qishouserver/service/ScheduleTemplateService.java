@@ -16,7 +16,9 @@ import java.util.List;
  */
 public interface ScheduleTemplateService {
 
-    List<TemplateVo> getTempletes();
+    List<TemplateVo> getTempletes(Integer limit,Integer offset);
+
+    int count();
 
     List<RiderVo> getRiders(Integer ID);
 
@@ -28,14 +30,7 @@ public interface ScheduleTemplateService {
      */
     ScheduleTemplate queryById(Integer id);
 
-    /**
-     * 分页查询
-     *
-     * @param scheduleTemplate 筛选条件
-     * @param pageRequest      分页对象
-     * @return 查询结果
-     */
-    Page<ScheduleTemplate> queryByPage(ScheduleTemplate scheduleTemplate, PageRequest pageRequest);
+
 
     /**
      * 新增数据

@@ -30,4 +30,14 @@ public class UserToken {
     public @interface SuperAdmin {
         boolean required() default true;
     }
+    @Target({ElementType.METHOD, ElementType.TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface HR {
+        boolean required() default true;
+    }
+    @Target({ElementType.METHOD, ElementType.TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Sales {
+        boolean required() default true;
+    }
 }

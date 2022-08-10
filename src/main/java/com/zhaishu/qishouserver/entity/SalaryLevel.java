@@ -4,13 +4,13 @@ import java.util.Date;
 import java.io.Serializable;
 
 /**
- * 员工薪酬等级表(SalaryLevel)实体类
+ * 员工薪酬奖罚条件模板(SalaryLevel)实体类
  *
  * @author makejava
- * @since 2022-04-18 19:22:41
+ * @since 2022-07-08 15:21:32
  */
 public class SalaryLevel implements Serializable {
-    private static final long serialVersionUID = 844366326526309990L;
+    private static final long serialVersionUID = 611690485349089827L;
     /**
      * 自增id
      */
@@ -20,6 +20,8 @@ public class SalaryLevel implements Serializable {
     /**
      * 员工工资等级
      */
+    private String name;
+
     private Integer salaryLevel;
     
     private Integer isDelete;
@@ -31,7 +33,22 @@ public class SalaryLevel implements Serializable {
     private Date updateTime;
     
     private Integer updateBy;
+    /**
+     * 描述
+     */
+    private String describe;
+    /**
+     * 薪资
+     */
+    private Double salary;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;
@@ -95,6 +112,22 @@ public class SalaryLevel implements Serializable {
 
     public void setUpdateBy(Integer updateBy) {
         this.updateBy = updateBy;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
+    }
+
+    public Double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Double salary) {
+        this.salary = salary;
     }
 
 }

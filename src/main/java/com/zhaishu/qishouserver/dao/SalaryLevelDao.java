@@ -6,10 +6,10 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 /**
- * 员工薪酬等级表(SalaryLevel)表数据库访问层
+ * 员工薪酬奖罚条件模板(SalaryLevel)表数据库访问层
  *
  * @author makejava
- * @since 2022-04-18 19:22:41
+ * @since 2022-07-08 15:21:18
  */
 public interface SalaryLevelDao {
 
@@ -20,15 +20,9 @@ public interface SalaryLevelDao {
      * @return 实例对象
      */
     SalaryLevel queryById(Integer id);
+    SalaryLevel queryByEmId(Integer id);
 
-    /**
-     * 查询指定行数据
-     *
-     * @param salaryLevel 查询条件
-     * @param pageable         分页对象
-     * @return 对象列表
-     */
-    List<SalaryLevel> queryAllByLimit(SalaryLevel salaryLevel, @Param("pageable") Pageable pageable);
+    List<SalaryLevel> getList(@Param("s") SalaryLevel salaryLevel, Integer limit,Integer offset);
 
     /**
      * 统计总行数
@@ -36,7 +30,7 @@ public interface SalaryLevelDao {
      * @param salaryLevel 查询条件
      * @return 总行数
      */
-    long count(SalaryLevel salaryLevel);
+    int count(SalaryLevel salaryLevel);
 
     /**
      * 新增数据

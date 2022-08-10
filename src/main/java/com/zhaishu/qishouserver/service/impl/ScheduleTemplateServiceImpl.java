@@ -4,11 +4,10 @@ import com.zhaishu.qishouserver.Vo.RiderVo;
 import com.zhaishu.qishouserver.Vo.TemplateVo;
 import com.zhaishu.qishouserver.entity.ScheduleTemplate;
 import com.zhaishu.qishouserver.dao.ScheduleTemplateDao;
+import com.zhaishu.qishouserver.entity.WorkTime;
 import com.zhaishu.qishouserver.service.ScheduleTemplateService;
+import com.zhaishu.qishouserver.service.WorkTimeService;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -23,11 +22,19 @@ import java.util.List;
 public class ScheduleTemplateServiceImpl implements ScheduleTemplateService {
     @Resource
     private ScheduleTemplateDao scheduleTemplateDao;
+    @Resource
+    private WorkTimeService workTimeService;
 
     @Override
-    public List<TemplateVo> getTempletes(){
-        return this.scheduleTemplateDao.getTempletes();
+    public List<TemplateVo> getTempletes(Integer limit,Integer offset){
+        return this.scheduleTemplateDao.getTempletes(limit,offset);
     }
+    @Override
+    public int count(){
+        return scheduleTemplateDao.count();
+    }
+
+
     @Override
     public List<RiderVo> getRiders(Integer ID){
         return this.scheduleTemplateDao.getRiders(ID);
@@ -43,18 +50,6 @@ public class ScheduleTemplateServiceImpl implements ScheduleTemplateService {
         return this.scheduleTemplateDao.queryById(id);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param scheduleTemplate 筛选条件
-     * @param pageRequest      分页对象
-     * @return 查询结果
-     */
-    @Override
-    public Page<ScheduleTemplate> queryByPage(ScheduleTemplate scheduleTemplate, PageRequest pageRequest) {
-        long total = this.scheduleTemplateDao.count(scheduleTemplate);
-        return new PageImpl<>(this.scheduleTemplateDao.queryAllByLimit(scheduleTemplate, pageRequest), pageRequest, total);
-    }
 
     /**
      * 新增数据
@@ -64,7 +59,10 @@ public class ScheduleTemplateServiceImpl implements ScheduleTemplateService {
      */
     @Override
     public ScheduleTemplate insert(ScheduleTemplate scheduleTemplate) {
-        scheduleTemplate.setId(this.scheduleTemplateDao.count(new ScheduleTemplate()) + 1);
+        WorkTime workTime=new WorkTime();
+        workTime.setDateId(20000101);
+        workTime=workTimeService.insert(workTime);
+        scheduleTemplate.setId(workTime.getWorktimeId());
         this.scheduleTemplateDao.insert(scheduleTemplate);
         return scheduleTemplate;
     }

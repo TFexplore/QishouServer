@@ -1,33 +1,33 @@
 package com.zhaishu.qishouserver;
 
-import com.github.houbb.data.factory.core.util.DataUtil;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.zhaishu.qishouserver.Security.HashPasswordEncoder;
 import com.zhaishu.qishouserver.Vo.*;
+import com.zhaishu.qishouserver.common.RedisUtil;
 import com.zhaishu.qishouserver.common.Utils;
 import com.zhaishu.qishouserver.dao.*;
 import com.zhaishu.qishouserver.entity.*;
-import com.zhaishu.qishouserver.service.EmployeeService;
-import com.zhaishu.qishouserver.service.RiderScheduleService;
-import com.zhaishu.qishouserver.service.ScheduleTemplateService;
-import com.zhaishu.qishouserver.service.WorkTimeService;
-import com.zhaishu.qishouserver.service.impl.RiderServiceImpl;
+import com.zhaishu.qishouserver.http.OkHttpCli;
+import com.zhaishu.qishouserver.service.*;
+
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.junit4.SpringRunner;
+import sun.net.www.http.HttpClient;
+
 
 import javax.annotation.Resource;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-@SpringBootTest
+
 @MapperScan("com.zhaishu.qishouserver.dao")
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class QishouServerApplicationTests {
 
     @Autowired
@@ -53,29 +53,40 @@ class QishouServerApplicationTests {
     ScheduleTemplateService templateService;
     @Resource
     ScheduleTemplateDao templateDao;
+    @Resource
+    DistributeOrderService distributeOrderService;
+    @Resource
+    EmployeeSalaryDayrecordService dayrecordService;
+    @Resource
+    SalaryLevelService salaryLevelService;
+    @Resource
+    NoticeDao noticeDao;
+    @Resource
+    EmployeeSalaryDao salaryDao;
+    @Resource
+    RedisUtil redisUtil;
+    @Resource
+    ApplyWithdrawDao applyWithdrawDao;
     @Test
     void test() {
-        WorkTime workTime=new WorkTime();
-        workTime.setWorktimeId(1);
-        workTime.setCreateBy(11111);
-        workTimeDao.update(workTime);
+        Gson gson=new Gson();
+        System.out.println(applyWithdrawDao.getAmountByDate(5,1659283200000L,System.currentTimeMillis()));
+
     }
     @Resource
     WorkTimeService workTimeService;
     @Resource
     RiderScheduleService service;
+    @Resource
+    DistributeOrderDao distributeOrderDao;
     @Test
     void contextLoads() {
-        WorkRecordVo recordVo=new WorkRecordVo();
-        recordVo.setStartTime(1653235200000L);
-        recordVo.setEndTime(1653452842000L);
-        recordVo.setLocationId(2);
-        System.out.println(riderScheduleDao.countWorkRecord(recordVo));
-        List<WorkRecordVo> recordVos=riderScheduleDao.getWorkRecord(recordVo,10,0);
-        Gson gson=new Gson();
-        System.out.println(gson.toJson(recordVos));
+        DateUtils.ordinaryRandom();
+        DateUtils.averageRandom();
 
     }
+
+
     @Test
 
     void addRecord(){
@@ -96,6 +107,7 @@ class QishouServerApplicationTests {
         employee.setEmployeeId(1);
         employee.setSex(0);
         employee.setPhoneNum("admin");
+        employee.setIsDelete(0);
         this.employeeDao.insert(employee);
     }
     @Resource
@@ -112,5 +124,23 @@ class QishouServerApplicationTests {
         System.out.println("over!");
 
     }
+    @Autowired
+    private OkHttpCli okHttpCli;
+    @Test
+    void HTTP(){
+        String url = "https://www.zmice.top/wallet/getBalance/manager";
+        Map<String,String> map=new HashMap<>();
+        map.put("aapplyId", String.valueOf(67925966));
+        map.put("applykeyVode", String.valueOf(67925966));
+        map.put("employeeId", String.valueOf(67925966));
+        map.put("weixinId", String.valueOf(67925966));
+        System.out.println(okHttpCli.doPost(url,map));
+
+
+    }
+
+    //薪资管理
+
+
 
 }

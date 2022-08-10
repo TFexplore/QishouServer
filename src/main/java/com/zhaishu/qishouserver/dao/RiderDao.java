@@ -27,7 +27,7 @@ public interface RiderDao {
     int countAllRidersIn(@Param("rider") RiderVo riderVo);
     int countAllRidersSe(@Param("rider") RiderVo riderVo);
     Rider queryByEmployeeId(Integer id);
-
+    List<Rider> queryByLimit(Rider rider);
     /**
      * 通过ID查询单条数据
      *

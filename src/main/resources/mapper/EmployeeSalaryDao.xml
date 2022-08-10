@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.EmployeeSalaryDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.EmployeeSalary" id="EmployeeSalaryMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="monthId" column="month_id" jdbcType="INTEGER"/>
+        <result property="employeeSalaryId" column="employee_salary_id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="baseSalary" column="base_salary" jdbcType="NUMERIC"/>
+        <result property="orderSalary" column="order_salary" jdbcType="NUMERIC"/>
+        <result property="orderRoyalty" column="order_royalty" jdbcType="NUMERIC"/>
+        <result property="attendBonus" column="attend_bonus" jdbcType="NUMERIC"/>
+        <result property="inviteRiderBonus" column="invite_rider_bonus" jdbcType="NUMERIC"/>
+        <result property="positiveCommentBonus" column="positive_comment_bonus" jdbcType="NUMERIC"/>
+        <result property="otherBonus" column="other_bonus" jdbcType="NUMERIC"/>
+        <result property="negativeCommentForfeit" column="negative_comment_forfeit" jdbcType="NUMERIC"/>
+        <result property="overTimeForfeit" column="over_time_forfeit" jdbcType="NUMERIC"/>
+        <result property="refuseOrderForfeit" column="refuse_order_forfeit" jdbcType="NUMERIC"/>
+        <result property="otherForfeit" column="other_forfeit" jdbcType="NUMERIC"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="totalPay" column="total_pay" jdbcType="NUMERIC"/>
+        <result property="realPay" column="real_pay" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <resultMap type="com.zhaishu.qishouserver.Vo.RiderSalaryVo" id="RiderSalaryMap">
+        <result property="monthId" column="month_id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="phoneNum" column="phone_num" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="weixinId" column="weixin_id" jdbcType="VARCHAR"/>
+        <result property="alipay" column="alipay" jdbcType="VARCHAR"/>
+        <result property="location_note" column="tname" jdbcType="VARCHAR"/>
+        <result property="riderType" column="employee_type" jdbcType="INTEGER"/>
+        <result property="salaryLevel" column="slname" jdbcType="VARCHAR"/>
+        <result property="realPay" column="real_pay" jdbcType="NUMERIC"/>
+        <result property="totalSalary" column="total_pay" jdbcType="NUMERIC"/>
+        <result property="baseSalary" column="base_salary" jdbcType="NUMERIC"/>
+        <result property="orderSalary" column="order_salary" jdbcType="NUMERIC"/>
+        <result property="totalBonus" column="total_bonus" jdbcType="NUMERIC"/>
+        <result property="totalForfeit" column="total_forfeit" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <select id="getRiderSalaryList" resultMap="RiderSalaryMap">
+        select  r.employee_id,r.location_id,
+        e.name,e.phone_num,e.employee_type,e.sex,
+        w.weixin_id,w.alipay,
+        s.total_pay ,s.base_salary,s.real_pay,s.order_salary,
+        s.attend_bonus + s.invite_rider_bonus + s.positive_comment_bonus + s.other_bonus as total_bonus,
+        s.negative_comment_forfeit + s.over_time_forfeit + s.refuse_order_forfeit + s.other_forfeit as total_forfeit,
+        sl.name as slname
+        from  (rider r,employee e) left join employee_wallet w on w.employee_id=e.employee_id left join salary_level sl on sl.employee_id=r.employee_id  left join employee_salary s  on r.employee_id=s.employee_id and  s.month_id=#{salary.monthId}
+        <where>
+                r.employee_id=e.employee_id and r.rider_type >5
+            <if test="salary.employeeId != null">
+                and r.employee_id = #{salary.employeeId}
+            </if>
+            <if test="salary.name != null and salary.name != ''">
+                and e.name = #{salary.name}
+            </if>
+            <if test="salary.apartmentId != null">
+                and r.location_id = #{salary.apartmentId}
+            </if>
+            <if test="salary.riderType != null">
+                and r.rider_type = #{salary.riderType}
+            </if>
+        </where>
+        order by s.total_pay DESC
+        limit #{offset},#{limit}
+    </select>
+    <select id="countList" resultType="java.lang.Integer">
+    select count(1)
+        from  (rider r,employee e) left join salary_level sl on sl.employee_id=r.employee_id  left join employee_salary s  on r.employee_id=s.employee_id and  s.month_id=#{salary.monthId}
+        <where>
+            r.employee_id=e.employee_id and r.rider_type >5
+            <if test="salary.name != null and salary.name != ''">
+                and e.name = #{salary.name}
+            </if>
+            <if test="salary.apartmentId != null">
+                and r.location_id = #{salary.apartmentId}
+            </if>
+            <if test="salary.riderType != null">
+                and r.rider_type = #{salary.riderType}
+            </if>
+        </where>
+    </select>
+
+
+
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeSalaryMap">
+        select
+          id, employee_salary_id, employee_id, base_salary, order_salary, order_royalty, attend_bonus,
+          invite_rider_bonus, positive_comment_bonus, other_bonus,
+          negative_comment_forfeit, over_time_forfeit, refuse_order_forfeit, other_forfeit,is_delete, create_time, create_by, update_time, update_by, total_pay, real_pay
+        from employee_salary
+        where id = #{id}
+    </select>
+    <!--查询单个-->
+    <select id="queryByMonth" resultMap="EmployeeSalaryMap">
+        select
+            id, month_id,employee_salary_id, employee_id, base_salary, order_salary, order_royalty, attend_bonus,
+            invite_rider_bonus, positive_comment_bonus, other_bonus,
+            negative_comment_forfeit, over_time_forfeit, refuse_order_forfeit, other_forfeit, is_delete, create_time, create_by, update_time, update_by, total_pay, real_pay
+        from employee_salary
+        where month_id = #{monthId} and employee_id=#{employeeId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="RiderSalaryMap">
+        select
+          id, employee_salary_id, employee_id, base_salary, order_salary, order_royalty, attend_bonus, invite_rider_bonus, positive_comment_bonus, other_bonus, negative_comment_forfeit, over_time_forfeit, refuse_order_forfeit, other_forfeit, start_time, end_time, is_delete, create_time, create_by, update_time, update_by, total_pay, real_pay
+        from employee_salary
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="employeeSalaryId != null">
+                and employee_salary_id = #{employeeSalaryId}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="baseSalary != null">
+                and base_salary = #{baseSalary}
+            </if>
+            <if test="orderSalary != null">
+                and order_salary = #{orderSalary}
+            </if>
+            <if test="orderRoyalty != null">
+                and order_royalty = #{orderRoyalty}
+            </if>
+            <if test="attendBonus != null">
+                and attend_bonus = #{attendBonus}
+            </if>
+            <if test="inviteRiderBonus != null">
+                and invite_rider_bonus = #{inviteRiderBonus}
+            </if>
+            <if test="positiveCommentBonus != null">
+                and positive_comment_bonus = #{positiveCommentBonus}
+            </if>
+            <if test="otherBonus != null">
+                and other_bonus = #{otherBonus}
+            </if>
+            <if test="negativeCommentForfeit != null">
+                and negative_comment_forfeit = #{negativeCommentForfeit}
+            </if>
+            <if test="overTimeForfeit != null">
+                and over_time_forfeit = #{overTimeForfeit}
+            </if>
+            <if test="refuseOrderForfeit != null">
+                and refuse_order_forfeit = #{refuseOrderForfeit}
+            </if>
+            <if test="otherForfeit != null">
+                and other_forfeit = #{otherForfeit}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="totalPay != null">
+                and total_pay = #{totalPay}
+            </if>
+            <if test="realPay != null">
+                and real_pay = #{realPay}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from employee_salary
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="employeeSalaryId != null">
+                and employee_salary_id = #{employeeSalaryId}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="baseSalary != null">
+                and base_salary = #{baseSalary}
+            </if>
+            <if test="orderSalary != null">
+                and order_salary = #{orderSalary}
+            </if>
+            <if test="orderRoyalty != null">
+                and order_royalty = #{orderRoyalty}
+            </if>
+            <if test="attendBonus != null">
+                and attend_bonus = #{attendBonus}
+            </if>
+            <if test="inviteRiderBonus != null">
+                and invite_rider_bonus = #{inviteRiderBonus}
+            </if>
+            <if test="positiveCommentBonus != null">
+                and positive_comment_bonus = #{positiveCommentBonus}
+            </if>
+            <if test="otherBonus != null">
+                and other_bonus = #{otherBonus}
+            </if>
+            <if test="negativeCommentForfeit != null">
+                and negative_comment_forfeit = #{negativeCommentForfeit}
+            </if>
+            <if test="overTimeForfeit != null">
+                and over_time_forfeit = #{overTimeForfeit}
+            </if>
+            <if test="refuseOrderForfeit != null">
+                and refuse_order_forfeit = #{refuseOrderForfeit}
+            </if>
+            <if test="otherForfeit != null">
+                and other_forfeit = #{otherForfeit}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="totalPay != null">
+                and total_pay = #{totalPay}
+            </if>
+            <if test="realPay != null">
+                and real_pay = #{realPay}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary(employee_salary_id, month_id,employee_id, base_salary)
+        values (#{employeeSalaryId},#{monthId}, #{employeeId}, #{baseSalary})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary(employee_salary_id, employee_id, base_salary, order_salary, order_royalty, attend_bonus, invite_rider_bonus, positive_comment_bonus, other_bonus, negative_comment_forfeit, over_time_forfeit, refuse_order_forfeit, other_forfeit, start_time, end_time, is_delete, create_time, create_by, update_time, update_by, total_pay, real_pay)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.employeeSalaryId}, #{entity.employeeId}, #{entity.baseSalary}, #{entity.orderSalary}, #{entity.orderRoyalty}, #{entity.attendBonus}, #{entity.inviteRiderBonus}, #{entity.positiveCommentBonus}, #{entity.otherBonus}, #{entity.negativeCommentForfeit}, #{entity.overTimeForfeit}, #{entity.refuseOrderForfeit}, #{entity.otherForfeit}, #{entity.startTime}, #{entity.endTime}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy}, #{entity.totalPay}, #{entity.realPay})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary(employee_salary_id, employee_id, base_salary, order_salary, order_royalty, attend_bonus, invite_rider_bonus, positive_comment_bonus, other_bonus, negative_comment_forfeit, over_time_forfeit, refuse_order_forfeit, other_forfeit, start_time, end_time, is_delete, create_time, create_by, update_time, update_by, total_pay, real_pay)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.employeeSalaryId}, #{entity.employeeId}, #{entity.baseSalary}, #{entity.orderSalary}, #{entity.orderRoyalty}, #{entity.attendBonus}, #{entity.inviteRiderBonus}, #{entity.positiveCommentBonus}, #{entity.otherBonus}, #{entity.negativeCommentForfeit}, #{entity.overTimeForfeit}, #{entity.refuseOrderForfeit}, #{entity.otherForfeit}, #{entity.startTime}, #{entity.endTime}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy}, #{entity.totalPay}, #{entity.realPay})
+        </foreach>
+        on duplicate key update
+        employee_salary_id = values(employee_salary_id),
+        employee_id = values(employee_id),
+        base_salary = values(base_salary),
+        order_salary = values(order_salary),
+        order_royalty = values(order_royalty),
+        attend_bonus = values(attend_bonus),
+        invite_rider_bonus = values(invite_rider_bonus),
+        positive_comment_bonus = values(positive_comment_bonus),
+        other_bonus = values(other_bonus),
+        negative_comment_forfeit = values(negative_comment_forfeit),
+        over_time_forfeit = values(over_time_forfeit),
+        refuse_order_forfeit = values(refuse_order_forfeit),
+        other_forfeit = values(other_forfeit),
+        start_time = values(start_time),
+        end_time = values(end_time),
+        is_delete = values(is_delete),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by),
+        total_pay = values(total_pay),
+        real_pay = values(real_pay)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update employee_salary
+        <set>
+            <if test="baseSalary != null">
+                base_salary = #{baseSalary},
+            </if>
+            <if test="orderSalary != null">
+                order_salary = #{orderSalary},
+            </if>
+            <if test="orderRoyalty != null">
+                order_royalty = #{orderRoyalty},
+            </if>
+            <if test="attendBonus != null">
+                attend_bonus = #{attendBonus},
+            </if>
+            <if test="inviteRiderBonus != null">
+                invite_rider_bonus = #{inviteRiderBonus},
+            </if>
+            <if test="positiveCommentBonus != null">
+                positive_comment_bonus = #{positiveCommentBonus},
+            </if>
+            <if test="otherBonus != null">
+                other_bonus = #{otherBonus},
+            </if>
+            <if test="negativeCommentForfeit != null">
+                negative_comment_forfeit = #{negativeCommentForfeit},
+            </if>
+            <if test="overTimeForfeit != null">
+                over_time_forfeit = #{overTimeForfeit},
+            </if>
+            <if test="refuseOrderForfeit != null">
+                refuse_order_forfeit = #{refuseOrderForfeit},
+            </if>
+            <if test="otherForfeit != null">
+                other_forfeit = #{otherForfeit},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="totalPay != null">
+                total_pay = #{totalPay},
+            </if>
+            <if test="realPay != null">
+                real_pay = #{realPay},
+            </if>
+        </set>
+        where  employee_id = #{employeeId} and month_id=#{monthId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from employee_salary where id = #{id}
+    </delete>
+
+</mapper>
+

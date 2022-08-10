@@ -4,8 +4,10 @@ import com.zhaishu.qishouserver.Security.HashPasswordEncoder;
 import com.zhaishu.qishouserver.Security.UserToken;
 import com.zhaishu.qishouserver.common.*;
 import com.zhaishu.qishouserver.entity.Employee;
+import com.zhaishu.qishouserver.entity.SalaryLevel;
 import com.zhaishu.qishouserver.service.EmployeeService;
 import com.zhaishu.qishouserver.service.RiderService;
+import com.zhaishu.qishouserver.service.SalaryLevelService;
 import com.zhaishu.qishouserver.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -27,7 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("employee")
-@Api(tags = "EmployeeController", description = "员工信息表 使用mode :Employee")
+@Api(tags = "AAA员工管理接口", description = "员工信息表 使用mode :Employee")
 public class EmployeeController {
     /**
      * 服务对象
@@ -43,6 +45,7 @@ public class EmployeeController {
 
     @Resource
     private RiderService riderService;
+
 
     /*
     登录
@@ -87,7 +90,7 @@ public class EmployeeController {
      */
     @PostMapping("/addEmployee")
     @ApiOperation(value = "添加员工",notes = "默认密码为123456，必须传入员工类型等必要参数，员工类型在2-5之间，不能直接添加骑手类型")
-    @UserToken.SuperAdmin
+    @UserToken.Admin
     @ApiImplicitParams({
       @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),
     })
@@ -104,16 +107,20 @@ public class EmployeeController {
         if (employee1 != null) {
             return ResultResponse.error("403","电话号码已绑定，请更换手机号");
         }
-        //使用Encoder对默认密码进行加密
-        employee.setPassword(encoder.encode("123456"));
+        if (employee.getIdCard()!=null){
+           String pwd=employee.getIdCard().substring(employee.getIdCard().length()-6);
+           employee.setPassword(encoder.encode(pwd));
+        }else {
+            employee.setPassword(encoder.encode("123456"));
+        }
         //注册
         this.employeeService.insert(employee);
 
-        return ResultResponse.resultSuccess("添加成功，登录账号为电话号，默认密码为123456");
+        return ResultResponse.resultSuccess("添加成功，登录账号为电话号，默认密码为身份证后6位");
     }
     @PostMapping("/getEmployeebyMap")
     @ApiOperation(value = "根据条件查询",notes = "map 为空时获取全部员工，通过传入参数进行筛选，isDelete=1为离职员工")
-    @UserToken.SuperAdmin
+    @UserToken.Admin
     @ApiImplicitParams({
             @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),
     })
@@ -127,7 +134,7 @@ public class EmployeeController {
 
     @GetMapping("{id}")
     @ApiOperation("通过工号获取员工信息")
-    @UserToken.SuperAdmin
+    @UserToken.Admin
     @ApiImplicitParams({
             //TOKEN
             @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),
@@ -153,7 +160,7 @@ public class EmployeeController {
 
     @PostMapping("/edit")
     @ApiOperation(value = "编辑员工信息",notes = "只能修改员工信息，不能修改骑手和管理员信息")
-    @UserToken.SuperAdmin
+    @UserToken.Admin
     @ApiImplicitParams({
             //TOKEN
             @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),
@@ -162,13 +169,19 @@ public class EmployeeController {
         if (employee.getEmployeeId()==null){
             return ResultResponse.error("400","工号不能为空");
         }
+
         if (employee.getPhoneNum()!=null){
             Employee employee1=this.employeeService.queryByTel(employee.getPhoneNum());
-            return ResultResponse.error("403","存在相同电话号，一个电话号只能绑定一个用户");
+            if (employee1!=null){
+                return ResultResponse.error("403","存在相同电话号，一个电话号只能绑定一个用户");
+            }
         }
-        if (employee.getEmployeeType()>5||employee.getEmployeeType()<=1){
-            return ResultResponse.error("403","只能修改员工信息，不能修改骑手或管理员信息");
+        if (employee.getEmployeeType()!=null){
+            if (employee.getEmployeeType()>5||employee.getEmployeeType()<=1){
+                return ResultResponse.error("403","只能修改员工信息，不能修改骑手或管理员信息");
+            }
         }
+
         if (employee.getPassword()!=null){
             return ResultResponse.error("403","只能修改员工信息，不能通过此接口修改密码");
         }
@@ -191,7 +204,7 @@ public class EmployeeController {
         if (r==null){
             throw new RuntimeExceptions(ErrorResultCode.USER_NOT_FOUND);
         }
-        if (r.getIdCard().length()<6){
+        if (r.getIdCard()==null||r.getIdCard().length()!=18){
             return ResultResponse.error("400","请先设置正确的身份证号码");
         }
         //比对身份证号码后六位
@@ -239,7 +252,7 @@ public class EmployeeController {
      */
     @DeleteMapping
     @ApiOperation("删除员工")
-    @UserToken.SuperAdmin
+    @UserToken.Admin
     @ApiImplicitParams({
             //TOKEN
             @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),
@@ -264,7 +277,7 @@ public class EmployeeController {
      */
     @GetMapping("/getEmployees")
     @ApiOperation(value = "查询所有员工")
-    @UserToken.SuperAdmin
+    @UserToken.Admin
     @ApiImplicitParams({
             //TOKEN
             @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),
@@ -284,7 +297,7 @@ public class EmployeeController {
 
     @GetMapping("/getEmployeesByStatus")
     @ApiOperation("按在职状态查询")
-    @UserToken.SuperAdmin
+    @UserToken.Admin
     @ApiImplicitParams({
             //TOKEN
             @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),
@@ -303,7 +316,7 @@ public class EmployeeController {
     }
     @GetMapping("/getEmployeesByType")
     @ApiOperation("按员工类型查询")
-    @UserToken.SuperAdmin
+    @UserToken.Admin
     @ApiImplicitParams({
             //TOKEN
             @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),
@@ -322,7 +335,7 @@ public class EmployeeController {
     }
     @GetMapping("/getEmployeesByInfo")
     @ApiOperation("按员工信息查询")
-    @UserToken.SuperAdmin
+    @UserToken.Admin
     @ApiImplicitParams({
             //TOKEN
             @ApiImplicitParam(name = "token", value = "用户token", required = true, dataType = "String", paramType = "header"),

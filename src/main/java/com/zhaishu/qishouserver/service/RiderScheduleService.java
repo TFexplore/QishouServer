@@ -18,7 +18,9 @@ import java.util.List;
  */
 public interface RiderScheduleService {
 
-    List<WorkRecordVo> getWorkRecord( WorkRecordVo rider,Integer limit, Integer offset);
+    RiderSchedule  getScheduleById(RiderSchedule schedule);
+
+    List<WorkRecordVo> getWorkRecord(WorkRecordVo rider, Integer limit, Integer offset);
 
 
     int countWorkRecord(WorkRecordVo recordVo);
@@ -35,16 +37,8 @@ public interface RiderScheduleService {
      * @param id 主键
      * @return 实例对象
      */
-    RiderSchedule queryById(Integer id);
+    List<RiderSchedule> queryById(Integer id);
 
-    /**
-     * 分页查询
-     *
-     * @param riderSchedule 筛选条件
-     * @param pageRequest      分页对象
-     * @return 查询结果
-     */
-    Page<RiderSchedule> queryByPage(RiderSchedule riderSchedule, PageRequest pageRequest);
 
     /**
      * 新增数据
@@ -53,6 +47,8 @@ public interface RiderScheduleService {
      * @return 实例对象
      */
     int insert(RiderSchedule riderSchedule);
+
+    int count(RiderSchedule schedule);
 
     /**
      * 修改数据
@@ -70,4 +66,5 @@ public interface RiderScheduleService {
      */
     boolean deleteById(Integer id);
 
+    int deleteRider(Integer id, Integer employeeId);
 }

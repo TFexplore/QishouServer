@@ -49,6 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public synchronized Employee insert(Employee employee) throws DataAccessException {
         int employeeId = this.getNextEmployeeId();//获取记录数
         employee.setEmployeeId(employeeId);
+        employee.setIsDelete(0);
         this.employeeDao.insert(employee);
         return employee;
     }

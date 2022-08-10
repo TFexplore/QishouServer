@@ -1,14 +1,65 @@
 package com.zhaishu.qishouserver;
 
+import com.google.gson.Gson;
 import com.zhaishu.qishouserver.entity.*;
 import org.apache.commons.lang3.RandomUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DateUtils {
 
+    public static void averageRandom(){
+        System.out.println("均匀分布随机选择算法");
+        Gson gson=new Gson();
+        List<Integer> x=new ArrayList<>();
+        x.add(0);
+        x.add(0);
+        x.add(0);
+        int lastIndex=-1;
+        for (int j = 0; j <20 ; j++) {
+            x.set(0,0);
+            x.set(1,0);
+            x.set(2,0);
+            for (int i = 0; i < 20; i++) {
+                int index = RandomUtils.nextInt(0, x.size());
 
+                if (lastIndex==index){
+                    index=RandomUtils.nextInt(0, x.size());
+                    if (index==lastIndex){
+                        index=RandomUtils.nextInt(0, x.size());
+                    }
+                }
+                x.set(index, x.get(index) + 1);
+                lastIndex=index;
+            }
 
+            System.out.println(gson.toJson(x));
+        }
 
+    }
+    public static void ordinaryRandom(){
+        System.out.println("普通随机选择算法");
+        Gson gson=new Gson();
+        List<Integer> x=new ArrayList<>();
+        x.add(0);
+        x.add(0);
+        x.add(0);
+        for (int j = 0; j <20 ; j++) {
+            x.set(0,0);
+            x.set(1,0);
+            x.set(2,0);
+            for (int i = 0; i < 20; i++) {
+                int index = RandomUtils.nextInt(0, x.size());
 
+                x.set(index, x.get(index) + 1);
+
+            }
+
+            System.out.println(gson.toJson(x));
+        }
+
+    }
 
     public static Employee getEmployee(Integer id){
         //随机填充属性并返回Employee对象

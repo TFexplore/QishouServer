@@ -1,5 +1,7 @@
 package com.zhaishu.qishouserver.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -28,6 +30,8 @@ public class Employee implements Serializable {
      */
     @ApiModelProperty(value = "员工ID，6位数？")
     private Integer employeeId;
+    @ApiModelProperty(value = "商铺id，6位数？")
+    private Integer shopId;
     /**
      * 员工姓名
      */
@@ -76,6 +80,8 @@ public class Employee implements Serializable {
      */
     @ApiModelProperty("员工类型")
     private Integer employeeType;
+    //入职状态(0未入职,1在职，2已离职)
+    private Integer status;
     /**
      * 员工薪酬等级
      */
@@ -85,15 +91,30 @@ public class Employee implements Serializable {
     @ApiModelProperty("员工状态 0:正常 1:离职")
     private Integer isDelete;
 
-
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
     
     private Integer createBy;
-    
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
     
     private Integer updateBy;
 
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public Integer getId() {
         return id;

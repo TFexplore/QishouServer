@@ -7,6 +7,7 @@
         <result property="distributeId" column="distribute_id" jdbcType="INTEGER"/>
         <result property="orderId" column="order_id" jdbcType="INTEGER"/>
         <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
         <result property="commentLevel" column="comment_level" jdbcType="INTEGER"/>
         <result property="commentContent" column="comment_content" jdbcType="VARCHAR"/>
         <result property="getOrderTime" column="get_order_time" jdbcType="TIMESTAMP"/>
@@ -18,30 +19,161 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
         <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="isCount" column="is_count" jdbcType="INTEGER"/>
     </resultMap>
+    <resultMap type="com.zhaishu.qishouserver.Vo.OrderVo" id="OrderVoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="orderId" column="code" jdbcType="VARCHAR"/>
+        <result property="buyerName" column="receiver_name" jdbcType="VARCHAR"/>
+        <result property="buyerId" column="wxuser_id" jdbcType="INTEGER"/>
+        <result property="buyerApart" column="tname" jdbcType="VARCHAR"/>
+        <result property="apartmentId" column="apartment_id" jdbcType="INTEGER"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="buyerPhone" column="receiver_phone" jdbcType="VARCHAR"/>
+        <result property="status" column="status_name" jdbcType="VARCHAR"/>
+        <result property="statusCode" column="status" jdbcType="INTEGER"/>
+        <result property="buyerWill" column="buyer_will" jdbcType="INTEGER"/>
+        <result property="payTime" column="payTime" jdbcType="BIGINT"/>
+        <result property="completeTime" column="complete_time" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="BIGINT"/>
+        <result property="payPrice" column="pay_price" jdbcType="DOUBLE"/>
+        <result property="shippingFee" column="shipping_fee" jdbcType="DOUBLE"/>
+        <result property="discountAmount" column="discount_amount" jdbcType="DOUBLE"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="refundRemark" column="refund_remark" jdbcType="VARCHAR"/>
+        <association property="rider" javaType="com.zhaishu.qishouserver.Vo.ShipRiderVo"
+                    column="{id=rider_id}"
+                    select="getRiderInfo"/>
+        <association property="goodsQuantity" javaType="java.lang.Integer"
+                     column="{ID=id}"
+                     select="countQuantity"/>
+    </resultMap>
+    <resultMap id="ShipRiderVoMap" type="com.zhaishu.qishouserver.Vo.ShipRiderVo">
+        <result property="riderId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="phoneNum" column="phone_num" jdbcType="VARCHAR"/>
+        <result property="location_note" column="tname" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="GoodsMap" type="com.zhaishu.qishouserver.entity.TGoodsSs">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="sellPrice" column="sell_price" jdbcType="DOUBLE"/>
+        <result property="originalPrice" column="original_price" jdbcType="DOUBLE"/>
+        <result property="pictureUrl" column="picture_url" jdbcType="VARCHAR"/>
 
+        <result property="goodsQuantity" column="goods_quantity" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <select id="countQuantity" resultType="java.lang.Integer">
+        select sum(goods_quantity) from f50m_p_bus.t_order_detail where order_id=#{ID} group by order_id
+    </select>
+    <select id="getGoodsList" resultMap="GoodsMap">
+        select    g.goods_id ,g.name,g.sell_price,g.original_price,g.picture_url,o.goods_quantity
+        from f50m_p_bus.t_goods_ss g ,f50m_p_bus.t_order_detail o
+        where o.order_id=#{orderId} and g.id=o.goods_ss_id
+    </select>
 
-    <select id="countByLimit" resultType="int">
-        select count(1) from distribute_order
-        where  employee_id =#{id} and distribute_finish_time between
+    <select id="getOrdersAll" resultMap="OrderVoMap">
+        select o.id ,o.code,o.receiver_name,o.wxuser_id ,unix_timestamp(o.pay_time)*1000 as payTime,o.pay_price,o.shipping_fee,
+               o.discount_amount,o.remark,o.refund_remark,o.status,o.address,o.buyer_will,
+               o.apartment_id,o.receiver_phone,o.rider_id,unix_timestamp(o.complete_time)*1000 as complete_time,unix_timestamp(o.create_time)*1000 as create_time,
+               d.name as status_name,t.tname
+        from f50m_p_bus.t_order o , f50m_p_bus.t_dictory d,t_apartment t
+        <where>
+            d.id= o.status and t.id=o.apartment_id
+            <if test="order.orderId !=null and order.orderId != ''">
+                and o.code =#{order.orderId}
+            </if>
+            <if test="order.shopId != null">
+                and o.shop_id = #{shopId}
+            </if>
+            <if test="order.buyerPhone !=null and order.buyerPhone != ''">
+               and o.receiver_phone like concat('%',#{order.buyerPhone,jdbcType=VARCHAR})
+            </if>
+            <if test="order.rider != null">
+               and o.rider_id=#{order.rider.riderId}
+            </if>
+            <if test="order.apartmentId != null">
+                and o.apartment_id = #{order.apartmentId}
+            </if>
+            <if test="order.payTime != null and order.completeTime != null">
+                and unix_timestamp(o.pay_time)*1000 between #{order.payTime} and #{order.completeTime}
+            </if>
+            <if test="order.statusCode != null">
+                and o.status = #{order.statusCode}
+            </if>
+        </where>
+        group by o.code  order by o.create_time desc
+        limit #{offset},#{limit}
+    </select>
+    <select id="getRiderInfo" resultMap="ShipRiderVoMap">
+        select  distinct  e.name,e.employee_id,e.phone_num,t.tname
+        from f50m_b_rider.employee e,f50m_b_rider.rider r,f50m_b_rider.t_apartment t
+        where
+            e.employee_id=#{id}
+          and e.employee_id = r.employee_id
+          and t.id = r.location_id
+    </select>
+
+    <select id="countOrders" resultType="int">
+        select count(distinct o.id) from  f50m_p_bus.t_order o
+        <where>
+            <if test="orderId !=null and orderId != ''">
+                and o.code =#{orderId}
+            </if>
+            <if test="buyerPhone !=null and buyerPhone != ''">
+                 and o.receiver_phone like concat('%',#{buyerPhone,jdbcType=VARCHAR})
+            </if>
+            <if test="rider != null">
+                and o.rider_id=#{rider.riderId}
+            </if>
+            <if test="shopId != null">
+                and o.shop_id = #{shopId}
+            </if>
+            <if test="apartmentId != null">
+                and o.apartment_id = #{apartmentId}
+            </if>
+            <if test="payTime != null and completeTime != null">
+                and unix_timestamp(o.pay_time)*1000 between #{payTime} and #{completeTime}
+            </if>
+            <if test="statusCode != null">
+                and o.status = #{statusCode}
+            </if>
+        </where>
+    </select>
+    <select id="countOrdersOnDeal" resultType="int">
+        select count(distinct o.id) from  f50m_p_bus.t_order o
+        where  o.rider_id=#{rider.riderId}
+          and (o.status = 703 or  o.status between 13 and 16)
 
     </select>
 
+    <update id="updateOrders">
+        update f50m_p_bus.t_order o
+    <set>
+        <if test="statusCode != null">
+            o.status = #{statusCode},
+        </if>
 
+        <if test="rider != null">
+             o.rider_id = #{rider.riderId},
+        </if>
+    </set>
+    where o.code = #{orderId}
+    </update>
 
 
     <!--查询单个-->
     <select id="queryById" resultMap="DistributeOrderMap">
         select
-          id, distribute_id, order_id, employee_id, comment_level, comment_content, get_order_time, take_order_time, distribute_finish_time, order_finish_time, create_time, create_by, update_time, update_by, is_delete
+          id, distribute_id, order_id, employee_id, status,comment_level, comment_content, get_order_time, take_order_time, distribute_finish_time, order_finish_time, create_time, create_by, update_time, update_by, is_delete
         from distribute_order
-        where id = #{id}
+        where order_id = #{id}
     </select>
-
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="DistributeOrderMap">
+    <select id="queryAllByMap" resultMap="DistributeOrderMap">
         select
-          id, distribute_id, order_id, employee_id, comment_level, comment_content, get_order_time, take_order_time, distribute_finish_time, order_finish_time, create_time, create_by, update_time, update_by, is_delete
+        id, distribute_id, order_id, is_count,status,employee_id, comment_level, comment_content, get_order_time, take_order_time, distribute_finish_time, order_finish_time, create_time, create_by, update_time, update_by, is_delete
         from distribute_order
         <where>
             <if test="id != null">
@@ -55,6 +187,69 @@
             </if>
             <if test="employeeId != null">
                 and employee_id = #{employeeId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="commentLevel != null">
+                and comment_level = #{commentLevel}
+            </if>
+            <if test="commentContent != null and commentContent != ''">
+                and comment_content = #{commentContent}
+            </if>
+            <if test="getOrderTime != null">
+                and get_order_time = #{getOrderTime}
+            </if>
+            <if test="takeOrderTime != null">
+                and take_order_time = #{takeOrderTime}
+            </if>
+            <if test="distributeFinishTime != null">
+                and distribute_finish_time is not null
+            </if>
+            <if test="orderFinishTime != null">
+                and order_finish_time is not null
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="isCount != null">
+                and is_count = #{isCount}
+            </if>
+        </where>
+        order by employee_id desc
+    </select>
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="DistributeOrderMap">
+        select
+          id, distribute_id, order_id, is_count,employee_id, comment_level, comment_content, get_order_time, take_order_time, distribute_finish_time, order_finish_time, create_time, create_by, update_time, update_by, is_delete
+        from distribute_order
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="distributeId != null">
+                and distribute_id = #{distributeId}
+            </if>
+            <if test="orderId != null">
+                and order_id = #{orderId}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
             </if>
             <if test="commentLevel != null">
                 and comment_level = #{commentLevel}
@@ -228,6 +423,9 @@
             </if>
             <if test="isDelete != null">
                 is_delete = #{isDelete},
+            </if>
+            <if test="isCount != null">
+                is_count = #{isCount},
             </if>
         </set>
         where id = #{id}

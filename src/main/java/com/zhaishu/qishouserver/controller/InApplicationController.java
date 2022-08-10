@@ -25,7 +25,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("inApplication")
-@Api(tags = "入职申请表", description = "入职申请表")
+@Api(tags = "B入职申请表", description = "入职申请表")
 public class InApplicationController {
     /**
      * 服务对象

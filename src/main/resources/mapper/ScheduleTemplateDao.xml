@@ -18,15 +18,18 @@
         <result property="location_note" column="tname" jdbcType="VARCHAR"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
     </resultMap>
+
     <select id="getRiders" resultMap="RiderVoMap">
         select
             s.employee_id,e.name,t.tname
         from rider_schedule s,employee e,rider r,t_apartment t
         where s.worktime_id = #{ID} and s.employee_id =e.employee_id and e.employee_id=r.employee_id and r.location_id=t.id
     </select>
+
     <select id="getTempletes" resultMap="TemplateVoMap">
         select  id, discribe
         from schedule_template
+        limit #{offset},#{limit}
     </select>
 
     <!--查询单个-->
@@ -57,20 +60,12 @@
     <select id="count" resultType="int">
         select count(1)
         from schedule_template
-        <where>
-            <if test="id != null">
-                and id = #{id}
-            </if>
-            <if test="discribe != null and discribe != ''">
-                and discribe = #{discribe}
-            </if>
-        </where>
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into schedule_template(discribe)
-        values (#{discribe})
+        insert into schedule_template(id,discribe)
+        values (#{id},#{discribe})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">

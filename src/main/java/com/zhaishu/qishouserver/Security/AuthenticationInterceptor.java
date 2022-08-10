@@ -24,7 +24,7 @@ import java.util.Map;
 
 @Slf4j
 public class AuthenticationInterceptor implements HandlerInterceptor {
-    @Autowired
+    @Resource
     EmployeeService userService;
 
 
@@ -36,11 +36,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String phoneNum = httpServletRequest.getHeader("phone_num");
 
         // 如果不是映射到方法直接通过
-
-        System.out.println("token:"+token);
+        log.info("token:"+token);
 
         if (!(object instanceof HandlerMethod)) {
-            System.out.println("不是方法");
+           log.info("不是方法");
             return true;
         }
         HandlerMethod handlerMethod = (HandlerMethod) object;
@@ -48,6 +47,22 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
         if (method.getName().equals("errorHtml")){
             return true;
+        }
+
+
+
+        //检查是否有passtoken注释，有则跳过认证
+        if (method.isAnnotationPresent(UserToken.PassToken.class)) {
+            UserToken.PassToken passToken = method.getAnnotation(UserToken.PassToken.class);
+            if (passToken.required()) {
+                String requestURI = httpServletRequest.getRequestURI();
+                String requestMethod = httpServletRequest.getMethod();
+                String requestTime = String.valueOf(System.currentTimeMillis());
+                String record = requestTime +" " + " "+requestURI +" "+ requestMethod ;
+                log.info(record);
+
+                return true;
+            }
         }
 
         Map<String, Object> map = isValid(token);
@@ -62,37 +77,36 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String record = requestTime +" "+ map.get("userId") + " "+requestURI +" "+ requestMethod ;
         log.info(record);
 
-
-
-
-        //检查是否有passtoken注释，有则跳过认证
-        if (method.isAnnotationPresent(UserToken.PassToken.class)) {
-            UserToken.PassToken passToken = method.getAnnotation(UserToken.PassToken.class);
-            if (passToken.required()) {
-                return true;
-            }
-        }
-
-
-        //检查有没有需要用户权限的注解
-        if (method.isAnnotationPresent(UserToken.UserLoginToken.class)) {
-            UserToken.UserLoginToken userLoginToken = method.getAnnotation(UserToken.UserLoginToken.class);
-            if (userLoginToken.required()) {
-
-                if (map.get("userType") == null) {
-                    throw new RuntimeExceptions(ErrorResultCode.TOKEN_TIMEOUT);
-                }
-
-
-                return true;
-            }
-        }
         if (method.isAnnotationPresent(UserToken.Admin.class)){
             UserToken.Admin admin = method.getAnnotation(UserToken.Admin.class);
             if (admin.required()){
                 if (type<1||type>5){
 
                   throw new RuntimeExceptions(ErrorResultCode.TOKEN_ERROR_ROLE);
+                }
+
+                return true;
+            }
+
+        }
+        if (method.isAnnotationPresent(UserToken.HR.class)){
+            UserToken.HR admin = method.getAnnotation(UserToken.HR.class);
+            if (admin.required()){
+                if (type<1||type>2){
+
+                    throw new RuntimeExceptions(ErrorResultCode.TOKEN_ERROR_ROLE);
+                }
+
+                return true;
+            }
+
+        }
+        if (method.isAnnotationPresent(UserToken.Sales.class)){
+            UserToken.Sales admin = method.getAnnotation(UserToken.Sales.class);
+            if (admin.required()){
+                if ((type<1||type>5)||type==2){
+
+                    throw new RuntimeExceptions(ErrorResultCode.TOKEN_ERROR_ROLE);
                 }
 
                 return true;
@@ -106,7 +120,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
                     throw new RuntimeExceptions(ErrorResultCode.TOKEN_ERROR_ROLE);
                 }
-
 
                 return true;
             }

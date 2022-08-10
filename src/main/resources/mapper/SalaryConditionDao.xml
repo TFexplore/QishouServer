@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.SalaryConditionDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.SalaryCondition" id="SalaryConditionMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="triggerBkType" column="trigger_bk_type" jdbcType="INTEGER"/>
+        <result property="triggerBkNum" column="trigger_bk_num" jdbcType="INTEGER"/>
+        <result property="triggerBkCondition" column="trigger_bk_condition" jdbcType="INTEGER"/>
+        <result property="triggerType" column="trigger_type" jdbcType="INTEGER"/>
+        <result property="triggerNum" column="trigger_num" jdbcType="INTEGER"/>
+        <result property="triggerCondition" column="trigger_condition" jdbcType="INTEGER"/>
+        <result property="resultsType" column="results_type" jdbcType="INTEGER"/>
+        <result property="resultsNum" column="results_num" jdbcType="NUMERIC"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SalaryConditionMap">
+        select
+          id, name, trigger_bk_type, trigger_bk_num, trigger_bk_condition, trigger_type, trigger_num, trigger_condition, results_type, results_num, is_delete, create_time, create_by, update_time, update_by
+        from salary_condition
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SalaryConditionMap">
+        select
+          id, name, trigger_bk_type, trigger_bk_num, trigger_bk_condition, trigger_type, trigger_num, trigger_condition, results_type, results_num, is_delete, create_time, create_by, update_time, update_by
+        from salary_condition
+        <where>
+            <if test="condition.id != null">
+                and id = #{condition.id}
+            </if>
+            <if test="condition.name != null and condition.name != ''">
+                and name = #{condition.name}
+            </if>
+            <if test="condition.triggerBkType != null">
+                and trigger_bk_type = #{condition.triggerBkType}
+            </if>
+            <if test="condition.triggerBkNum != null">
+                and trigger_bk_num = #{condition.triggerBkNum}
+            </if>
+            <if test="condition.triggerBkCondition != null">
+                and trigger_bk_condition = #{condition.triggerBkCondition}
+            </if>
+            <if test="condition.triggerType != null">
+                and trigger_type = #{condition.triggerType}
+            </if>
+            <if test="condition.triggerNum != null">
+                and trigger_num = #{condition.triggerNum}
+            </if>
+            <if test="condition.triggerCondition != null">
+                and trigger_condition = #{condition.triggerCondition}
+            </if>
+            <if test="condition.resultsType != null">
+                and results_type = #{condition.resultsType}
+            </if>
+            <if test="condition.resultsNum != null">
+                and results_num = #{condition.resultsNum}
+            </if>
+            <if test="condition.isDelete != null">
+                and is_delete = #{condition.isDelete}
+            </if>
+            <if test="condition.createTime != null">
+                and create_time = #{condition.createTime}
+            </if>
+            <if test="condition.createBy != null">
+                and create_by = #{condition.createBy}
+            </if>
+            <if test="condition.updateTime != null">
+                and update_time = #{condition.updateTime}
+            </if>
+            <if test="condition.updateBy != null">
+                and update_by = #{condition.updateBy}
+            </if>
+        </where>
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from salary_condition
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="triggerBkType != null">
+                and trigger_bk_type = #{triggerBkType}
+            </if>
+            <if test="triggerBkNum != null">
+                and trigger_bk_num = #{triggerBkNum}
+            </if>
+            <if test="triggerBkCondition != null">
+                and trigger_bk_condition = #{triggerBkCondition}
+            </if>
+            <if test="triggerType != null">
+                and trigger_type = #{triggerType}
+            </if>
+            <if test="triggerNum != null">
+                and trigger_num = #{triggerNum}
+            </if>
+            <if test="triggerCondition != null">
+                and trigger_condition = #{triggerCondition}
+            </if>
+            <if test="resultsType != null">
+                and results_type = #{resultsType}
+            </if>
+            <if test="resultsNum != null">
+                and results_num = #{resultsNum}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into salary_condition(name, trigger_bk_type, trigger_bk_num, trigger_bk_condition, trigger_type, trigger_num, trigger_condition, results_type, results_num, is_delete, create_time, create_by, update_time, update_by)
+        values (#{name}, #{triggerBkType}, #{triggerBkNum}, #{triggerBkCondition}, #{triggerType}, #{triggerNum}, #{triggerCondition}, #{resultsType}, #{resultsNum}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into salary_condition(name, trigger_bk_type, trigger_bk_num, trigger_bk_condition, trigger_type, trigger_num, trigger_condition, results_type, results_num, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.name}, #{entity.triggerBkType}, #{entity.triggerBkNum}, #{entity.triggerBkCondition}, #{entity.triggerType}, #{entity.triggerNum}, #{entity.triggerCondition}, #{entity.resultsType}, #{entity.resultsNum}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into salary_condition(name, trigger_bk_type, trigger_bk_num, trigger_bk_condition, trigger_type, trigger_num, trigger_condition, results_type, results_num, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.name}, #{entity.triggerBkType}, #{entity.triggerBkNum}, #{entity.triggerBkCondition}, #{entity.triggerType}, #{entity.triggerNum}, #{entity.triggerCondition}, #{entity.resultsType}, #{entity.resultsNum}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+        on duplicate key update
+        name = values(name),
+        trigger_bk_type = values(trigger_bk_type),
+        trigger_bk_num = values(trigger_bk_num),
+        trigger_bk_condition = values(trigger_bk_condition),
+        trigger_type = values(trigger_type),
+        trigger_num = values(trigger_num),
+        trigger_condition = values(trigger_condition),
+        results_type = values(results_type),
+        results_num = values(results_num),
+        is_delete = values(is_delete),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update salary_condition
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="triggerBkType != null">
+                trigger_bk_type = #{triggerBkType},
+            </if>
+            <if test="triggerBkNum != null">
+                trigger_bk_num = #{triggerBkNum},
+            </if>
+            <if test="triggerBkCondition != null">
+                trigger_bk_condition = #{triggerBkCondition},
+            </if>
+            <if test="triggerType != null">
+                trigger_type = #{triggerType},
+            </if>
+            <if test="triggerNum != null">
+                trigger_num = #{triggerNum},
+            </if>
+            <if test="triggerCondition != null">
+                trigger_condition = #{triggerCondition},
+            </if>
+            <if test="resultsType != null">
+                results_type = #{resultsType},
+            </if>
+            <if test="resultsNum != null">
+                results_num = #{resultsNum},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from salary_condition where id = #{id}
+    </delete>
+
+</mapper>
+

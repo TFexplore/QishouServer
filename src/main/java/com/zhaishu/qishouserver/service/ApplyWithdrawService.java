@@ -1,16 +1,18 @@
 package com.zhaishu.qishouserver.service;
 
+import com.zhaishu.qishouserver.Vo.ApplyDrawVo;
 import com.zhaishu.qishouserver.entity.ApplyWithdraw;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import java.util.List;
 
 /**
  * (ApplyWithdraw)表服务接口
  *
  * @author makejava
- * @since 2022-04-18 19:15:59
+ * @since 2022-08-06 11:21:07
  */
 public interface ApplyWithdrawService {
+
+    Double getAmountByDate(Integer flag, Long startTime, Long endTime);
 
     /**
      * 通过ID查询单条数据
@@ -18,16 +20,15 @@ public interface ApplyWithdrawService {
      * @param id 主键
      * @return 实例对象
      */
-    ApplyWithdraw queryById(Integer id);
+    ApplyWithdraw queryById(String id);
 
     /**
      * 分页查询
      *
      * @param applyWithdraw 筛选条件
-     * @param pageRequest      分页对象
      * @return 查询结果
      */
-    Page<ApplyWithdraw> queryByPage(ApplyWithdraw applyWithdraw, PageRequest pageRequest);
+    List<ApplyDrawVo> queryByPage(ApplyDrawVo applyWithdraw, Integer offset, Integer limit);
 
     /**
      * 新增数据
@@ -44,7 +45,8 @@ public interface ApplyWithdrawService {
      * @return 实例对象
      */
     ApplyWithdraw update(ApplyWithdraw applyWithdraw);
-
+    
+    int count(ApplyWithdraw applyWithdraw);
     /**
      * 通过主键删除数据
      *
@@ -52,5 +54,7 @@ public interface ApplyWithdrawService {
      * @return 是否成功
      */
     boolean deleteById(Integer id);
+    
+    
 
 }

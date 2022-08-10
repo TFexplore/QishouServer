@@ -31,6 +31,7 @@
             or (start_time >= #{startTime} and end_time <![CDATA[<= ]]> #{endTime})
             )
     </select>
+
     <select id="getNextId" resultType="java.lang.Integer">
         select max(worktime_id) from work_time where  date_id = #{dateId}
     </select>

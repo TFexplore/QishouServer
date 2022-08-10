@@ -24,17 +24,7 @@ public class ScheduleTemplateController {
     @Resource
     private ScheduleTemplateService scheduleTemplateService;
 
-    /**
-     * 分页查询
-     *
-     * @param scheduleTemplate 筛选条件
-     * @param pageRequest      分页对象
-     * @return 查询结果
-     */
-    @GetMapping
-    public ResponseEntity<Page<ScheduleTemplate>> queryByPage(ScheduleTemplate scheduleTemplate, PageRequest pageRequest) {
-        return ResponseEntity.ok(this.scheduleTemplateService.queryByPage(scheduleTemplate, pageRequest));
-    }
+
 
     /**
      * 通过主键查询单条数据

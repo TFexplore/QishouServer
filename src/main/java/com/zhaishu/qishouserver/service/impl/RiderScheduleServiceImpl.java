@@ -3,14 +3,12 @@ package com.zhaishu.qishouserver.service.impl;
 import com.zhaishu.qishouserver.Vo.RiderVo;
 import com.zhaishu.qishouserver.Vo.ScheduleVo;
 import com.zhaishu.qishouserver.Vo.WorkRecordVo;
+import com.zhaishu.qishouserver.common.RuntimeExceptions;
 import com.zhaishu.qishouserver.entity.RiderSchedule;
 import com.zhaishu.qishouserver.dao.RiderScheduleDao;
 import com.zhaishu.qishouserver.service.RiderScheduleService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -26,6 +24,11 @@ public class RiderScheduleServiceImpl implements RiderScheduleService {
     @Resource
     private RiderScheduleDao riderScheduleDao;
 
+
+    @Override
+    public RiderSchedule  getScheduleById(RiderSchedule schedule){
+        return riderScheduleDao.getScheduleById(schedule);
+    }
     @Override
     public List<WorkRecordVo> getWorkRecord(WorkRecordVo rider, Integer limit, Integer offset){
 
@@ -55,22 +58,11 @@ public class RiderScheduleServiceImpl implements RiderScheduleService {
      * @return 实例对象
      */
     @Override
-    public RiderSchedule queryById(Integer id) {
+    public List<RiderSchedule> queryById(Integer id) {
         return this.riderScheduleDao.queryById(id);
     }
 
-    /**
-     * 分页查询
-     *
-     * @param riderSchedule 筛选条件
-     * @param pageRequest      分页对象
-     * @return 查询结果
-     */
-    @Override
-    public Page<RiderSchedule> queryByPage(RiderSchedule riderSchedule, PageRequest pageRequest) {
-        long total = this.riderScheduleDao.count(riderSchedule);
-        return new PageImpl<>(this.riderScheduleDao.queryAllByLimit(riderSchedule, pageRequest), pageRequest, total);
-    }
+
 
     /**
      * 新增数据
@@ -80,12 +72,21 @@ public class RiderScheduleServiceImpl implements RiderScheduleService {
      */
     @Override
     public int insert(RiderSchedule riderSchedule) {
+        if (this.count(riderSchedule)!=0){
+            throw new RuntimeExceptions("400","重复添加");
+        }
         Integer id=this.riderScheduleDao.getNextId(riderSchedule.getWorktimeId());
         if (id==null){
-            id=riderSchedule.getWorktimeId()*100;
+            id=0;
         }
+        System.out.println("id: "+id);
         riderSchedule.setScheduleId(id+1);
         return  this.riderScheduleDao.insert(riderSchedule);
+    }
+    @Override
+    public int count(RiderSchedule schedule){
+
+        return this.riderScheduleDao.count(schedule);
     }
 
     /**
@@ -97,7 +98,7 @@ public class RiderScheduleServiceImpl implements RiderScheduleService {
     @Override
     public RiderSchedule update(RiderSchedule riderSchedule) {
         this.riderScheduleDao.update(riderSchedule);
-        return this.queryById(riderSchedule.getScheduleId());
+        return riderSchedule;
     }
 
     /**
@@ -109,5 +110,9 @@ public class RiderScheduleServiceImpl implements RiderScheduleService {
     @Override
     public boolean deleteById(Integer id) {
         return this.riderScheduleDao.deleteById(id) > 0;
+    }
+    @Override
+    public int deleteRider(Integer id, Integer employeeId){
+        return riderScheduleDao.deleteRider(id, employeeId);
     }
 }

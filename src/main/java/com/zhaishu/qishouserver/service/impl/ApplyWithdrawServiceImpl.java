@@ -1,26 +1,28 @@
 package com.zhaishu.qishouserver.service.impl;
 
+import com.zhaishu.qishouserver.Vo.ApplyDrawVo;
 import com.zhaishu.qishouserver.entity.ApplyWithdraw;
 import com.zhaishu.qishouserver.dao.ApplyWithdrawDao;
 import com.zhaishu.qishouserver.service.ApplyWithdrawService;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-
+import java.util.List;
 import javax.annotation.Resource;
 
 /**
  * (ApplyWithdraw)表服务实现类
  *
  * @author makejava
- * @since 2022-04-18 19:16:00
+ * @since 2022-08-06 11:21:08
  */
 @Service("applyWithdrawService")
 public class ApplyWithdrawServiceImpl implements ApplyWithdrawService {
     @Resource
     private ApplyWithdrawDao applyWithdrawDao;
 
+    @Override
+    public Double getAmountByDate(Integer flag, Long startTime, Long endTime){
+        return applyWithdrawDao.getAmountByDate(flag, startTime, endTime);
+    }
     /**
      * 通过ID查询单条数据
      *
@@ -28,7 +30,7 @@ public class ApplyWithdrawServiceImpl implements ApplyWithdrawService {
      * @return 实例对象
      */
     @Override
-    public ApplyWithdraw queryById(Integer id) {
+    public ApplyWithdraw queryById(String id) {
         return this.applyWithdrawDao.queryById(id);
     }
 
@@ -36,13 +38,12 @@ public class ApplyWithdrawServiceImpl implements ApplyWithdrawService {
      * 分页查询
      *
      * @param applyWithdraw 筛选条件
-     * @param pageRequest      分页对象
      * @return 查询结果
      */
     @Override
-    public Page<ApplyWithdraw> queryByPage(ApplyWithdraw applyWithdraw, PageRequest pageRequest) {
-        long total = this.applyWithdrawDao.count(applyWithdraw);
-        return new PageImpl<>(this.applyWithdrawDao.queryAllByLimit(applyWithdraw, pageRequest), pageRequest, total);
+    public List<ApplyDrawVo> queryByPage(ApplyDrawVo applyWithdraw, Integer offset, Integer limit) {
+      
+        return this.applyWithdrawDao.queryAllByLimit(applyWithdraw, offset,limit);
     }
 
     /**
@@ -68,7 +69,11 @@ public class ApplyWithdrawServiceImpl implements ApplyWithdrawService {
         this.applyWithdrawDao.update(applyWithdraw);
         return this.queryById(applyWithdraw.getId());
     }
-
+    @Override
+    public int count(ApplyWithdraw applyWithdraw) {
+        
+        return this.applyWithdrawDao.count(applyWithdraw); 
+    }
     /**
      * 通过主键删除数据
      *

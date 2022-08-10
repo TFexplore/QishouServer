@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.AddrShopDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.AddrShop" id="AddrShopMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="addrNum" column="addr_num" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="isDelet" column="is_delet" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="AddrShopMap">
+        select
+          id, addr_num, name, is_delet, create_time, update_time
+        from addr_shop
+        where addr_num = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="AddrShopMap">
+        select
+          id, addr_num, name, is_delet, create_time, update_time
+        from addr_shop
+        <where>
+            <if test="param.id != null">
+                and id = #{param.id}
+            </if>
+            <if test="param.addrNum != null">
+                and addr_num = #{param.addrNum}
+            </if>
+            <if test="param.name != null and param.name != ''">
+                and name = #{param.name}
+            </if>
+            <if test="param.isDelet != null">
+                and is_delet = #{param.isDelet}
+            </if>
+            <if test="param.createTime != null">
+                and create_time = #{param.createTime}
+            </if>
+            <if test="param.updateTime != null">
+                and update_time = #{param.updateTime}
+            </if>
+        </where>
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from addr_shop
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="addrNum != null">
+                and addr_num = #{addrNum}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="isDelet != null">
+                and is_delet = #{isDelet}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into addr_shop(addr_num, name, is_delet, create_time, update_time)
+        values (#{addrNum}, #{name}, #{isDelet}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into addr_shop(addr_num, name, is_delet, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.addrNum}, #{entity.name}, #{entity.isDelet}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into addr_shop(addr_num, name, is_delet, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.addrNum}, #{entity.name}, #{entity.isDelet}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        addr_num = values(addr_num),
+        name = values(name),
+        is_delet = values(is_delet),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update addr_shop
+        <set>
+            <if test="addrNum != null">
+                addr_num = #{addrNum},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="isDelet != null">
+                is_delet = #{isDelet},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where addr_num = #{addrNum}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from addr_shop where addr_num = #{id}
+    </delete>
+
+</mapper>
+

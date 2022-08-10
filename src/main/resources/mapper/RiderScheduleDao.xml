@@ -32,6 +32,7 @@
     </resultMap>
     <resultMap type="com.zhaishu.qishouserver.Vo.RiderVo" id="RiderVoMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="isOnline" column="is_online" jdbcType="INTEGER"/>
         <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
         <result property="riderType" column="employee_type" jdbcType="INTEGER"/>
         <result property="locationId" column="location_id" jdbcType="INTEGER"/>
@@ -73,6 +74,13 @@
         <collection property="badOrders" javaType="java.lang.Integer" column="{id=employee_id,start=start_time,end=end_time}"
                     select="getBadOrders"/>
     </resultMap>
+    <select id="getScheduleById" resultMap="RiderScheduleMap">
+        select
+            s.id, s.schedule_id, s.worktime_id, s.employee_id, s.work_start_time, s.work_end_time
+        from rider_schedule s ,work_time w
+        where s.employee_id=#{employeeId} and s.worktime_id=w.worktime_id and w.date_id=#{worktimeId} and #{workStartTime} between w.start_time and w.end_time
+
+    </select>
 
     <select id="countWorkRecord" resultType="int">
         select  count(distinct e.employee_id)
@@ -101,10 +109,9 @@
     </select>
     <select id="getWorkRecord" resultMap="WorkRecordVoMap">
         select  distinct  e.name,e.employee_id,e.phone_num,t.tname,#{rider.startTime} as start_time,#{rider.endTime} as end_time
-        from employee e,rider r,t_apartment t,rider_schedule s
+        from employee e,rider r,t_apartment t
         <where>
             e.employee_id = r.employee_id
-            and e.employee_id = s.employee_id
             and t.id = r.location_id
             and e.is_delete = 0
             <if test="rider.employeeId !=null">
@@ -166,9 +173,11 @@
     </select>
 
 
+
     <select id="getRiders" resultMap="RiderVoMap">
         select
-            e.name,e.employee_id,t.tname
+            e.name,e.employee_id,t.tname,e.phone_num,e.employee_type,
+               r.is_online
         from employee e,rider r,t_apartment t
 
         <where>
@@ -178,6 +187,18 @@
             </if>
             <if test="rider.employeeId != null">
                 and r.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.employeeId != null">
+                and r.employee_id = #{rider.employeeId}
+            </if>
+            <if test="rider.riderType != null">
+                and e.employee_type = #{rider.riderType}
+            </if>
+            <if test="rider.isOnline != null">
+                and r.is_online = #{rider.isOnline}
+            </if>
+            <if test="rider.locationId !=null">
+                and r.location_id=#{rider.locationId}
             </if>
             <if test="rider.phoneNum != null and rider.phoneNum != ''">
                 and e.phone_num = #{rider.phoneNum}
@@ -196,6 +217,15 @@
             <if test="rider.employeeId != null">
                 and r.employee_id = #{rider.employeeId}
             </if>
+            <if test="rider.isOnline != null">
+                and r.is_online = #{rider.isOnline}
+            </if>
+            <if test="rider.riderType != null">
+                and e.employee_type = #{rider.riderType}
+            </if>
+            <if test="rider.locationId !=null">
+                and r.location_id=#{rider.locationId}
+            </if>
             <if test="rider.phoneNum != null and rider.phoneNum != ''">
                 and e.phone_num = #{rider.phoneNum}
             </if>
@@ -213,7 +243,7 @@
         select max(schedule_id) from rider_schedule where worktime_id=#{id}
     </select>
 
-    <!--查询单个-->
+
     <select id="queryById" resultMap="RiderScheduleMap">
         select
           id, schedule_id, worktime_id, employee_id, work_start_time, work_end_time, create_time, create_by, update_time, update_by
@@ -368,7 +398,10 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from rider_schedule where id = #{id}
+        delete from rider_schedule where worktime_id = #{id}
+    </delete>
+    <delete id="deleteRider">
+        delete from rider_schedule where worktime_id = #{id} and employee_id =#{employeeId}
     </delete>
 
 </mapper>

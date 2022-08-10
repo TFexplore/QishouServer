@@ -4,11 +4,13 @@ import com.zhaishu.qishouserver.entity.SalaryLevel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 /**
- * 员工薪酬等级表(SalaryLevel)表服务接口
+ * 员工薪酬奖罚条件模板(SalaryLevel)表服务接口
  *
  * @author makejava
- * @since 2022-04-18 19:22:41
+ * @since 2022-07-08 15:21:32
  */
 public interface SalaryLevelService {
 
@@ -20,14 +22,12 @@ public interface SalaryLevelService {
      */
     SalaryLevel queryById(Integer id);
 
-    /**
-     * 分页查询
-     *
-     * @param salaryLevel 筛选条件
-     * @param pageRequest      分页对象
-     * @return 查询结果
-     */
-    Page<SalaryLevel> queryByPage(SalaryLevel salaryLevel, PageRequest pageRequest);
+
+    SalaryLevel queryByEmId(Integer id);
+
+    List<SalaryLevel> getList(SalaryLevel salaryLevel, Integer limit, Integer offset);
+
+    int count(SalaryLevel salaryLevel);
 
     /**
      * 新增数据

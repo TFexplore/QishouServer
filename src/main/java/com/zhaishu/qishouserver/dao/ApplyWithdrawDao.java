@@ -1,15 +1,15 @@
 package com.zhaishu.qishouserver.dao;
 
+import com.zhaishu.qishouserver.Vo.ApplyDrawVo;
 import com.zhaishu.qishouserver.entity.ApplyWithdraw;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 /**
  * (ApplyWithdraw)表数据库访问层
  *
  * @author makejava
- * @since 2022-04-18 19:15:57
+ * @since 2022-08-06 11:21:06
  */
 public interface ApplyWithdrawDao {
 
@@ -19,16 +19,16 @@ public interface ApplyWithdrawDao {
      * @param id 主键
      * @return 实例对象
      */
-    ApplyWithdraw queryById(Integer id);
+    ApplyWithdraw queryById(String id);
+    Double getAmountByDate(Integer flag,Long startTime,Long endTime);
 
     /**
      * 查询指定行数据
      *
      * @param applyWithdraw 查询条件
-     * @param pageable         分页对象
      * @return 对象列表
      */
-    List<ApplyWithdraw> queryAllByLimit(ApplyWithdraw applyWithdraw, @Param("pageable") Pageable pageable);
+    List<ApplyDrawVo> queryAllByLimit(@Param("param") ApplyDrawVo applyWithdraw, Integer offset, Integer limit);
 
     /**
      * 统计总行数
@@ -36,7 +36,7 @@ public interface ApplyWithdrawDao {
      * @param applyWithdraw 查询条件
      * @return 总行数
      */
-    long count(ApplyWithdraw applyWithdraw);
+    int count(ApplyWithdraw applyWithdraw);
 
     /**
      * 新增数据

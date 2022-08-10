@@ -16,6 +16,17 @@ public final class RedisUtil {
         this.redisTemplate = redisTemplate;
     }
 
+
+    public Boolean saveKeyValue(String key,String value){
+
+      redisTemplate.opsForValue().set(key, value);
+      return true;
+    }
+    public String getValue(String key){
+
+        return redisTemplate.opsForValue().get(key);
+    }
+
     //保存用户信息
     public Boolean savePhonenum(Employee employee) {
         String pkey = "token" + employee.getId();

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.EmployeeSalaryDayrecordDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.EmployeeSalaryDayrecord" id="EmployeeSalaryDayrecordMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="dateId" column="date_id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="orderCompleteNum" column="order_complete_num" jdbcType="INTEGER"/>
+        <result property="orderCompletePrice" column="order_complete_price" jdbcType="NUMERIC"/>
+        <result property="inviteUserNum" column="invite_user_num" jdbcType="INTEGER"/>
+        <result property="inviteUserPrice" column="invite_user_price" jdbcType="NUMERIC"/>
+        <result property="positiveCommentBonus" column="positive_comment_bonus" jdbcType="NUMERIC"/>
+        <result property="negativeCommentForfeit" column="negative_comment_forfeit" jdbcType="NUMERIC"/>
+        <result property="negativeCommentNum" column="negative_comment_num" jdbcType="INTEGER"/>
+        <result property="positiveCommentNum" column="positive_comment_num" jdbcType="INTEGER"/>
+        <result property="overtimeNum" column="overtime_num" jdbcType="INTEGER"/>
+        <result property="overtimePrice" column="overtime_price" jdbcType="NUMERIC"/>
+        <result property="otherBonus" column="other_bonus" jdbcType="NUMERIC"/>
+        <result property="otherForfeit" column="other_forfeit" jdbcType="NUMERIC"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeSalaryDayrecordMap">
+        select
+          id, date_id, employee_id, order_complete_num, order_complete_price, invite_user_num, invite_user_price, positive_comment_bonus, negative_comment_forfeit, negative_comment_num, positive_comment_num, overtime_num, overtime_price, other_bonus, other_forfeit, is_delete, create_time, create_by, update_time, update_by
+        from employee_salary_dayrecord
+        where date_id = #{dateId} and employee_id=#{employeeId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="EmployeeSalaryDayrecordMap">
+        select
+          id, date_id, employee_id, order_complete_num, order_complete_price, invite_user_num, invite_user_price, positive_comment_bonus, negative_comment_forfeit, negative_comment_num, positive_comment_num, overtime_num, overtime_price, other_bonus, other_forfeit, is_delete, create_time, create_by, update_time, update_by
+        from employee_salary_dayrecord
+        <where>
+            <if test="param.id != null">
+                and id = #{param.id}
+            </if>
+            <if test="param.dateId != null">
+                and date_id = #{param.dateId}
+            </if>
+            <if test="param.employeeId != null">
+                and employee_id = #{param.employeeId}
+            </if>
+            <if test="param.orderCompleteNum != null">
+                and order_complete_num = #{param.orderCompleteNum}
+            </if>
+            <if test="param.orderCompletePrice != null">
+                and order_complete_price = #{param.orderCompletePrice}
+            </if>
+            <if test="param.inviteUserNum != null">
+                and invite_user_num = #{param.inviteUserNum}
+            </if>
+            <if test="param.inviteUserPrice != null">
+                and invite_user_price = #{param.inviteUserPrice}
+            </if>
+            <if test="param.positiveCommentBonus != null">
+                and positive_comment_bonus = #{param.positiveCommentBonus}
+            </if>
+            <if test="param.negativeCommentForfeit != null">
+                and negative_comment_forfeit = #{param.negativeCommentForfeit}
+            </if>
+            <if test="param.negativeCommentNum != null">
+                and negative_comment_num = #{param.negativeCommentNum}
+            </if>
+            <if test="param.positiveCommentNum != null">
+                and positive_comment_num = #{param.positiveCommentNum}
+            </if>
+            <if test="param.overtimeNum != null">
+                and overtime_num = #{param.overtimeNum}
+            </if>
+            <if test="param.overtimePrice != null">
+                and overtime_price = #{param.overtimePrice}
+            </if>
+            <if test="param.otherBonus != null">
+                and other_bonus = #{param.otherBonus}
+            </if>
+            <if test="param.otherForfeit != null">
+                and other_forfeit = #{param.otherForfeit}
+            </if>
+            <if test="param.isDelete != null">
+                and is_delete = #{param.isDelete}
+            </if>
+            <if test="param.createTime != null">
+                and create_time = #{param.createTime}
+            </if>
+            <if test="param.createBy != null">
+                and create_by = #{param.createBy}
+            </if>
+            <if test="param.updateTime != null">
+                and update_time = #{param.updateTime}
+            </if>
+            <if test="param.updateBy != null">
+                and update_by = #{param.updateBy}
+            </if>
+        </where>
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from employee_salary_dayrecord
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="dateId != null">
+                and date_id = #{dateId}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="orderCompleteNum != null">
+                and order_complete_num = #{orderCompleteNum}
+            </if>
+            <if test="orderCompletePrice != null">
+                and order_complete_price = #{orderCompletePrice}
+            </if>
+            <if test="inviteUserNum != null">
+                and invite_user_num = #{inviteUserNum}
+            </if>
+            <if test="inviteUserPrice != null">
+                and invite_user_price = #{inviteUserPrice}
+            </if>
+            <if test="positiveCommentBonus != null">
+                and positive_comment_bonus = #{positiveCommentBonus}
+            </if>
+            <if test="negativeCommentForfeit != null">
+                and negative_comment_forfeit = #{negativeCommentForfeit}
+            </if>
+            <if test="negativeCommentNum != null">
+                and negative_comment_num = #{negativeCommentNum}
+            </if>
+            <if test="positiveCommentNum != null">
+                and positive_comment_num = #{positiveCommentNum}
+            </if>
+            <if test="overtimeNum != null">
+                and overtime_num = #{overtimeNum}
+            </if>
+            <if test="overtimePrice != null">
+                and overtime_price = #{overtimePrice}
+            </if>
+            <if test="otherBonus != null">
+                and other_bonus = #{otherBonus}
+            </if>
+            <if test="otherForfeit != null">
+                and other_forfeit = #{otherForfeit}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary_dayrecord(date_id, employee_id)
+        values (#{dateId}, #{employeeId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary_dayrecord(date_id, employee_id, order_complete_num, order_complete_price, invite_user_num, invite_user_price, positive_comment_bonus, negative_comment_forfeit, negative_comment_num, positive_comment_num, overtime_num, overtime_price, other_bonus, other_forfeit, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.dateId}, #{entity.employeeId}, #{entity.orderCompleteNum}, #{entity.orderCompletePrice}, #{entity.inviteUserNum}, #{entity.inviteUserPrice}, #{entity.positiveCommentBonus}, #{entity.negativeCommentForfeit}, #{entity.negativeCommentNum}, #{entity.positiveCommentNum}, #{entity.overtimeNum}, #{entity.overtimePrice}, #{entity.otherBonus}, #{entity.otherForfeit}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into employee_salary_dayrecord(date_id, employee_id, order_complete_num, order_complete_price, invite_user_num, invite_user_price, positive_comment_bonus, negative_comment_forfeit, negative_comment_num, positive_comment_num, overtime_num, overtime_price, other_bonus, other_forfeit, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.dateId}, #{entity.employeeId}, #{entity.orderCompleteNum}, #{entity.orderCompletePrice}, #{entity.inviteUserNum}, #{entity.inviteUserPrice}, #{entity.positiveCommentBonus}, #{entity.negativeCommentForfeit}, #{entity.negativeCommentNum}, #{entity.positiveCommentNum}, #{entity.overtimeNum}, #{entity.overtimePrice}, #{entity.otherBonus}, #{entity.otherForfeit}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+        on duplicate key update
+        date_id = values(date_id),
+        employee_id = values(employee_id),
+        order_complete_num = values(order_complete_num),
+        order_complete_price = values(order_complete_price),
+        invite_user_num = values(invite_user_num),
+        invite_user_price = values(invite_user_price),
+        positive_comment_bonus = values(positive_comment_bonus),
+        negative_comment_forfeit = values(negative_comment_forfeit),
+        negative_comment_num = values(negative_comment_num),
+        positive_comment_num = values(positive_comment_num),
+        overtime_num = values(overtime_num),
+        overtime_price = values(overtime_price),
+        other_bonus = values(other_bonus),
+        other_forfeit = values(other_forfeit),
+        is_delete = values(is_delete),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update employee_salary_dayrecord
+        <set>
+            <if test="dateId != null">
+                date_id = #{dateId},
+            </if>
+            <if test="employeeId != null">
+                employee_id = #{employeeId},
+            </if>
+            <if test="orderCompleteNum != null">
+                order_complete_num = #{orderCompleteNum},
+            </if>
+            <if test="orderCompletePrice != null">
+                order_complete_price = #{orderCompletePrice},
+            </if>
+            <if test="inviteUserNum != null">
+                invite_user_num = #{inviteUserNum},
+            </if>
+            <if test="inviteUserPrice != null">
+                invite_user_price = #{inviteUserPrice},
+            </if>
+            <if test="positiveCommentBonus != null">
+                positive_comment_bonus = #{positiveCommentBonus},
+            </if>
+            <if test="negativeCommentForfeit != null">
+                negative_comment_forfeit = #{negativeCommentForfeit},
+            </if>
+            <if test="negativeCommentNum != null">
+                negative_comment_num = #{negativeCommentNum},
+            </if>
+            <if test="positiveCommentNum != null">
+                positive_comment_num = #{positiveCommentNum},
+            </if>
+            <if test="overtimeNum != null">
+                overtime_num = #{overtimeNum},
+            </if>
+            <if test="overtimePrice != null">
+                overtime_price = #{overtimePrice},
+            </if>
+            <if test="otherBonus != null">
+                other_bonus = #{otherBonus},
+            </if>
+            <if test="otherForfeit != null">
+                other_forfeit = #{otherForfeit},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from employee_salary_dayrecord where id = #{id}
+    </delete>
+
+</mapper>
+

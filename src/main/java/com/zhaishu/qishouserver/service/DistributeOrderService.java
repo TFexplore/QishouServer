@@ -1,8 +1,12 @@
 package com.zhaishu.qishouserver.service;
 
+import com.zhaishu.qishouserver.Vo.OrderVo;
 import com.zhaishu.qishouserver.entity.DistributeOrder;
+import com.zhaishu.qishouserver.entity.TGoodsSs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
 
 /**
  * 骑手配送信息表(DistributeOrder)表服务接口
@@ -11,6 +15,18 @@ import org.springframework.data.domain.PageRequest;
  * @since 2022-04-18 19:22:40
  */
 public interface DistributeOrderService {
+
+    List<TGoodsSs> getGoodsList(Integer orderId);
+
+    List<OrderVo> getOrdersAll(OrderVo orderVo, Integer limit, Integer offset);
+
+    int countOrders(OrderVo orderVo);
+
+    int countOrdersOnDeal(OrderVo orderVo);
+
+    int updateOrders(OrderVo orderVo);
+
+    List<DistributeOrder> queryAllByMap(DistributeOrder distributeOrder);
 
     /**
      * 通过ID查询单条数据

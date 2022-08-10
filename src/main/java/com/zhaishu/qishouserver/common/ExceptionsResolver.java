@@ -28,7 +28,7 @@ public class ExceptionsResolver {//全局异常处理
     @ExceptionHandler(Exception.class)
     public ResultResponse handleException(Exception e) {
         e.printStackTrace();
-        return ResultResponse.error(ErrorResultCode.SYSTEM_ERROR.getCode(),e.getMessage());
+        return ResultResponse.rerror(ErrorResultCode.SYSTEM_ERROR.getCode(),e.getMessage());
     }
 
     /**
@@ -40,7 +40,7 @@ public class ExceptionsResolver {//全局异常处理
     public ResultResponse handleOpdRuntimeException(RuntimeExceptions e) {
 
         e.printStackTrace();
-        return ResultResponse.error(e.getCode(),e.getMessage());
+        return ResultResponse.rerror(e.getCode(),e.getMessage());
     }
 
 

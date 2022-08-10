@@ -22,7 +22,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("separationApplication")
-@Api(tags = "离职申请表", description = "离职申请表")
+@Api(tags = "B离职申请表", description = "离职申请表")
 public class SeparationApplicationController {
     /**
      * 服务对象

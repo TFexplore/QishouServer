@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaishu.qishouserver.dao.MessageDao">
+
+    <resultMap type="com.zhaishu.qishouserver.entity.Message" id="MessageMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="messageId" column="message_id" jdbcType="INTEGER"/>
+        <result property="messageType" column="message_type" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="pushTime" column="push_time" jdbcType="INTEGER"/>
+        <result property="orderCode" column="order_code" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="MessageMap">
+        select
+          id, message_id, message_type, title, content, push_time, order_code, employee_id, status, is_delete, create_time, create_by, update_time, update_by
+        from message
+        where message_id = #{messageId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="MessageMap">
+        select
+          id, message_id, message_type, title, content, push_time, order_code, employee_id, status, is_delete, create_time, create_by, update_time, update_by
+        from message
+        <where>
+            <if test="param.id != null">
+                and id = #{param.id}
+            </if>
+            <if test="param.messageId != null">
+                and message_id = #{param.messageId}
+            </if>
+            <if test="param.messageType != null">
+                and message_type = #{param.messageType}
+            </if>
+            <if test="param.title != null and param.title != ''">
+                and title = #{param.title}
+            </if>
+            <if test="param.content != null and param.content != ''">
+                and content = #{param.content}
+            </if>
+            <if test="param.pushTime != null">
+                and push_time = #{param.pushTime}
+            </if>
+            <if test="param.orderCode != null and param.orderCode != ''">
+                and order_code = #{param.orderCode}
+            </if>
+            <if test="param.employeeId != null">
+                and employee_id = #{param.employeeId}
+            </if>
+            <if test="param.status != null">
+                and status = #{param.status}
+            </if>
+            <if test="param.isDelete != null">
+                and is_delete = #{param.isDelete}
+            </if>
+            <if test="param.createTime != null">
+                and create_time = #{param.createTime}
+            </if>
+            <if test="param.createBy != null">
+                and create_by = #{param.createBy}
+            </if>
+            <if test="param.updateTime != null">
+                and update_time = #{param.updateTime}
+            </if>
+            <if test="param.updateBy != null">
+                and update_by = #{param.updateBy}
+            </if>
+        </where>
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Integer">
+        select count(1)
+        from message
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="messageId != null">
+                and message_id = #{messageId}
+            </if>
+            <if test="messageType != null">
+                and message_type = #{messageType}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="pushTime != null">
+                and push_time = #{pushTime}
+            </if>
+            <if test="orderCode != null and orderCode != ''">
+                and order_code = #{orderCode}
+            </if>
+            <if test="employeeId != null">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into message(message_id, message_type, title, content, push_time, order_code, employee_id, status, is_delete, create_time, create_by, update_time, update_by)
+        values (#{messageId}, #{messageType}, #{title}, #{content}, #{pushTime}, #{orderCode}, #{employeeId}, #{status}, #{isDelete}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into message(message_id, message_type, title, content, push_time, order_code, employee_id, status, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.messageId}, #{entity.messageType}, #{entity.title}, #{entity.content}, #{entity.pushTime}, #{entity.orderCode}, #{entity.employeeId}, #{entity.status}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into message(message_id, message_type, title, content, push_time, order_code, employee_id, status, is_delete, create_time, create_by, update_time, update_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.messageId}, #{entity.messageType}, #{entity.title}, #{entity.content}, #{entity.pushTime}, #{entity.orderCode}, #{entity.employeeId}, #{entity.status}, #{entity.isDelete}, #{entity.createTime}, #{entity.createBy}, #{entity.updateTime}, #{entity.updateBy})
+        </foreach>
+        on duplicate key update
+        message_id = values(message_id),
+        message_type = values(message_type),
+        title = values(title),
+        content = values(content),
+        push_time = values(push_time),
+        order_code = values(order_code),
+        employee_id = values(employee_id),
+        status = values(status),
+        is_delete = values(is_delete),
+        create_time = values(create_time),
+        create_by = values(create_by),
+        update_time = values(update_time),
+        update_by = values(update_by)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update message
+        <set>
+            <if test="messageId != null">
+                message_id = #{messageId},
+            </if>
+            <if test="messageType != null">
+                message_type = #{messageType},
+            </if>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="pushTime != null">
+                push_time = #{pushTime},
+            </if>
+            <if test="orderCode != null and orderCode != ''">
+                order_code = #{orderCode},
+            </if>
+            <if test="employeeId != null">
+                employee_id = #{employeeId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from message where id = #{id}
+    </delete>
+
+</mapper>
+
